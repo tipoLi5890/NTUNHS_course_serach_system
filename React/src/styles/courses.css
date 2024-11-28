@@ -1,0 +1,103 @@
+/* 課程列表容器 */
+.course-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* 卡片之間的間距 */
+    padding: 20px;
+    justify-content: flex-start; /* 讓卡片靠左對齊 */
+  }
+  
+  /* 單個課程卡片 */
+  .course-card {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #ffffff00;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    width: calc(20% - 80px); /* 每列顯示兩筆卡片，左右留間距 */
+    min-width: 300px;
+    transition: border 0.3s;
+  }
+  
+  .course-card:hover {
+    border: 1px solid #ccc;
+  }
+  
+  /* 課程圖示 */
+  .courseImage {
+    width: auto;
+    height: 3.8rem;
+    margin-right: 10px;
+    padding: 0;
+    border-radius: 10px;
+  }
+  
+  /* 課程內容 */
+  .course-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* 課程標題容器 */
+.course-header {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.2rem;
+  }
+  
+  /* 課程名稱 */
+  .course-name {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  /* 儲存按鈕 */
+  .save-button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--mark-on-color);
+    cursor: pointer;
+    transition: color 0.3s;
+    margin: 0px;
+  }
+  
+  .save-button:hover {
+    color: #777;
+  }
+  
+  /* 課程細節 */
+  .course-details {
+    font-size: 0.5rem;
+    color: #555;
+    margin-bottom: 0.2rem;
+    width: 100%; /* 確保細節部分與其他內容對齊 */
+    text-align: left; /* 明確設置文字向左對齊 */
+  }
+  
+  .course-belongs {
+    font-size: 0.5rem;
+    color: #555;
+    width: 100%; /* 確保這一行和其他內容一致對齊 */
+    text-align: left; /* 明確設置文字向左對齊 */
+  }
+
+  .result{
+    flex: 6;
+  }
+
+  .besider{
+    background-color: hotpink;
+    flex: 1;
+  }
+
+  .container {
+    display: flex;
+    align-items: flex-start;
+  }

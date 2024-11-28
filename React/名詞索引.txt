@@ -1,0 +1,102 @@
+名詞索引
+頁面
+
+資料
+1.負責課程展示的資料
+課程ID(id,格式如：221256702345321)、
+課程名稱(course, 格式如：國文課)、
+課程時間(time, 格式如：星期三1~2節)、
+學分數(credits, 格式如：2)、
+上課地點(room, 格式如：G204)、
+主要開課教師(teacherM, 格式如：林體闕)、
+課程歸屬(belongs, 格式如：四年制資管系二年級)
+
+2.負責課程儲存的資料
+課程ID(id,格式如：221256702345321)、
+儲存(mark,格式0未儲存、1儲存)
+
+3.負責課程內容的資料
+學期(term, 格式如：1121)、
+系所(department, 格式如：四年制資訊管理系)、
+課別(courseType, 格式如：通識必修)、
+中文科目名稱(course, 格式如：國文課)、
+英文科目名稱(courseE, 格式如：Chinese)、
+科目代碼(code, 格式如：0234)、
+科目全碼(id,格式如：221256702345321)、
+年級(grade, 格式如：2)、
+班組(class, 格式如：A1)、
+主要開課教師名稱(teacherM, 格式如：林體闕)、
+上課人數(number-capacity, 格式如：39/60)、
+上課週次(week, 格式如：16)、
+學分數(credits, 格式如：2)、
+課程時間(time, 格式如：星期三1~2節)、
+上課地點(room, 格式如：G204)、
+授課教師名稱(teacher, 格式如：林體闕)、
+課表備註(note, 格式如：修課限-本系四技一般生二年級以上、外系二年級以上)、
+開課資訊(info, 格式為連結)]
+
+
+// 負責課程內容的資料
+    const courseContentData = [
+        {
+            term: "1121",
+            department: "四年制資訊管理系",
+            courseType: "通識必修",
+            course: "國文課",
+            courseE: "Chinese",
+            code: "0234",
+            id: "221256702345321",
+            grade: 2,
+            class: "A1",
+            teacherM: "林體闕",
+            "number-capacity": "39/60",
+            week: "16",
+            credits: 2,
+            time: "星期三1~2節",
+            room: "G204",
+            teacher: "林體闕",
+            note: "修課限-本系四技一般生二年級以上、外系二年級以上",
+            info: "https://example.com/course/221256702345321"
+        },
+        {
+            term: "1121",
+            department: "四年制資訊管理系",
+            courseType: "專業必修",
+            course: "微積分",
+            courseE: "Calculus",
+            code: "0567",
+            id: "221256702345322",
+            grade: 1,
+            class: "A2",
+            teacherM: "鬍鬚張",
+            "number-capacity": "45/50",
+            week: "16",
+            credits: 3,
+            time: "星期五3~4節",
+            room: "H101",
+            teacher: "鬍鬚張",
+            note: "修課限-本系一年級學生",
+            info: "https://example.com/course/221256702345322"
+        },
+        {
+            term: "1121",
+            department: "四年制資訊管理系",
+            courseType: "專業選修",
+            course: "資訊概論",
+            courseE: "Introduction to Information Systems",
+            code: "0987",
+            id: "221256702345323",
+            grade: 1,
+            class: "A3",
+            teacherM: "連大刀",
+            "number-capacity": "50/60",
+            week: "16",
+            credits: 2,
+            time: "星期一5~6節",
+            room: "I202",
+            teacher: "連大刀",
+            note: "修課限-本系一年級及其他系一年級以上",
+            info: "https://example.com/course/221256702345323"
+        }
+    ];
+
