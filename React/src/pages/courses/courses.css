@@ -93,7 +93,6 @@
   }
 
   .besider{
-    background-color: hotpink;
     flex: 1;
   }
 
@@ -101,3 +100,141 @@
     display: flex;
     align-items: flex-start;
   }
+
+/* 基本設定 */
+.showContent {
+  position: fixed; /* 固定在視窗上 */
+  top: 50%; /* 視窗置中 */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001; /* 確保彈出視窗位於遮罩之上 */
+  background-color: white; /* 彈出視窗背景顏色 */
+  padding: 20px; /* 內距 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* 陰影效果 */
+  border-radius: 10px; /* 圓角 */
+  width: 30%; /* 限制寬度 */
+  min-width: 300px;
+  max-height: 80%; /* 限制高度 */
+  overflow-y: auto; /* 當內容超出視窗時滾動 */
+  scrollbar-gutter: stable; /* 讓滾動條不干擾內容布局 */
+}
+
+.showContent::-webkit-scrollbar {
+  width: 10px; /* 調整滾動條的寬度 */
+}
+
+.showContent::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2); /* 滾動條的樣式 */
+  border-radius: 5px;
+}
+
+/* 背景模糊效果 */
+body.modal-open .main,body.modal-open header,body.modal-open footer {
+  filter: blur(2px); /* 僅模糊背景區域 */
+  pointer-events: none; /* 禁止與背景的互動 */
+}
+
+body.modal-open .overlay {
+  pointer-events: auto; /* 遮罩仍可互動 */
+}
+
+/* 遮罩背景 */
+.overlay {
+  position: fixed; /* 固定於螢幕 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
+  z-index: 1000; /* 遮罩層 */
+}
+
+/* 彈出視窗內的按鈕樣式 */
+.showContent .content button {
+  display: flex; /* 使用 Flexbox */
+  justify-content: center; /* 水平置中 */
+  align-items: center; /* 垂直置中 */
+  margin: 10px auto 0; /* 置中及間距 */
+  padding: 10px 20px; /* 內距 */
+  background-color: var(--tertiary-color); /* 按鈕背景顏色 */
+  color: white;
+  border: none;
+  border-radius: 5px; /* 圓角 */
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center; /* 保持文字對齊 */
+}
+
+.showContent .content button:hover {
+  background-color: var(--button-hover-color); /* 滑鼠移上時按鈕變深色 */
+}
+
+
+.content p{
+  font-size: 0.5rem;
+  text-align: left; /* 文字靠左對齊 */
+  margin: 10px 0; /* 增加上下間距，讓排版更清晰 */
+  line-height: 1.6; /* 行距，增強可讀性 */
+}
+
+body.modal-open {
+  overflow: hidden; /* 禁止滾動背景內容 */
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.content .tabs button {
+  padding: 0px;
+  padding-bottom: 5px;
+  height: 40px;
+  width: 100%;
+  border-radius: 0;
+  border: none;
+  border-bottom: 3px solid rgb(255, 255, 255);
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  border-bottom: 3px solid black; /* 設置下方邊框為黑色，寬度3px */
+  
+}
+.MuiSvgIcon-root {
+  font-size: 10px; /* 更改圖示大小 */
+  color: rgb(0, 0, 0);     /* 更改圖示顏色 */
+}
+
+.reviews {
+  margin-top: 10px;
+}
+
+.review {
+  border: 1px solid #ccc; /* 邊框 */
+  border-radius: 8px; /* 圓角 */
+  padding: 10px; /* 內距 */
+  margin-bottom: 10px; /* 與下一則的距離 */
+  background-color: #f9f9f9; /* 淡灰背景 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加陰影 */
+}
+
+.review-header {
+  display: flex; /* 水平排列 */
+  justify-content: space-between; /* 左右分佈 */
+  font-size: 14px; /* 字體大小 */
+  font-weight: bold; /* 字體加粗 */
+  margin-bottom: 8px; /* 與評論正文的間距 */
+}
+
+.review-date {
+  color: #666; /* 日期顏色 */
+  font-size: 12px; /* 日期字體稍小 */
+}
+
+.besider a {
+  font-size: 0.6rem;
+  line-height: 2;
+  color: #000;
+}

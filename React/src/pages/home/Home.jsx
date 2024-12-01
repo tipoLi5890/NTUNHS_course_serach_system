@@ -139,7 +139,7 @@ const Home = () => {
                             className="query-button" 
                             data-value="selectiveCourse"
                             onClick={(e) => handleQuerySubmit(e)}>
-                            科系選修
+                            當期選修
                         </div>
                         <div 
                             className="query-button" 
