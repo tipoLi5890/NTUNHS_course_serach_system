@@ -122,10 +122,17 @@ header {
 footer {
     width: 100%; 
     height: 70px;
+    color: var(--text-color);
     background-color: var(--primary-color);
-    padding: 0px;
+    padding: 0 ;
+    margin: 0;
     display: flex;
     align-items: center;
+    font: 0.5rem sans-serif;
+}
+
+footer p {
+    padding: 0 2rem;
 }
 
 /*內容區域*/
@@ -135,3 +142,5 @@ footer {
     margin: 0;
     overflow: hidden;
 }
+
+@media (max-width: 768px) {}

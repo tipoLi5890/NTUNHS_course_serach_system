@@ -2,13 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Cookies from 'js-cookie'; 
-import Login from './Login';
-import Home from './Home';
-import Courses from './Courses';
-import Planning from './Planning';
-import Recommendation from './Recommendation';
-import Record from './Record';
-import NotFound from './NotFound';
+import Login from './pages/login/Login';
+import Home from './pages/home/Home';
+import Courses from './pages/courses/Courses';
+import Planning from './pages/planning/Planning';
+import Recommendation from './pages/recommendation/Recommendation';
+import Record from './pages/record/Record';
+import NotFound from './pages/notFound/NotFound';
 import TestPage from './test'; // 測試頁面
 import './styles/styles.css';
 

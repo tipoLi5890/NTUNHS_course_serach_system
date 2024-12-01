@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './styles/courses.css';
-import courseImage from "./assets/courses/course.png";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import './courses.css';
+import courseImage from "../../assets/courses/course.png";
 
 const Courses = () => {
-    const [menuOpen, setMenuOpen] = useState(false); // 控制選單展開/收縮
-    const navigate = useNavigate();
     const [groupKey, setGroupKey] = useState("department"); // 分隔條件
 
     //登入
@@ -123,54 +122,7 @@ const Courses = () => {
     return (
         <div id="returnPlace">
             {/* 頁首 */}
-            <header>
-                {/* 系統標題 */}
-                <h2 id="header-title">國北護課程查詢系統</h2>
-                {/* 選單 */}
-                <div id="header-menu" onClick={() => setMenuOpen(!menuOpen)} /* 點擊切換選單開關 */>   
-                    {/* 收起選單 */}
-                    <div class="header-menu-line" id="header-menu-line1"></div>
-                    <div class="header-menu-line" id="header-menu-line2"></div>
-                    <div class="header-menu-line" id="header-menu-line3"></div>
-                    {/* 展開的選單內容 */}
-                    {menuOpen && (
-                        <nav id="header-menu-nav">
-                            {/* 關閉按鈕 */}
-                            <div id="header-menu-nav-close" onClick={() => setMenuOpen(false)}>×</div>
-                            {/* 選單列表 */}
-                            <ul id="header-menu-nav-ul">
-                                {[
-                                    { label: '系統首頁', path: '/' },
-                                    { label: '推薦課程', path: '/Recommendation' },
-                                    { label: '課程規劃', path: '/Planning' },
-                                    { label: '歷史修課', path: '/Record' },
-                                    isLoggedIn
-                                    ? { label: '登出', onClick: handleLogout } // 已登入顯示登出
-                                    : { label: '學生登入', path: '/Login' }   // 未登入顯示登入
-                                ].map((item, index, array) => (
-                                    <li key={item.label}>
-                                        <span
-                                            onClick={() => {
-                                                if (item.path) {
-                                                    navigate(item.path);
-                                                } else if (item.onClick) {
-                                                    item.onClick(); // 正確綁定方法
-                                                }
-                                                setMenuOpen(false);
-                                            }}
-                                        >
-                                            {item.label}
-                                        </span>
-                                        {index < array.length - 1 && (
-                                            <hr/>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
-                    )}
-                </div>
-            </header>
+            <Header/>
            
             <div className='main'>
                 <h2>搜尋結果</h2>
@@ -232,7 +184,7 @@ const Courses = () => {
             </div>
 
             {/* 頁尾 */}
-            <footer></footer>
+            <Footer/>
         </div>
     );
 };
