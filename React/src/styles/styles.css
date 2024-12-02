@@ -9,6 +9,11 @@
     --mark-on-color: #ffcc00;
 }
 
+::selection {
+    background-color: var(--tertiary-color); /* 選中文字的背景顏色 */
+    color: var(--background-color);           /* 選中文字的文字顏色 */
+}
+
 /*回傳顯示區域*/
 #returnPlace {
     width: 100%;

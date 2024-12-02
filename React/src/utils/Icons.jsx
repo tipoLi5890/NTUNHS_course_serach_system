@@ -2,6 +2,7 @@
 import DescriptionIcon from '@mui/icons-material/Description';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import CommentIcon from '@mui/icons-material/Comment';
-import PersonIcon from '@mui/icons-material/Person';
+import FaceIcon from '@mui/icons-material/Face';
+import CloseIcon from '@mui/icons-material/Close';
 
-export { DescriptionIcon, AnalyticsIcon, CommentIcon, PersonIcon }; // 集中導出
+export { DescriptionIcon, AnalyticsIcon, CommentIcon, FaceIcon, CloseIcon }; // 集中導出

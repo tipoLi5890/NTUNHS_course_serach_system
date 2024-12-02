@@ -78,7 +78,7 @@ const Login = () => {
                             />
                         </div>
 
-                        <button onClick={handleLogin}>登入</button>
+                        <button id="start" onClick={handleLogin}>登入</button>
                         <a href="https://system8.ntunhs.edu.tw/myNTUNHS_student/Modules/Main/Index_student.aspx">忘記密碼</a>
                     </div>
                 )}
