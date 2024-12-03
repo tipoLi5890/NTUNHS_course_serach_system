@@ -9,8 +9,9 @@
 
 /* 主視區左側 */
 #face-left {
-    width:  calc(100% - 140px);
+    width: calc(100% - 140px);
     background-color: var(--secondary-color);
+    overflow: hidden;
 }
 
 /* 主視區左側圖片 */
@@ -18,26 +19,30 @@
     z-index: -1;
     height: 100%;
     left: 0;
-    overflow: hidden;
 }
 
 /* 關鍵字尋表單 */
 #face-left form {
     position:absolute;
     top: 240px;
-    right: 200px;
-    width: 300px;
-    justify-content: center;
+    width: calc(100% - 140px);
 }
 
+#face-left form .search-input-container {
+    display: flex;
+    justify-content:right;
+    width: 100%;
+}
 /* 關鍵字搜尋欄 */
-#face-left form input {
+#face-left form .search-input-container input {
     height: 30px;
-    width: 270px;
+    width: 300px;
+    max-width: 60%;
     border-radius: 15px;
     border:0pt;
     font-size:xx-small;
     padding: 0px 15px;
+    margin: 0 50px;
     outline: none;
 }
 
@@ -45,9 +50,9 @@
 #search-mode {
     margin-top: 5px;
     font-size: 10px;
-    position:relative;
-    left: 150px;
-    width: 150px;
+    position:absolute;
+    right: 50px;
+    width: auto;
     display: flex;
     color: #ffffff;
     background-color: var(--secondary-color);
@@ -185,13 +190,19 @@
 #complexSearch #submit-container button[type="submit"] {
     width: auto;
     font-size: 0.4rem;
+    font-weight: bold;
     background-color: var(--tertiary-color);
+    border: none;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
 }
 
 #complexSearch #submit-container button[type="submit"]:hover {
     width: auto;
     font-size: 0.4rem;
     background-color: var(--button-hover-color);
+    color: black;
 }
 
 
