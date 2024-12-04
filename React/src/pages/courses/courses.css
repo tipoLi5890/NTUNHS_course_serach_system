@@ -17,6 +17,12 @@
   color: #000;
 }
 
+@media(max-width: 540px) {
+  .besider {
+    display: none;
+  }
+}
+
 /* 課程列表容器 */
 .course-list {
   display: flex;

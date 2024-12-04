@@ -75,6 +75,7 @@ const Record = () => {
         { id: "323456789654373", course: "心理學概論", time: "星期一5~6節", credits: 2, room: "I202", teacherM: "陳老師", belongs: "四年制資管系一年級" },
     ];
 
+    // 選擇使用者的課程紀錄
     const userRecords = courseRecordData.filter(
         (record) => record.username === savedUsername
     );
@@ -87,9 +88,11 @@ const Record = () => {
         return acc;
     }, {});
 
+    // 紀錄評論欄位狀態
     const [openCommentId, setOpenCommentId] = useState(null);
     const [commentInput, setCommentInput] = useState("");
 
+    // 處理評論欄位顯示
     const toggleCommentSection = (id, existingComment = "") => {
         if (id === openCommentId) {
             setOpenCommentId(null);
@@ -99,6 +102,7 @@ const Record = () => {
         }
     };
 
+    // 處理評論提交
     const handleCommentSubmit = (id) => {
         console.log("提交評論", { id, comment: commentInput });
         toggleCommentSection(null, "");
@@ -107,17 +111,21 @@ const Record = () => {
     return (
         <div id="returnPlace">
             <Header />
+
             <div className="main">
                 <h2>我的修課紀錄</h2>
                 <div className="record-list">
+                    {/* 依照學期區隔 */}
                     {Object.keys(recordsByTerm).map((term) => (
                         <div key={term} className="record-term">
                             <h6 className="term-title">{term}</h6>
                             <div className="record-items">
+                                {/* 讀取評論 */}
                                 {recordsByTerm[term].map((record) => {
                                     const courseData = courseDisplayData.find(course => course.id === record.id);
-                                    return (
+                                    return (                                        
                                         <div key={record.id} className="record-item">
+                                            {/* 課程區域 */}
                                             <div className="record-content">
                                                 <div className="course-card">
                                                     <img
@@ -135,10 +143,10 @@ const Record = () => {
                                                         <div className="course-belongs">{courseData.belongs}</div>
                                                     </div>
                                                 </div>
-
+                                                {/* 開啟評論 */}
                                                 <div className="record-actions">
                                                     <button
-                                                        className="view-review"
+                                                        className="record-action"
                                                         onClick={() => toggleCommentSection(record.id, record.comment)}
                                                     >
                                                         {record.lock === "1" ? "查看評論" : record.isCommend === "1" ? "修改/檢視" : "建立評論"}
@@ -185,6 +193,7 @@ const Record = () => {
                     ))}
                 </div>
             </div>
+
             <Footer />
         </div>
     );

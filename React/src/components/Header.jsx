@@ -22,7 +22,7 @@ const Header = () => {
     return (
         <header>
             {/* 系統標題 */}
-            <h2 id="header-title">國北護課程查詢系統</h2>
+            <h1 id="header-title">國北護課程查詢系統</h1>
             {/* 選單 */}
             <div id="header-menu" onClick={() => setMenuOpen(!menuOpen)} /* 點擊切換選單開關 */>   
                 {/* 收起選單 */}
