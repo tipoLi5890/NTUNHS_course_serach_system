@@ -43,7 +43,7 @@
   width: calc(20% - 80px); /* 每列顯示兩筆卡片，左右留間距 */
   min-width: 300px;
   transition: border 0.3s;
- }
+}
 .course-card:hover {
   border: 1px solid #ccc;
 }
@@ -99,7 +99,6 @@
 .course-details {
   font-size: 0.5rem;
   color: #555;
-  margin-bottom: 0.2rem;
   width: 100%;
   text-align: left;
 }

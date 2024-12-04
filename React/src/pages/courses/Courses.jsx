@@ -23,7 +23,7 @@ const Courses = () => {
 
     // 負責課程展示的資料
     const courseDisplayData = [
-        { id: "221256702345321", course: "國文課", time: "星期三1~2節", credits: 2, room: "G204", teacherM: "林體闕", belongs: "四年制資管系二年級", courseType: "通識必修" },
+        { id: "221256702345321", course: "國文課", time: "星期五1~2節", credits: 2, room: "G204", teacherM: "林體闕", belongs: "四年制資管系二年級", courseType: "通識必修" },
         { id: "221256702345322", course: "微積分", time: "星期五3~4節", credits: 3, room: "H101", teacherM: "鬍鬚張", belongs: "四年制資管系一年級", courseType: "專業必修" },
         { id: "221256702345323", course: "資訊概論", time: "星期一5~6節", credits: 2, room: "I202", teacherM: "連大刀", belongs: "四年制資管系一年級", courseType: "專業選修" }
     ];
@@ -44,7 +44,7 @@ const Courses = () => {
             "number-capacity": "39/60",
             week: "16",
             credits: 2,
-            time: "星期三1~2節",
+            time: "星期五1~2節",
             room: "G204",
             teacher: "林體闕",
             note: "修課限-本系四技一般生二年級以上、外系二年級以上",
