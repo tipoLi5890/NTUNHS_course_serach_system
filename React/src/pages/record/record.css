@@ -22,7 +22,6 @@
     padding-bottom: 5px;
 }
 
-
 .record-item {
     display: flex;
     justify-content: space-between;
@@ -33,33 +32,116 @@
     border-radius: 8px;
 }
 
-.record-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.record-course {
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-.record-status {
-    color: #999;
-}
-
 .record-actions button {
     padding: 5px 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
-
-.edit-review {
-    background-color: green;
-    color: white;
+.view-review{
+    position: relative
 }
-
-.add-review {
+.red-dot {
+    width: 8px;
+    height: 8px;
     background-color: red;
-    color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
+  
+/* record-item 核心樣式 */
+.record-item {
+    flex-direction: column; /* 保證 Comment 位於下方 */
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* record-info 和 record-actions 左右並排 */
+.record-content {
+    display: flex;
+    align-items: center;    
+    justify-content: space-between;
+    width: 100%;
+}
+
+.record-actions {
+    padding: 10px;
+}
+
+/* Comment 區域 */
+.Comment {
+    width: calc(100% - 20px); /* 占滿 record-item 的寬度 */
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+/* 評論輸入框 */
+.comment-input {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* 按鈕容器 */
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 按鈕樣式 */
+.clear-comment,
+.submit-comment,
+.close-comment {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.clear-comment {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.clear-comment:hover {
+    background-color: #f5c6cb;
+}
+
+.submit-comment {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.submit-comment:hover {
+    background-color: #c3e6cb;
+}
+
+.close-comment {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.close-comment:hover {
+    background-color: #b8daff;
+}
+
+
+
