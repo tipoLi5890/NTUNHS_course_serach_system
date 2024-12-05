@@ -1,0 +1,28 @@
+.schedule {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr);
+    border: 1px solid #ccc;
+  }
+  
+  .schedule-header {
+    display: contents;
+  }
+  
+  .day-header,
+  .time-label {
+    padding: 10px;
+    text-align: center;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+  }
+  
+  .schedule-row {
+    display: contents;
+  }
+  
+  .cell {
+    border: 1px solid #ccc;
+    height: 50px;
+    position: relative;
+  }
+  

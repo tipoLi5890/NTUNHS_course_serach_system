@@ -1,26 +1,92 @@
-.container {
+/* 搜尋結果外框 */
+.containerForCourses {
   display: flex;
   align-items: flex-start;
 }
 
+/* 搜尋結果 */
 .result{
   flex: 6;
 }
 
+/* 側邊欄 */
 .besider{
   flex: 1;
 }
-
-.besider a {
-  font-size: 0.6rem;
-  line-height: 2;
-  color: #000;
-}
-
 @media(max-width: 540px) {
   .besider {
     display: none;
   }
+}
+
+/* 熱門排行榜選項 */
+.hot {
+  margin: 0 0.5rem 0.5rem 0.5rem;
+  border-radius: 0.2rem;
+}
+#hot1 {
+  background-color: #222;
+}
+#hot2 {
+  background-color: #444;
+}
+#hot3 {
+  background-color: #666;
+}
+#hot4 {
+  background-color: #888;
+}
+#hot5 {
+  background-color: #aaa;
+}
+
+/* 排行榜連結 */
+.besider a {
+  font-size: 0.6rem;
+  line-height: 2;
+  color: #ffffff;
+  text-decoration: none;
+}
+.besider a:hover {
+  text-decoration: underline;
+}
+
+/* 外層容器樣式 */
+.classification-selector {
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+/* Label 樣式 */
+.classification-selector label {
+  font-weight: bold;
+  color: #333;
+}
+
+/* 下拉選單樣式 */
+.classification-selector select {
+  padding: 4px 6px;
+  font-size: 16px;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(to right, #f0f0f0, #e6e6e6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+/* 下拉選單懸停樣式 */
+.classification-selector select:hover {
+  background: #e9e9e9;
+}
+
+/* 下拉選單選中項目的樣式 */
+.classification-selector select option {
+  font-size: 0.8rem;
+  background: #fff;
 }
 
 /* 課程列表容器 */
@@ -212,26 +278,27 @@ body.modal-open {
   color: rgb(0, 0, 0);
 }
 
+/* 關閉彈出視窗 */
 .close-showContent {
   right: 2rem;
-  display: flex; /* 使用 Flexbox */
+  display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
-  width: 1rem; /* 寬度 */
-  height: 1rem; /* 高度 */
+  width: 1rem;
+  height: 1rem;
   right: 0;
-  margin: 0; /* 去掉外邊距 */
-  padding: 0; /* 去掉內邊距 */
-  border-radius: 50%; /* 圓形 */
-  background-color: #ccc; /* 背景顏色 */
-  border: none; /* 去除邊框 */
-  cursor: pointer; /* 手型指標 */
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  background-color: #ccc; 
+  border: none;
+  cursor: pointer;
 }
 
 .close-showContent svg {
-  height: 0.8rem; /* 圖標高度 */
-  width: 0.8rem; /* 圖標寬度 */
-  fill: #000; /* 設置圖標顏色 */
+  height: 0.8rem;
+  width: 0.8rem;
+  fill: #000;
 }
 
 .content-header {

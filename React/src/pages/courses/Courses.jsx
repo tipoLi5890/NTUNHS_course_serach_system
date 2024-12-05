@@ -153,7 +153,7 @@ const Courses = () => {
            
             <div className='main'>
                 <h2>搜尋結果</h2>
-                <div className='container'>
+                <div className='containerForCourses'>
                     {/* 左側查詢結果內容 */}
                     <div className='result'>
                         <div className="classification-selector">
@@ -216,11 +216,11 @@ const Courses = () => {
                     {/* 右側側邊欄 */}
                     <div className='besider'>
                         <h6>熱門排行榜</h6>
-                        <a href=''>物件導向</a><br/>
-                        <a href=''>資料庫</a><br/>
-                        <a href=''>商業智慧</a><br/>
-                        <a href=''>系統分析</a><br/>
-                        <a href=''>系統分析</a>
+                        <div id="hot1" className='hot'><a href=''>物件導向</a></div>
+                        <div id="hot2" className='hot'><a href=''>資料庫</a></div>
+                        <div id="hot3" className='hot'><a href=''>商業智慧</a></div>
+                        <div id="hot4" className='hot'><a href=''>系統分析</a></div>
+                        <div id="hot5" className='hot'><a href=''>當代藝術導論</a></div>
                     </div>
                 </div>  
             </div>
