@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import './courses.css';
 import courseImage from "../../assets/courses/course.png";
-import {DescriptionIcon, AnalyticsIcon, CommentIcon, FaceIcon, CloseIcon } from '../../utils/Icons';
+import CoursesDetial from "../../components/CoursesDetail"; // 引入彈出視窗元件
 
 const Courses = () => {
     const [groupKey, setGroupKey] = useState("department"); // 分隔條件
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
-    const [page, setPage] = React.useState(1); //追蹤彈出視窗分頁
 
     //登入
     const isLoggedIn = window.Cookies.get('isLoggedIn');
@@ -136,16 +135,6 @@ const Courses = () => {
         setSelectedCourse(null);
     };
 
-    // 在彈出視窗開啟/關閉時切換 body 類名
-    useEffect(() => {
-        if (selectedCourse) {
-            document.body.classList.add("modal-open");
-        } else {
-            document.body.classList.remove("modal-open");
-        }
-        return () => document.body.classList.remove("modal-open"); // 清除效果
-    }, [selectedCourse]);
-
     return (
         <div id="returnPlace">
             {/* 頁首 */}
@@ -227,77 +216,11 @@ const Courses = () => {
             
             {/* 彈出視窗與遮罩 */}
             {selectedCourse && (
-                <>
-                    {/* 背景遮罩 */}
-                    <div className="overlay" onClick={closeContent}></div>
-
-                    {/* 彈出視窗 */}
-                    <div className="showContent">
-                        
-                        {/* 頁面標題與關閉按鈕 */}
-                        <div className="content-header">
-                            <h4>{selectedCourse.course} ({selectedCourse.courseE})</h4>
-                            <button className="close-showContent" onClick={closeContent}>
-                                <CloseIcon />
-                            </button>
-                        </div>
-
-                        {/* 頁面切換區域 */}
-                        <div className="tabs">
-                            <button onClick={() => setPage(1)} className={page === 1 ? "active" : ""}><DescriptionIcon/></button>
-                            <button onClick={() => setPage(2)} className={page === 2 ? "active" : ""}><AnalyticsIcon/></button>
-                            <button onClick={() => setPage(3)} className={page === 3 ? "active" : ""}><CommentIcon/></button>
-                        </div>
-                            
-                        {/* 分頁內容 */}
-                        {page === 1 && (
-                            <div>
-                                <p><strong>課程代碼:</strong> {selectedCourse.code}</p>
-                                <p><strong>課程全碼:</strong> {selectedCourse.id}</p>
-                                <p><strong>學期:</strong> {selectedCourse.term}</p>
-                                <p><strong>科系:</strong> {selectedCourse.department}</p>
-                                <p><strong>課程類型:</strong> {selectedCourse.courseType}</p>
-                                <p><strong>年級:</strong> {selectedCourse.grade}</p>
-                                <p><strong>班級:</strong> {selectedCourse.class}</p>
-                                <p><strong>授課教師:</strong> {selectedCourse.teacher} ({selectedCourse.teacherM})</p>
-                                <p><strong>學分數:</strong> {selectedCourse.credits}</p>                                    <p><strong>修課人數/容量:</strong> {selectedCourse["number-capacity"]}</p>
-                                <p><strong>週次:</strong> {selectedCourse.week}</p>
-                                <p><strong>上課時間:</strong> {selectedCourse.time}</p>
-                                <p><strong>上課地點:</strong> {selectedCourse.room}</p>
-                                <p><strong>備註:</strong> {selectedCourse.note}</p>
-                            </div>
-                        )}
-                            
-                        {page === 2 && (
-                            <div>
-                                <p><strong>開課資訊: </strong> 
-                                    <a href="{selectedCourse.info}">
-                                        教學計劃.pdf
-                                    </a>
-                                </p>
-                            </div>
-                        )}
-                            
-                        {page === 3 && (
-                            <div>
-                                <p><strong>評論:</strong></p>
-                                <div className="reviews">
-                                    {courseReviews
-                                        .filter(review => review.code === selectedCourse.code)
-                                        .map((review, index) => (
-                                            <div className="review" key={index}>
-                                                <div className="review-header">
-                                                    <span className="review-creator"><FaceIcon/>{review.creater}</span>
-                                                    <span className="review-date">{review["review-date"]}</span>
-                                                </div>
-                                                <p>{review.comment}</p>
-                                            </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </>
+                <CoursesDetial
+        selectedCourse={selectedCourse}
+        closeContent={closeContent}
+        courseReviews={courseReviews}
+      />
             )}
 
             {/* 頁尾 */}
