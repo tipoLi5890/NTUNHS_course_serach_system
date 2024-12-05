@@ -4,6 +4,7 @@ header('Access-Control-Allow-Origin: http://localhost:5173');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Credentials: true');  // 啟用 Cookie 傳遞
 
 session_start(); // 初始化 Session
 include("configure.php");
@@ -31,6 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
+    
     try {
         // 預處理語句，防止 SQL Injection
         $stmt = $link->prepare("SELECT * FROM 用戶 WHERE 帳號 = :username");
@@ -39,20 +41,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if ($stmt->rowCount() > 0) {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // 驗證密碼（假設存儲的密碼已經是雜湊值）
-            // if (password_verify($password, $user['密碼'])) {
-            //     $_SESSION['密碼'] = $user['密碼'];
-
-            //     echo json_encode(array(
-            //         "message" => "登入成功",
-            //         "success" => true
-            //     ));
-            //     exit;
-            // }
             
-            $_SESSION['用戶ID'] = $user['用戶ID'];
+            $sessionToken = bin2hex(random_bytes(32));  //生成隨機會話令牌
 
+            $_SESSION['用戶ID'] = $user['用戶ID'];
+            $_SESSION['sessionToken'] = $sessionToken;
+
+            // 設置 Cookie（HttpOnly 選項避免前端 JavaScript 存取）
+            setcookie(
+                '帳號',                  // Cookie 名稱
+                $sessionToken,                  // Cookie 值
+                time() + 3600,              // 過期時間（1小時後）
+                '/',                        // 路徑
+                '',                         // 域名
+                false,                      // 是否僅限 HTTPS
+                true                        // HttpOnly 設置
+            );
+
+            // 回傳成功結果
             echo json_encode(array(
                 "message" => "登入成功",
                 "success" => true
