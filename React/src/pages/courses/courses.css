@@ -73,9 +73,8 @@
   color: #333;
   border: none;
   border-radius: 5px;
-  background: linear-gradient(to right, #f0f0f0, #e6e6e6);
+  background: #ddd;
   cursor: pointer;
-  transition: all 0.3s ease;
   outline: none;
 }
 /* 下拉選單懸停樣式 */
