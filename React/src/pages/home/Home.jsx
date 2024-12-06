@@ -17,9 +17,11 @@ const Home = () => {
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         const savedUsername = localStorage.getItem('savedUsername');
-        setIsLoggedIn(isLoggedIn);
-        setSavedUsername(savedUsername || '');
+        // setIsLoggedIn(isLoggedIn);
+        // setSavedUsername(savedUsername || '');
     }, []);
+
+
     /**
        * 通用查詢函式
        * @param {Function} apiCall - API 呼叫函式
@@ -32,10 +34,10 @@ const Home = () => {
         if (queryType) {
             params.queryType = queryType; // 確保 queryType 正確設置
         }
-        if (!loggedIn && validQueryTypes.includes(queryType)) {
-            alert('此功能僅提供已登入的使用者使用');
-            return;
-        }
+        // if (!loggedIn && validQueryTypes.includes(queryType)) {
+        //     alert('此功能僅提供已登入的使用者使用');
+        //     return;
+        // }
         if (
             !searchTerm && !validQueryTypes.includes(queryType) && !isComplexSearch) {
             alert('查詢內容不可為空');

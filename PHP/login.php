@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // 設置 Cookie（HttpOnly 選項避免前端 JavaScript 存取）
             setcookie(
-                '帳號',                  // Cookie 名稱
+                'sessionToken',                  // Cookie 名稱
                 $sessionToken,                  // Cookie 值
                 time() + 3600,              // 過期時間（1小時後）
                 '/',                        // 路徑
