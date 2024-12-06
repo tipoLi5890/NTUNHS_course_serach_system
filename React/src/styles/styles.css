@@ -1,0 +1,151 @@
+/*定義顏色*/
+:root {
+    --primary-color: #6B9868;
+    --secondary-color: #000000;
+    --tertiary-color:#2D372D;
+    --text-color: #000000;
+    --background-color: #ffffff;
+    --button-hover-color: #bee1bc;
+    --mark-on-color: #ffcc00;
+}
+
+::selection {
+    background-color: var(--tertiary-color); /* 選中文字的背景顏色 */
+    color: var(--background-color);           /* 選中文字的文字顏色 */
+}
+
+/*回傳顯示區域*/
+#returnPlace {
+    width: 100%;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+}
+
+/*頁首*/
+header {
+    width: 100%;
+    height: 70px;
+    background-color: var(--primary-color);
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*網頁標題*/
+#header-title {
+    padding-left: 25px;
+}
+
+/*頁首選單*/
+#header-menu {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--tertiary-color);
+    margin-right: 25px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* 頁首選單收起樣式 */
+.header-menu-line {
+    width: 20px;
+    height: 2px;
+    background-color: #ffffff; 
+    border-radius: 1px; 
+    margin: 12px 0 0 10px;
+}
+
+/* 頁首選單收起樣式 */
+#header-menu-line2, #header-menu-line3 {
+    margin-top: 6px;
+}
+
+/* 頁首選單張開 */
+#header-menu-nav {
+    position: absolute;
+    right: 0;
+    background-color: var(--tertiary-color);
+    width: 160px;
+    border-radius: 5px;
+    z-index: 10;
+    padding: 30px 0 0 0;
+    top: 0;
+    border: 1px solid white;
+}
+
+/* 關閉頁首選單 */
+#header-menu-nav-close {
+    position: absolute;
+    top: 5px;
+    right: 12px;
+    font-size: 30px;
+    font-weight: 100;
+    cursor: pointer;
+    color: white;
+}
+
+/* 頁首選單列表 */
+#header-menu-nav-ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    color: white;
+}
+
+/* 頁首選單選項 */
+#header-menu-nav-ul li {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* 頁首選單選項 */
+#header-menu-nav-ul li span {
+    display: block;
+    padding: 10px 0;
+    margin: 5px;
+    font-size: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+/* 頁首選單選項選取 */
+#header-menu-nav-ul li span:hover {
+    color: var(--text-color);
+    background-color: var(--button-hover-color);
+}
+
+/* 頁首選單分隔線 */
+#header-menu-nav-ul li hr {
+    margin: 0 20px;
+}
+
+/* 頁尾 */
+footer {
+    width: 100%; 
+    height: 70px;
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    padding: 0 ;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font: 0.5rem sans-serif;
+}
+
+footer p {
+    padding: 0 2rem;
+}
+
+/*內容區域*/
+.main{
+    width: 100%; /* 寬度 100% */
+    min-height: calc(100vh - 140px); 
+    margin: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {}

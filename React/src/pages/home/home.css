@@ -1,0 +1,217 @@
+/* 頁面主視區 */
+#face{
+    width: 100%;
+    background-color: var(--secondary-color);
+    height: 420px;
+    margin: 0 0 5px 0;
+    display: flex;
+}
+
+/* 主視區左側 */
+#face-left {
+    width: calc(100% - 140px);
+    background-color: var(--secondary-color);
+    overflow: hidden;
+}
+
+/* 主視區左側圖片 */
+#face-left img {
+    z-index: -1;
+    height: 100%;
+    left: 0;
+}
+
+/* 關鍵字尋表單 */
+#face-left form {
+    position:absolute;
+    top: 240px;
+    width: calc(100% - 140px);
+}
+
+#face-left form .search-input-container {
+    display: flex;
+    justify-content:right;
+    width: 100%;
+}
+/* 關鍵字搜尋欄 */
+#face-left form .search-input-container input {
+    height: 30px;
+    width: 300px;
+    max-width: 60%;
+    border-radius: 15px;
+    border:0pt;
+    font-size:xx-small;
+    padding: 0px 15px;
+    margin: 0 50px;
+    outline: none;
+}
+
+/* 模糊搜尋 */
+#search-mode {
+    margin-top: 5px;
+    font-size: 10px;
+    position:absolute;
+    right: 50px;
+    width: auto;
+    display: flex;
+    color: #ffffff;
+    background-color: var(--secondary-color);
+    align-items: center;
+}
+
+/* 模糊搜尋選框 */
+#search-mode input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* 主視區右側 */
+#face-right {
+    width: 140px;
+    margin: 0px;
+    background-color: var(--secondary-color);
+}
+
+/* 主視區右側選單 */
+#face-right div {
+    height: 140px;
+    width: 140px;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 主視區右側 */
+#face-right div:hover {
+    background-color: rgb(65, 65, 65);
+}
+
+/* 複合查詢指引 */
+#complexSearch{
+    margin-top: 40px; 
+    text-align: left; 
+    width: 70%; 
+    margin: auto;
+    font-size: 0.85rem;
+}
+
+/* 隱藏預設的核取方塊 */
+.custom-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+/* 自定義核取方塊的容器 */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 20px;
+    width: auto;
+    border-radius: 10px;
+    margin-right: 5px;
+    background-color: #62993264;
+}
+
+/* 核取方塊文字 */
+.custom-checkbox div span {
+    color: #ffffff;
+    text-align: center;
+}
+
+/* 自定義核取方塊的視覺元素 */
+.custom-checkbox div {
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    padding: 0 10px;
+    background-color: black;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 當核取方塊被勾選時改變背景顏色 */
+.custom-checkbox input[type="checkbox"]:checked + div {
+    background-color: var(--primary-color);
+}
+
+/* 標籤文字樣式 */
+.custom-checkbox span {
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+/* 將標題與選項排成同一行 */
+.flex-label-container {
+    display: flex;
+    align-items: center;
+}
+
+/* 標題樣式 */
+.flex-label-container .label-title {
+    margin-right: 10px;
+    white-space: nowrap;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+/* 核取方塊群組的排版 */
+.flex-label-container .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 選項之間的間距 */
+}
+
+/* 表單分隔線 */
+#complexSearch hr {
+    border-color: rgb(255, 255, 255);
+}
+
+/* 其他input */
+#category, .testFactor {
+    width: 40%;
+    height: 30px;
+    border-radius: 15px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+}
+
+/* submit-container */
+#complexSearch #submit-container {
+    display: flex;
+    justify-content: center; /* 水平置中 */
+    width: 100%; /* 確保可見範圍 */
+}
+
+/* submit */
+#complexSearch #submit-container button[type="submit"] {
+    width: auto;
+    font-size: 0.4rem;
+    font-weight: bold;
+    background-color: var(--tertiary-color);
+    border: none;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#complexSearch #submit-container button[type="submit"]:hover {
+    width: auto;
+    font-size: 0.4rem;
+    background-color: var(--button-hover-color);
+    color: black;
+}
+
+
+/* 繼承父級表單的字體大小 */
+#complexSearch label,
+#complexSearch input,
+#complexSearch select,
+#complexSearch button,
+#complexSearch span,
+#complexSearch .checkbox-group div span  {
+    font-size: inherit; 
+}
