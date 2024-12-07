@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
 import Header from "../../components/Header";
@@ -33,7 +33,6 @@ const Login = () => {
         if (success) {
             // 登入成功，顯示歡迎訊息
             alert(`歡迎, ${username}!`);
-            // 導向首頁（根路徑）
             navigate('/');
         } else {
             // 登入失敗，顯示錯誤訊息

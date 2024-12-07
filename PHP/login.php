@@ -44,7 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             $sessionToken = bin2hex(random_bytes(32));  //生成隨機會話令牌
 
-            $_SESSION['用戶ID'] = $user['用戶ID'];
+            $_SESSION['userID'] = $user['用戶ID'];
+            $_SESSION['username'] = $user['帳號'];
             $_SESSION['sessionToken'] = $sessionToken;
 
             // 設置 Cookie（HttpOnly 選項避免前端 JavaScript 存取）

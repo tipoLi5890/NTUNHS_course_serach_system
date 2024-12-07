@@ -12,7 +12,7 @@ export const login = async (username, password) => {
     try {
         // 使用 axios 發送 POST 請求到後端的 login.php，攜帶使用者的帳號和密碼
         const response = await axios.post(
-            'http://localhost/api/login.php', // 後端登入 API 的 URL
+            'http://localhost/api/login.php',
             { username, password }, // 請求的主體，包含帳號和密碼
             { withCredentials: true } // 設置 withCredentials 為 true，以便攜帶 Cookie
         );
@@ -35,7 +35,7 @@ export const logout = async () => {
     try {
         // 使用 axios 發送 POST 請求到後端的 logout.php，無需攜帶任何資料
         const response = await axios.post(
-            'http://localhost/api/logout.php', // 後端登出 API 的 URL
+            'http://localhost/api/logout.php',
             {}, // 空的請求主體
             { withCredentials: true } // 設置 withCredentials 為 true，以便攜帶 Cookie
         );
@@ -57,7 +57,7 @@ export const checkAuthStatus = async () => {
     try {
         // 使用 axios 發送 GET 請求到後端的 check_auth.php，攜帶 Cookie 以驗證登入狀態
         const response = await axios.get(
-            'http://localhost/api/check_auth.php', // 後端檢查認證狀態的 API URL
+            'http://localhost/api/check_auth.php',
             { withCredentials: true } // 設置 withCredentials 為 true，以便攜帶 Cookie
         );
         return response.data; // 返回後端回傳的資料
