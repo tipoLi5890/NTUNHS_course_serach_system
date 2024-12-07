@@ -139,7 +139,7 @@ const Home = () => {
                     );
 
                     // 檢查學期是否為單選（直接保留）
-                    if (!isComplexSearch) {
+                    if (!isComplexSearch || !queryParams.term) {
                         alert('請選擇至少一個學期');
                         return;
                     }
