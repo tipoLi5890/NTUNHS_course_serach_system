@@ -31,18 +31,36 @@ const Planning = () => {
     const firstColumnContent = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四"];
 
     // 必修課，增加學期欄位 "1131"
-    const requiredCourses = [
-        { courseName: "資料結構", startPeriod: 1, endPeriod: 3, weekDay: 1, category: 0, isPlaced: 1, semester: "1131" },
-        { courseName: "線性代數", startPeriod: 6, endPeriod: 7, weekDay: 5, category: 0, isPlaced: 1, semester: "1131" },
-        { courseName: "演算法", startPeriod: 3, endPeriod: 4, weekDay: 2, category: 0, isPlaced: 1, semester: "1132" }
-    ];
+const requiredCourses = [
+    { courseName: "資料結構", startPeriod: 1, endPeriod: 3, weekDay: 1, category: 0, isPlaced: 1, semester: "1131" },
+    { courseName: "線性代數", startPeriod: 6, endPeriod: 7, weekDay: 5, category: 0, isPlaced: 1, semester: "1131" },
+    { courseName: "演算法", startPeriod: 3, endPeriod: 4, weekDay: 2, category: 0, isPlaced: 1, semester: "1132" },
+    { courseName: "數位邏輯", startPeriod: 1, endPeriod: 2, weekDay: 2, category: 0, isPlaced: 1, semester: "1131" },
+    { courseName: "資料庫系統", startPeriod: 4, endPeriod: 6, weekDay: 4, category: 0, isPlaced: 1, semester: "1131" },
+    { courseName: "作業系統", startPeriod: 1, endPeriod: 3, weekDay: 4, category: 0, isPlaced: 1, semester: "1122" },
+    { courseName: "計算機組織", startPeriod: 5, endPeriod: 7, weekDay: 2, category: 0, isPlaced: 1, semester: "1121" },
+    { courseName: "軟體工程", startPeriod: 3, endPeriod: 5, weekDay: 5, category: 0, isPlaced: 1, semester: "1112" },
+    { courseName: "網路安全", startPeriod: 6, endPeriod: 8, weekDay: 1, category: 0, isPlaced: 1, semester: "1111" },
+    { courseName: "人工智慧", startPeriod: 2, endPeriod: 4, weekDay: 4, category: 0, isPlaced: 1, semester: "1112" },
+    { courseName: "雲端運算", startPeriod: 7, endPeriod: 8, weekDay: 3, category: 0, isPlaced: 1, semester: "1111" }
+];
+
 
     // 選修課，增加學期欄位 "1131"
     const electiveCourses = [
         { courseName: "物件導向", startPeriod: 2, endPeriod: 4, weekDay: 3, category: 1, isPlaced: 1, semester: "1131" },
         { courseName: "作業系統", startPeriod: 6, endPeriod: 8, weekDay: 4, category: 1, isPlaced: 0, semester: "1131" },
-        { courseName: "計算機網路", startPeriod: 9, endPeriod: 10, weekDay: 1, category: 1, isPlaced: 0, semester: "1191" }
+        { courseName: "計算機網路", startPeriod: 9, endPeriod: 10, weekDay: 1, category: 1, isPlaced: 0, semester: "1121" },
+        { courseName: "人機互動", startPeriod: 2, endPeriod: 3, weekDay: 2, category: 1, isPlaced: 1, semester: "1111" },
+        { courseName: "行動應用程式開發", startPeriod: 4, endPeriod: 5, weekDay: 5, category: 1, isPlaced: 1, semester: "1111" },
+        { courseName: "網路程式設計", startPeriod: 1, endPeriod: 3, weekDay: 6, category: 1, isPlaced: 0, semester: "1132" },
+        { courseName: "資料分析", startPeriod: 6, endPeriod: 7, weekDay: 3, category: 1, isPlaced: 1, semester: "1131" },
+        { courseName: "雲端技術", startPeriod: 8, endPeriod: 10, weekDay: 2, category: 1, isPlaced: 0, semester: "1132" },
+        { courseName: "數據庫管理系統", startPeriod: 4, endPeriod: 5, weekDay: 1, category: 1, isPlaced: 1, semester: "1131" },
+        { courseName: "資訊安全", startPeriod: 6, endPeriod: 8, weekDay: 4, category: 1, isPlaced: 0, semester: "1132" },
+        { courseName: "機器學習", startPeriod: 2, endPeriod: 4, weekDay: 5, category: 1, isPlaced: 1, semester: "1122" }
     ];
+
 
     // 獲取所有的學期，去除重複並排序
     const semesters = Array.from(
@@ -136,6 +154,35 @@ const Planning = () => {
                         </div>
                     )
                 ))}
+
+                <div className='storageCourses'>
+                    <h4>儲存的課程</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>課程名稱</th>
+                                <th>課程學期</th>
+                                <th>課程星期</th>
+                                <th>課程節次</th>
+                                <th>內容</th>
+                                <th>儲存</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {electiveCourses.map((course, index) => (
+                                <tr key={index}>
+                                    <td>{course.courseName}</td>
+                                    <td>{course.semester}</td>
+                                    <td>{`星期${course.weekDay}`}</td>
+                                    <td>{`${course.startPeriod}~${course.endPeriod}`}</td>
+                                    <td>內容</td>
+                                    <td>★</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
             {/* 頁尾 */}
