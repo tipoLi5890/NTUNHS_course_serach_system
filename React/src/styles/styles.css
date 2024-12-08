@@ -120,7 +120,7 @@ header {
     background-color: var(--tertiary-color);
     width: 160px;
     border-radius: 5px;
-    z-index: 10;
+    z-index: 100;
     padding: 30px 0 0 0;
     top: 0;
     border: 1px solid white;

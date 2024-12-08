@@ -1,28 +1,70 @@
+.schedule_container {
+  width: 70%;
+  margin: 5% 15%;
+  font-size: 0.6rem;
+}
+@media(max-width: 540px) {
+  .schedule_container {
+    width: 90%;
+    margin: 5% 5%;
+  }
+}
+
+
 .schedule {
-    display: grid;
-    grid-template-columns: 100px repeat(7, 1fr);
-    border: 1px solid #ccc;
-  }
-  
-  .schedule-header {
-    display: contents;
-  }
-  
-  .day-header,
-  .time-label {
-    padding: 10px;
-    text-align: center;
-    background-color: #f4f4f4;
-    border: 1px solid #ccc;
-  }
-  
-  .schedule-row {
-    display: contents;
-  }
-  
-  .cell {
-    border: 1px solid #ccc;
-    height: 50px;
-    position: relative;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(9, 1fr); /* 9 列 */
+  grid-template-rows: repeat(15, minmax(0, 1fr)); /* 每行高度均分 */
+  width: 100%;
+  aspect-ratio: 9 / 15; /* 9列和15行比例 */
+  margin: auto;
+  border: 1px solid #ccc;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* 每個格子的樣式 */
+.cell {
+  border: 1px solid #ccc; /* 每個格子的邊框 */
+  display: flex; /* 使內容可以居中 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  background-color: #f9f9f9; /* 背景顏色 */
+  font-family: Arial, sans-serif;
+  font-size: 0.6rem;
+  box-sizing: border-box; /* 確保邊框不影響大小 */
+}
+
+/* 鼠標懸停樣式 */
+.cell:hover {
+  background-color: #e0e0e0; /* 鼠標懸停時改變背景顏色 */
+}
+
+.first-row {
+  background-color: #ccc;
+  font-weight: bold;
+  height: 100%; /* 確保高度與其他格子一致 */
+  display: flex; /* 使內容居中 */
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box; /* 避免邊框影響尺寸 */
+}
+
+.courseMustOnSchedule, .courseOnSchedule {
+  position: absolute; /* 跳脫文檔流，允許自由定位 */
+  background-color: var(--primary-color); /* 淡藍色背景 */
+  opacity: 0.8;
+  color: #fff; /* 文字顏色 */
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 10; /* 提升層級，確保在格子之上 */
+  border-radius: 0.5rem;
+}
+
+.courseMustOnSchedule {
+  background-color: rgba(0, 0, 0, 0.8);
+}
