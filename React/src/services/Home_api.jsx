@@ -48,11 +48,18 @@ export const fetchResults = async (data) => {
  * @returns {Promise<object>} - 查詢結果
  */
 export const searchCourses = (searchTerm, isFuzzySearch) => {
-    const sanitizedSearchTerm = typeof searchTerm === 'string' ? searchTerm.trim() : '';
+    /* // 將 searchTerm 強制轉為字串並進行修剪
+    const sanitizedSearchTerm = String(searchTerm).trim(); // 確保 searchTerm 為字串並去除空白
+    // 檢查處理後的 searchTerm 是否為空
+    if (!sanitizedSearchTerm) {
+        console.warn('警告：searchTerm 為空，無法進行查詢');
+        throw new Error('搜尋關鍵字不可為空');
+    } */
+    // 發送 API 請求
     return fetchResults({
         action: 'search',
-        searchTerm: sanitizedSearchTerm,
-        isFuzzySearch: Boolean(isFuzzySearch),
+        searchTerm: searchTerm.searchTerm,
+        isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
     });
 };// 用於處理一般表單提交
 
@@ -66,10 +73,12 @@ export const queryByType = (queryType) => {
 
     const requestData = {
         action: 'query',
-        queryType,
+        queryType: queryType.queryType,
+        userID: queryType.userID
     };
 
-    return fetchResults(filterParams(requestData));
+    return fetchResults(
+        filterParams(requestData));
 }; // 用於處理單一按鈕提交
 
 /**
@@ -84,7 +93,19 @@ export const complexSearch = (queryParams) => {
 
     const finalParams = filterParams({
         action: 'complex-search',
-        ...queryParams,
+        term: queryParams.term,
+        teacher: queryParams.teacher,
+        system: queryParams.system,
+        room: queryParams.room,
+        period: queryParams.period,
+        grade: queryParams.grade,
+        department: queryParams.department,
+        day: queryParams.day,
+        courseType: queryParams.courseType,
+        course: queryParams.course,
+        class: queryParams.class,
+        category: queryParams.category,
+        capacity: queryParams.capacity,
     });
 
     return fetchResults(finalParams);
