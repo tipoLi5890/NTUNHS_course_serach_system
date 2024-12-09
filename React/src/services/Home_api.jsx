@@ -47,14 +47,7 @@ export const fetchResults = async (data) => {
  * @param {boolean} isFuzzySearch - 是否進行模糊搜尋
  * @returns {Promise<object>} - 查詢結果
  */
-export const searchCourses = (searchTerm, isFuzzySearch) => {
-    /* // 將 searchTerm 強制轉為字串並進行修剪
-    const sanitizedSearchTerm = String(searchTerm).trim(); // 確保 searchTerm 為字串並去除空白
-    // 檢查處理後的 searchTerm 是否為空
-    if (!sanitizedSearchTerm) {
-        console.warn('警告：searchTerm 為空，無法進行查詢');
-        throw new Error('搜尋關鍵字不可為空');
-    } */
+export const searchCourses = (searchTerm) => {
     // 發送 API 請求
     return fetchResults({
         action: 'search',

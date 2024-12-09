@@ -17,7 +17,13 @@ const Courses = () => {
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
     const [page, setPage] = React.useState(1); //追蹤彈出視窗分頁
     const { isAuthenticated } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
-    const [courseSaveData, setCourseSaveData] = useState([]); // 修正: 初始化 courseSaveData
+
+    // 假設資料
+    const [courseSaveData, setCourseSaveData] = useState([
+        { id: "221256702345321", mark: 0 },
+        { id: "221256702345322", mark: 1 },
+        { id: "221256702345323", mark: 0 }
+    ]);
 
     // 負責評論內容的資料
     const courseReviews = [
@@ -204,7 +210,7 @@ const Courses = () => {
 
                         {page === 3 && (
                             <div>
-                                <p><strong>評論:</strong></p>
+                                <p><strong>課程評論</strong></p>
                                 <div className="reviews">
                                     {courseReviews
                                         .filter(review => review.code === selectedCourse.code)
