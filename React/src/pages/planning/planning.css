@@ -1,15 +1,17 @@
-.schedule_container {
+.schedule_container, .storageCourses {
   width: 70%;
-  margin: 5% 15%;
+  margin: auto;
+  padding: 5px 20px;
   font-size: 0.6rem;
+  max-width: 740px;
 }
 @media(max-width: 540px) {
-  .schedule_container {
+  .schedule_container, .storageCourses {
     width: 90%;
     margin: 5% 5%;
+    line-height: 1.2; /* 調整文字行距，可以根據需求調整數值 */
   }
 }
-
 
 .schedule {
   display: grid;
@@ -71,11 +73,8 @@
 
 
 .storageCourses {
-  margin-top: 20px; /* 與上方內容保持距離 */
-  padding: 10px; /* 增加內邊距 */
-  background-color: #f9f9f9; /* 提供淺色背景區分區域 */
-  border: 1px solid #ddd; /* 邊框讓區域明確 */
-  border-radius: 5px; /* 圓角邊框 */
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .storageCourses h4 {
@@ -91,7 +90,8 @@
 
 .storageCourses th,
 .storageCourses td {
-  text-align: left; /* 文字靠左對齊 */
+  align-items: center;
+  text-align: center;
   padding: 8px; /* 儲存格內邊距 */
   border: 1px solid #ddd; /* 儲存格邊框 */
 }
@@ -106,16 +106,27 @@
 }
 
 .storageCourses tr:hover {
-  background-color: #f1f1f1; /* 滑鼠懸停時的行背景色 */
+  background-color: var(--button-hover-color); /* 滑鼠懸停時的行背景色 */
 }
 
-.storageCourses td:last-child {
-  text-align: center; /* 儲存按鈕居中 */
-  color: #f39c12; /* 星號顏色 */
-  font-size: 16px; /* 星號大小 */
-  cursor: pointer; /* 滑鼠變為指針 */
+/* 查看課程 */
+.storageCourses_content {
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+}
+.storageCourses_content:hover {
+  color: #777;
+  text-decoration: underline;
 }
 
-.storageCourses td:last-child:hover {
-  color: #e67e22; /* 滑鼠懸停時改變星號顏色 */
+/* 控制取消儲存 */
+.storageCourses_star {
+  color: var(--mark-on-color);
+  cursor: pointer;
+  font-size: 1rem;
 }
+.storageCourses_star:hover {
+  color: #777;
+}
+

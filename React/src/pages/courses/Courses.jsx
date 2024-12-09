@@ -217,10 +217,10 @@ const Courses = () => {
             {/* 彈出視窗與遮罩 */}
             {selectedCourse && (
                 <CoursesDetial
-        selectedCourse={selectedCourse}
-        closeContent={closeContent}
-        courseReviews={courseReviews}
-      />
+                    selectedCourse={selectedCourse}
+                    closeContent={closeContent}
+                    courseReviews={courseReviews}
+                />
             )}
 
             {/* 頁尾 */}

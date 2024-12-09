@@ -65,48 +65,48 @@ const CoursesDeatial = ({
             {page === 1 && (
             <div>
                 <p>
-                <strong>課程代碼:</strong> {selectedCourse.code}
+                <strong>課程代碼:</strong> {selectedCourse.code || '未知'}
                 </p>
                 <p>
-                <strong>課程全碼:</strong> {selectedCourse.id}
+                <strong>課程全碼:</strong> {selectedCourse.id || '未知'}
                 </p>
                 <p>
-                <strong>學期:</strong> {selectedCourse.term}
+                <strong>學期:</strong> {selectedCourse.term || '未知'}
                 </p>
                 <p>
-                <strong>科系:</strong> {selectedCourse.department}
+                <strong>科系:</strong> {selectedCourse.department || '未知'}
                 </p>
                 <p>
-                <strong>課程類型:</strong> {selectedCourse.courseType}
+                <strong>課程類型:</strong> {selectedCourse.courseType || '未知'} 
                 </p>
                 <p>
-                <strong>年級:</strong> {selectedCourse.grade}
+                <strong>年級:</strong> {selectedCourse.grade || '未知'}
                 </p>
                 <p>
-                <strong>班級:</strong> {selectedCourse.class}
+                <strong>班級:</strong> {selectedCourse.class || '未知'}
                 </p>
                 <p>
-                <strong>授課教師:</strong> {selectedCourse.teacher} (
+                <strong>授課教師:</strong> {selectedCourse.teacher || '未知'} (
                 {selectedCourse.teacherM})
                 </p>
                 <p>
-                <strong>學分數:</strong> {selectedCourse.credits}
+                <strong>學分數:</strong> {selectedCourse.credits || '未知'}
                 </p>
                 <p>
                 <strong>修課人數/容量:</strong>{" "}
-                {selectedCourse["number-capacity"]}
+                {selectedCourse["number-capacity"]  || '未知'}
                 </p>
                 <p>
-                <strong>週次:</strong> {selectedCourse.week}
+                <strong>週次:</strong> {selectedCourse.week || '未知'}
                 </p>
                 <p>
-                <strong>上課時間:</strong> {selectedCourse.time}
+                <strong>上課時間:</strong> {selectedCourse.time || '未知'}
                 </p>
                 <p>
-                <strong>上課地點:</strong> {selectedCourse.room}
+                <strong>上課地點:</strong> {selectedCourse.room || '未知'}
                 </p>
                 <p>
-                <strong>備註:</strong> {selectedCourse.note}
+                <strong>備註:</strong> {selectedCourse.note || '未知'}
                 </p>
             </div>
             )}
