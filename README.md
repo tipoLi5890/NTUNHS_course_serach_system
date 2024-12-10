@@ -150,6 +150,13 @@ body {
 npm install
 ```
 
+#### 1.1. 套件
+```bash
+npm install html2canvas
+```
+```bash
+npm install @mui/icons-material 
+```
 ### 2. 啟動開發伺服器
 
 ```bash
