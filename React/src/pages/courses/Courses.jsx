@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import './courses.css';
-import courseImage from "../../assets/courses/course.png";
+import CourseCard from "../../components/Course-Card"; // 引入新建的 CourseCard
 import CoursesDetial from "../../components/CoursesDetail"; // 引入彈出視窗元件
 
 const Courses = () => {
@@ -167,33 +167,14 @@ const Courses = () => {
                                         {courses.map((course) => {
                                             const savedCourse = courseSaveData.find((item) => item.id === course.id);
                                             return (
-                                                <div
-                                                key={course.id}
-                                                className="course-card"
-                                                onClick={() => handleCardClick(course.id)}
-                                                >
-                                                    <img src={courseImage} className="courseImage" alt="課程圖示" />
-                                                    <div className="course-content">
-                                                        <div className="course-header">
-                                                            <span className="course-name">{course.course}</span>
-                                                            {isLoggedIn && ( // 僅在已登入的情況下顯示按鈕
-                                                            <button
-                                                                onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleToggleSave(course.id);
-                                                                }}
-                                                                className={`save-button ${savedCourse?.mark === 1 ? "saved" : ""}`}
-                                                            >
-                                                                {savedCourse?.mark === 1 ? "★" : "☆"}
-                                                            </button>
-                                                            )}
-                                                        </div>
-                                                        <div className="course-details">
-                                                            {course.time} ({course.credits}) {course.room} {course.teacherM}
-                                                        </div>
-                                                        <div className="course-belongs">{course.belongs}</div>
-                                                    </div>
-                                                </div>
+                                                <CourseCard
+                                                    key={course.id}
+                                                    course={course}
+                                                    isLoggedIn={isLoggedIn}
+                                                    savedCourse={savedCourse}
+                                                    handleToggleSave={handleToggleSave}
+                                                    handleCardClick={handleCardClick}
+                                                />
                                             );
                                         })}
                                     </div>
@@ -212,6 +193,7 @@ const Courses = () => {
                         <div id="hot5" className='hot'><a href=''>當代藝術導論</a></div>
                     </div>
                 </div>  
+            
             </div>
             
             {/* 彈出視窗與遮罩 */}
