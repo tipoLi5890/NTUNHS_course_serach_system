@@ -3,7 +3,7 @@ CREATE TABLE 課程 (
     課程編號 VARCHAR(10) NOT NULL,
     學期 VARCHAR(10) NOT NULL,
     主開課教師姓名 VARCHAR(100),
-    科目代碼_新碼 VARCHAR(50) NOT NULL,
+    科目代碼_新碼 VARCHAR(50) NOT NULL,                       
     系所代碼 VARCHAR(50) NOT NULL,
     核心四碼 VARCHAR(10) NOT NULL,
     科目組別 VARCHAR(10),
@@ -30,5 +30,8 @@ CREATE TABLE 課程 (
     科目代碼_舊碼 VARCHAR(50),
     課表代碼_舊碼 VARCHAR(50),
     課表名稱_舊碼 VARCHAR(100),
-    授課教師代碼_舊碼 VARCHAR(50)
+    授課教師代碼_舊碼 VARCHAR(50),
+    FOREIGN KEY (系所代碼) REFERENCES 系所對照表(系所代碼) ON DELETE CASCADE 
+    --如果在 系所對照表 中刪除了某個 系所代碼，並且該 系所代碼 在 課程 表中有對應的記錄，使用 ON DELETE CASCADE 會導致這些在 課程 表中的對應記錄也被自動刪除。
 );
+
