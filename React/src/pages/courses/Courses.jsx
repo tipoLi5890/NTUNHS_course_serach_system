@@ -7,6 +7,7 @@ import CourseCard from "../../components/Course-Card"; // 引入新建的 Course
 import CoursesDetial from "../../components/CoursesDetail"; // 引入彈出視窗元件
 import { useAuth } from '../../hook/AuthProvider';
 import { getSavedCourses, saveCourse, unsaveCourse } from '../../services/Courses_api';
+import { getRecords } from '../../services/Record_api.jsx';
 
 const Courses = () => {
     const location = useLocation();
@@ -17,13 +18,7 @@ const Courses = () => {
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
     const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
     const [courseSaveData, setCourseSaveData] = useState([]);// 儲存使用者的課程資料
-
-    // 負責評論內容的資料
-    const courseReviews = [
-        { code: "0234", creater: "資訊管理系 三年級", "review-date": "2024-03-01", comment: "探討人生中所面對的生死、命運，人生主軸以及自我價值性的問題，以深度詮釋課程意義。" },
-        { code: "0567", creater: "資訊管理系 一年級", "review-date": "2024-02-15", comment: "深入講解微積分的實際應用與理論，課程內容非常有系統，值得一修，老師非常耐心，且講解詳細." },
-        { code: "0987", creater: "資訊管理系 一年級", "review-date": "2024-03-01", comment: "介紹資訊科學的基本概念，非常入門，課程氛圍輕鬆有趣，適合初學者，提供了許多實用的資訊管理案例。" }
-    ];
+    const [courseReviews, setCourseReviews] = useState([]);// 儲存使用者評論內容的資料
 
     // 取得已儲存的課程
     useEffect(() => {
@@ -91,28 +86,26 @@ const Courses = () => {
         }
     };
 
-    const handleCardClick = (id) => {
+    const handleCardClick = async(id) => {
         const courseDetails = courses.find(course => course.id === id);
         if (!courseDetails) {
             alert('無法取得課程詳細資料');
             return;
         }
         setSelectedCourse(courseDetails || null);
+        try {
+            const courseReviews = await getRecords(id);
+            setCourseReviews(courseReviews);
+            console.log(courseReviews);
+        } catch (error) {
+            console.error("更新課程儲存狀態失敗:", error);
+        }
     };
 
     const closeContent = () => {
         setSelectedCourse(null);
     };
 
-    // 在彈出視窗開啟/關閉時切換 body 類名
-    useEffect(() => {
-        if (selectedCourse) {
-            document.body.classList.add("modal-open");
-        } else {
-            document.body.classList.remove("modal-open");
-        }
-        return () => document.body.classList.remove("modal-open"); // 清除效果
-    }, [selectedCourse]);
     return (
         <div id="returnPlace">
             {/* 頁首 */}

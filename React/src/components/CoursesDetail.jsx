@@ -68,7 +68,7 @@ const CoursesDeatial = ({
                 <strong>課程代碼:</strong> {selectedCourse.code || '未知'}
                 </p>
                 <p>
-                <strong>課程全碼:</strong> {selectedCourse.id || '未知'}
+                <strong>課程全碼:</strong> {selectedCourse.courseID || '未知'}
                 </p>
                 <p>
                 <strong>學期:</strong> {selectedCourse.term || '未知'}
@@ -127,7 +127,7 @@ const CoursesDeatial = ({
                 </p>
                 <div className="reviews">
                 {courseReviews
-                    .filter((review) => review.code === selectedCourse.code)
+                    .filter((review) => review.id === selectedCourse.id)
                     .map((review, index) => (
                     <div className="review" key={index}>
                         <div className="review-header">
