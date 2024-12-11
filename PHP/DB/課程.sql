@@ -1,5 +1,5 @@
 CREATE TABLE 課程 (
-    編號 INT AUTO_INCREMENT NOT NULL PRIMARY KEY, 
+    編號 INT AUTO_INCREMENT NOT NULL PRIMARY KEY, -- 用於連結課程資料表
     課程編號 VARCHAR(10) NOT NULL,
     學期 VARCHAR(10) NOT NULL,
     主開課教師姓名 VARCHAR(100),
@@ -31,7 +31,8 @@ CREATE TABLE 課程 (
     課表代碼_舊碼 VARCHAR(50),
     課表名稱_舊碼 VARCHAR(100),
     授課教師代碼_舊碼 VARCHAR(50),
-    FOREIGN KEY (系所代碼) REFERENCES 系所對照表(系所代碼) ON DELETE CASCADE 
-    --如果在 系所對照表 中刪除了某個 系所代碼，並且該 系所代碼 在 課程 表中有對應的記錄，使用 ON DELETE CASCADE 會導致這些在 課程 表中的對應記錄也被自動刪除。
+    FOREIGN KEY (系所代碼) REFERENCES 系所對照表(系所代碼) ON DELETE CASCADE,
+    -- 如果在 系所對照表 中刪除了某個 系所代碼，並且該 系所代碼 在 課程 表中有對應的記錄，使用 ON DELETE CASCADE 會導致這些在 課程 表中的對應記錄也被自動刪除。
+    UNIQUE (授課教師姓名, 科目代碼_舊碼, 上課星期, 上課節次, 上課地點) -- 添加唯一性約束
 );
 
