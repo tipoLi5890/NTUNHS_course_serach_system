@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-12-11 10:56:56
+-- 產生時間： 2024-12-12 05:17:16
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -37,6 +37,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `更新熱門搜尋次數` (IN `搜�
         INSERT INTO 熱門搜尋 (課程ID, 查詢次數)
         VALUES (搜尋課程ID, 1);
     END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `開放上學期評論` ()   BEGIN
+    DECLARE currentYear INT;
+    DECLARE currentSemester CHAR(4);
+    SET currentYear = YEAR(CURDATE()) - 1911; -- 將西元年轉為民國年
+    SET currentSemester = CONCAT(currentYear, '1'); -- 上學期為結尾1
+
+    UPDATE 課程評價
+    SET 評論狀態 = 'N'
+    WHERE 評論狀態 <> 'N';
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `開放下學期評論` ()   BEGIN
+    DECLARE currentYear INT;
+    DECLARE currentSemester CHAR(4);
+    SET currentYear = YEAR(CURDATE()) - 1911; -- 將西元年轉為民國年
+    SET currentSemester = CONCAT(currentYear, '2'); -- 下學期為結尾2
+
+    UPDATE 課程評價
+    SET 評論狀態 = 'N'
+    WHERE 評論狀態 <> 'N';
 END$$
 
 DELIMITER ;
@@ -3047,23 +3069,11 @@ CREATE TABLE `課程評價` (
 --
 
 INSERT INTO `課程評價` (`評價ID`, `用戶ID`, `課程ID`, `評價文本`, `評價時間`, `評論狀態`) VALUES
-(1, 2, 101, '這門課程內容豐富且實用，推薦給初學者。', '2024-12-11 09:50:46', 'Y'),
-(2, 2, 102, '講師講解清楚，但部分內容可以更詳細些。', '2024-12-11 09:50:46', 'Y'),
-(3, 2, 103, '課程安排很好，實例教學幫助很大。', '2024-12-11 09:50:46', 'Y'),
-(4, 2, 104, '課程有些難度，但學習過程令人滿足。', '2024-12-11 09:50:46', 'Y'),
-(5, 2, 105, '整體課程還不錯，但需要更多互動環節。', '2024-12-11 09:50:46', 'Y');
-
---
--- 觸發器 `課程評價`
---
-DELIMITER $$
-CREATE TRIGGER `新增評論後更新狀態` AFTER INSERT ON `課程評價` FOR EACH ROW BEGIN
-    UPDATE 課程評價
-    SET 評論狀態 = 'Y'
-    WHERE 評價ID = NEW.評價ID;
-END
-$$
-DELIMITER ;
+(1, 2, 101, '這門課程內容豐富且實用，推薦給初學者。', '2024-12-12 04:15:37', 'Y'),
+(2, 2, 102, '講師講解清楚，但部分內容可以更詳細些。', '2024-12-12 04:15:37', 'Y'),
+(3, 2, 103, '課程安排很好，實例教學幫助很大。', '2024-12-12 04:15:37', 'Y'),
+(4, 2, 104, '課程有些難度，但學習過程令人滿足。', '2024-12-12 04:15:37', 'Y'),
+(5, 2, 105, '整體課程還不錯，但需要更多互動環節。', '2024-12-12 04:15:37', 'Y');
 
 --
 -- 已傾印資料表的索引
@@ -3143,7 +3153,7 @@ ALTER TABLE `歷史修課紀錄`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `熱門搜尋`
 --
 ALTER TABLE `熱門搜尋`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2048;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1354;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `用戶`
@@ -3223,21 +3233,39 @@ DELIMITER $$
 --
 -- 事件
 --
-CREATE DEFINER=`root`@`localhost` EVENT `每年上學期結束開放評論` ON SCHEDULE EVERY 1 YEAR STARTS '2024-02-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE 課程評價
+CREATE DEFINER=`root`@`localhost` EVENT `上學期開放評論` ON SCHEDULE EVERY 1 YEAR STARTS '2024-12-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    DECLARE currentYear INT;
+    DECLARE currentSemester CHAR(4);
+    SET currentYear = YEAR(CURDATE()) - 1911; -- 將西元年轉為民國年
+    SET currentSemester = CONCAT(currentYear, '1'); -- 上學期為結尾1
+
+    UPDATE 課程評價
     SET 評論狀態 = 'N'
-    WHERE 評論狀態 <> 'N'$$
+    WHERE 評論狀態 <> 'N';
+END$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `每年下學期結束開放評論` ON SCHEDULE EVERY 1 YEAR STARTS '2024-08-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE 課程評價
+CREATE DEFINER=`root`@`localhost` EVENT `下學期開放評論` ON SCHEDULE EVERY 1 YEAR STARTS '2024-08-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    DECLARE currentYear INT;
+    DECLARE currentSemester CHAR(4);
+    SET currentYear = YEAR(CURDATE()) - 1911; -- 將西元年轉為民國年
+    SET currentSemester = CONCAT(currentYear, '2'); -- 下學期為結尾2
+
+    UPDATE 課程評價
     SET 評論狀態 = 'N'
-    WHERE 評論狀態 <> 'N'$$
+    WHERE 評論狀態 <> 'N';
+END$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `每年上學期評論鎖定` ON SCHEDULE EVERY 1 YEAR STARTS '2024-03-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE 課程評價
+CREATE DEFINER=`root`@`localhost` EVENT `上學期評論鎖定` ON SCHEDULE EVERY 1 YEAR STARTS '2025-03-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    UPDATE 課程評價
     SET 評論狀態 = 'L'
-    WHERE 評論狀態 = 'N'$$
+    WHERE 評論狀態 = 'N';
+END$$
 
-CREATE DEFINER=`root`@`localhost` EVENT `每年下學期評論鎖定` ON SCHEDULE EVERY 1 YEAR STARTS '2024-09-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE 課程評價
+CREATE DEFINER=`root`@`localhost` EVENT `下學期評論鎖定` ON SCHEDULE EVERY 1 YEAR STARTS '2024-09-01 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+    UPDATE 課程評價
     SET 評論狀態 = 'L'
-    WHERE 評論狀態 = 'N'$$
+    WHERE 評論狀態 = 'N';
+END$$
 
 DELIMITER ;
 COMMIT;
