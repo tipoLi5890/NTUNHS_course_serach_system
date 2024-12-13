@@ -1,47 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/Login_api';
+import { useAuth } from '../hook/AuthProvider.jsx';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false); // 控制選單展開/收縮
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // 追蹤登入狀態
-    const [savedUsername, setSavedUsername] = useState(''); // 儲存登入使用者名稱
     const navigate = useNavigate();
 
-    // 檢查伺服器端的登入狀態
-    useEffect(() => {
-        const verifyLoginStatus = async () => {
-            try {
-                const response = await checkLoginStatus(); // 呼叫後端 API 檢查登入狀態
-                if (response.isLoggedIn) {
-                    setIsLoggedIn(true);
-                    setSavedUsername(response.username); // 更新畫面顯示的使用者名稱
-                } else {
-                    setIsLoggedIn(false);
-                    setSavedUsername('');
-                }
-            } catch (error) {
-                console.error('無法檢查登入狀態:', error.message);
-            }
-        };
-
-        verifyLoginStatus(); // 初始執行檢查
-    }, []);
+    // 從 useAuth Hook 中解構出認證狀態和相關方法
+    const { isAuthenticated, userInfo, logoutUser } = useAuth();
 
     //登出
     const handleLogout = async () => {
-        try {
-            const response = await logout(); // 調用 logout API
-            if (response.success) {
-                alert(response.message); // 提示登出成功
-                setIsLoggedIn(false);
-                setSavedUsername('');
-                navigate('/'); // 返回首頁
-            }
-        } catch (error) {
-            console.error('登出失敗:', error.message);
-            alert('登出失敗，請稍後再試');
-        }
+        // 呼叫 logoutUser 方法進行登出
+        await logoutUser();
+        alert("登出成功！");
+        navigate('/');
     };
 
     // 動態選單項目
@@ -50,8 +24,8 @@ const Header = () => {
         { label: '推薦課程', path: '/Recommendation' },
         { label: '課程規劃', path: '/Planning' },
         { label: '歷史修課', path: '/Record' },
-        isLoggedIn
-            ? { label: `登出 (${savedUsername})`, onClick: handleLogout }
+        isAuthenticated
+            ? { label: `登出 (${userInfo?.username})`, onClick: handleLogout }
             : { label: '學生登入', path: '/Login' }
     ];
 
@@ -72,7 +46,7 @@ const Header = () => {
                         <div id="header-menu-nav-close" onClick={() => setMenuOpen(false)}>×</div>
                         {/* 選單列表 */}
                         <ul id="header-menu-nav-ul">
-                        {menuItems.map((item, index, array) => (
+                            {menuItems.map((item, index, array) => (
                                 <li key={item.label}>
                                     <span
                                         onClick={() => {

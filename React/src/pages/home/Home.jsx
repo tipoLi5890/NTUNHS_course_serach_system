@@ -1,56 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './home.css';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import hostView from '../../assets/home/NTUNHS.png';
-import { filterParams, searchCourses, queryByType, complexSearch } from '../../services/Home_api';
+import { searchCourses, queryByType, complexSearch, filterParams } from '../../services/Home_api';
+import { useAuth } from '../../hook/AuthProvider.jsx';
 
 const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isFuzzySearch, setIsFuzzySearch] = useState(false); // 新增模糊搜尋的狀態
-    const [queryType, setQueryType] = useState(''); // 查詢類型
-    const [userInfo, setUserInfo] = useState({}); // 使用者資訊
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
 
-    // 檢查 localStorage 是否有登入資訊
-    useEffect(() => {
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        const savedUsername = localStorage.getItem('savedUsername');
-        setIsLoggedIn(isLoggedIn);
-        setSavedUsername(savedUsername || '');
-    }, []);
     /**
-       * 通用查詢函式
-       * @param {Function} apiCall - API 呼叫函式
-       * @param {object} params - 查詢參數
-    */
+     * 處理通用查詢的主函式
+     * @param {Function} apiCall - API 呼叫函式
+     * @param {object} params - 查詢參數
+     * @param {string} queryType - 查詢類型
+     * @param {boolean} isComplexSearch - 是否為複合查詢
+     */
     // 處理點擊事件
     const handleQuery = async (apiCall, params, queryType, isComplexSearch = false) => {
-        // 有效的 queryType 列表
         const validQueryTypes = ["destinedCourse", "selectiveCourse", "searchedRecord"];
-        if (queryType) {
-            params.queryType = queryType; // 確保 queryType 正確設置
-        }
-        if (!loggedIn && validQueryTypes.includes(queryType)) {
+
+        // 需要驗證的查詢類型且未登入
+        if (!isAuthenticated && validQueryTypes.includes(queryType)) {
             alert('此功能僅提供已登入的使用者使用');
             return;
         }
-        if (
-            !searchTerm && !validQueryTypes.includes(queryType) && !isComplexSearch) {
+        // 查詢內容為空且不屬於指定類型
+        if (!searchTerm && !validQueryTypes.includes(queryType) && !isComplexSearch) {
             alert('查詢內容不可為空');
             return;
         }
+
+        const filteredParams = filterParams({
+            ...params,
+            searchTerm,
+            isFuzzySearch,
+            userID: userInfo?.userID,
+        });
+
         try {
-            console.log('傳遞參數:', params); // 確認參數內容
-            const results = await apiCall(params);
+            setIsLoading(true);
+            console.log('傳遞參數:', filteredParams); // 確認參數內容
+            const results = await apiCall(filteredParams);
             console.log('查詢結果：', results); // 確認回傳的資料是否正確
-            const serializableParams = JSON.parse(JSON.stringify(params)); // 避免不可序列化物件的錯誤
-            const cleanedResults = JSON.parse(JSON.stringify(results));
-            navigate('/Courses', { state: { queryParams: serializableParams, results: cleanedResults } });
+            navigate('/Courses', { state: { queryParams: filteredParams, results, isComplexSearch } });
+            setSearchTerm(''); // 確保搜尋結束後才清空
         } catch (error) {
             console.error('API 查詢失敗：', error.response || error.message); // 增加錯誤日誌
             alert(`查詢失敗，請稍後再試。\n錯誤訊息：${error.message}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -66,7 +70,7 @@ const Home = () => {
                     {/* 搜尋欄 */}
                     <form onSubmit={(e) => {
                         e.preventDefault();
-                        handleQuery(searchCourses, filterParams({ searchTerm, isFuzzySearch }));
+                        handleQuery(searchCourses, {}, 'searchCourses');
                     }} className="search-form">
                         <div className="search-input-container">
                             <input
@@ -88,16 +92,14 @@ const Home = () => {
                     </form>
                 </div>
                 <div id="face-right">
-                    {/* 單一按鈕提交 */}
-                    {[
-                        { queryType: 'destinedCourse', label: '當期預排' },
-                        { queryType: 'selectiveCourse', label: '科系選修' },
-                        { queryType: 'searchedRecord', label: '歷史搜尋' },
-                    ].map(({ queryType, label }) => (
-                        <form id="queryForm" key={queryType}>
+                    {/* 查詢類型按鈕 */}
+                    {[{ type: 'destinedCourse', label: '當期預排' },
+                    { type: 'selectiveCourse', label: '科系選修' },
+                    { type: 'searchedRecord', label: '歷史搜尋' }].map(({ type, label }) => (
+                        <form id="queryForm" key={type}>
                             <div
                                 className="query-button"
-                                onClick={() => handleQuery(queryByType, { queryType, userInfo }, queryType)}
+                                onClick={() => handleQuery(queryByType, { queryType: type }, type)}
                                 role="button"
                                 tabIndex={0}
                             >
@@ -116,38 +118,43 @@ const Home = () => {
             <form id="complexSearch"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    const formData = new FormData(e.target);
-
-                    // 定義哪些字段是多選的
-                    const multiSelectFields = ["grade", "department", "courseType", "day", "period", "system"];
-
-                    // 將表單資料轉換為物件
-                    const queryParams = {};
-                    for (const [key, value] of formData.entries()) {
-                        // 如果是多選字段，將其值存為陣列
+                    const formData = new FormData(e.target); // 獲取表單數據
+                    const multiSelectFields = ["grade", "department", "courseType", "day", "period", "system"]; // 定義多選欄位
+                    const queryParams = {}; // 初始化查詢參數
+                    // 遍歷表單數據
+                    formData.forEach((value, key) => {
+                        // 如果是多選欄位，將值存為陣列
                         if (multiSelectFields.includes(key)) {
-                            if (!queryParams[key]) {
-                                queryParams[key] = [];
-                            }
+                            queryParams[key] = queryParams[key] || [];
                             queryParams[key].push(value);
                         } else {
-                            queryParams[key] = value;
+                            queryParams[key] = value; // 單選欄位或其他輸入值
                         }
-                    }
+                    });
+
+                    // 確保多選欄位至少為空陣列
+                    multiSelectFields.forEach((field) => {
+                        if (!queryParams[field]) queryParams[field] = [];
+                    });
+
+                    // 確認是否使用複合查詢
+                    const isComplexSearch = Object.values(queryParams).some((value) =>
+                        Array.isArray(value) ? value.length > 0 : value
+                    );
 
                     // 檢查學期是否為單選（直接保留）
-                    if (!queryParams.term || queryParams.term.length === 0) {
+                    if (!isComplexSearch || !queryParams.term) {
                         alert('請選擇至少一個學期');
                         return;
                     }
-                    handleQuery(complexSearch, queryParams, true);
+                    handleQuery(complexSearch, queryParams, "complexSearch", true);
                 }}>
                 <div className="flex-label-container">
                     <span className="label-title">學期：</span>
                     <div className="checkbox-group">
                         {["1142", "1141", "1132", "1131", "1122", "1121", "1112", "1111", "1102", "1101"].map(term => (
                             <label key={term} className="custom-checkbox">
-                                <input type="checkbox" name="term" value={term} />
+                                <input type="radio" name="term" value={term} />
                                 <div><span>{term}</span></div>
                             </label>
                         ))}
@@ -274,8 +281,8 @@ const Home = () => {
                 </label>
                 <br /><br />
                 <div id="submit-container">
-                    <button type="submit">
-                        送出查詢
+                    <button type="submit" disabled={isLoading}>
+                    {isLoading ? '查詢中...' : '送出查詢'}
                     </button>
                 </div>
             </form>

@@ -1,26 +1,76 @@
-/*定義顏色*/
+/* 定義顏色 */
 :root {
-    --primary-color: #6B9868;
+    --primary-color: #81a67f;
     --secondary-color: #000000;
     --tertiary-color:#2D372D;
     --text-color: #000000;
     --background-color: #ffffff;
-    --button-hover-color: #bee1bc;
+    --button-hover-color: #adcdabd0;
     --mark-on-color: #ffcc00;
 }
 
+/* 定義文字反白 */
 ::selection {
-    background-color: var(--tertiary-color); /* 選中文字的背景顏色 */
-    color: var(--background-color);           /* 選中文字的文字顏色 */
+    background-color: var(--tertiary-color);
+    color: var(--background-color);
 }
 
-/*回傳顯示區域*/
+/* 定義 html 基本屬性 */
+html {
+    font-size: 16px;
+    font-size: 100%;
+    line-height: 1.6;
+    word-spacing: 0.05em;
+    letter-spacing: 0.02em;
+    font-family: 'Arial', sans-serif;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+@media(min-width: 1440px) {
+    html {
+        font-size: 20px;
+    }
+}
+@media(min-width: 1920px) {
+    html {
+        font-size: 24px;
+    }
+}
+
+/* 定義 body 基本屬性 */
+body {
+    padding: 0;
+    margin: 0;
+}
+
+/* 定義 pages 區域基本屬性 */
 #returnPlace {
     width: 100%;
     text-align: center;
     margin: 0px;
     padding: 0px;
 }
+
+/* 定義元素屬性 */
+h1 {
+    font-size: 1.5rem;
+}
+@media(max-width: 540px) {
+    h1 {
+        font-size: 1.2rem;
+    }
+}
+
+h2 {
+    font-size: 1.2rem;
+}
+@media(max-width: 540px) {
+    h2 {
+        font-size: 1rem;
+    }
+}
+
+/* 定義 component 屬性 */
 
 /*頁首*/
 header {
@@ -35,7 +85,7 @@ header {
 
 /*網頁標題*/
 #header-title {
-    padding-left: 25px;
+    padding-left: 1.5rem;
 }
 
 /*頁首選單*/
@@ -70,7 +120,7 @@ header {
     background-color: var(--tertiary-color);
     width: 160px;
     border-radius: 5px;
-    z-index: 10;
+    z-index: 100;
     padding: 30px 0 0 0;
     top: 0;
     border: 1px solid white;
@@ -107,9 +157,15 @@ header {
     display: block;
     padding: 10px 0;
     margin: 5px;
-    font-size: 16px;
+    font-size: 0.8rem;
     color: white;
     text-decoration: none;
+}
+@media(max-width: 540px) {
+    #header-menu-nav-ul li span {
+        font-size: 0.6rem;
+        margin: 3px;
+    }
 }
 
 /* 頁首選單選項選取 */
@@ -133,19 +189,20 @@ footer {
     margin: 0;
     display: flex;
     align-items: center;
-    font: 0.5rem sans-serif;
 }
 
 footer p {
-    padding: 0 2rem;
+    font-size: 0.6rem;
+    padding: 0 1.5rem;
 }
+
+/* 定義通用零件屬性 */
 
 /*內容區域*/
 .main{
-    width: 100%; /* 寬度 100% */
+    width: 100%;
     min-height: calc(100vh - 140px); 
     margin: 0;
+    padding: 0;
     overflow: hidden;
 }
-
-@media (max-width: 768px) {}

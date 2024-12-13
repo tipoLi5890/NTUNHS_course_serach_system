@@ -1,0 +1,153 @@
+#section1 {
+    display: flex;
+    gap: 20px;
+    margin: 20px;
+    flex-wrap: wrap; /* 讓子元素在視窗變小時換行 */
+}
+
+#ad_courses {
+    flex: 1 1 60%;
+    max-width: 60%;
+    position: relative;
+    margin: auto;
+    overflow: hidden;
+}
+
+#personal {
+    flex: 1 1 calc(40% - 20px);
+    max-width: calc(40% - 20px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #444f42, #a3a3a3); /* 漸層背景 */
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 幻燈片樣式 */
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 的寬高比 */
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: left 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.slide.active {
+    left: 0;
+    opacity: 1;
+}
+
+.dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+/* 響應式設計：當視窗寬度小於 540px 時 */
+@media (max-width: 540px) {
+    #ad_courses,
+    #personal {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    #personal {
+        margin-top: 20px;
+    }
+}
+
+/* 個人標題 */
+#person {
+    font-size: 24px;
+    color: #ffffff;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* 等級樣式 */
+#level {
+    font-size: 18px;
+    color: #555;
+    background-color: #fff;
+    padding: 5px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+/* 渡劫按鈕 */
+#personal_levelUp,
+#personal_analyze {
+    background-color: #000000;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 5%;
+}
+
+#personal_levelUp:hover,
+#personal_analyze:hover {
+    background-color: #809d7d; /* 懸停顏色 */
+}
+
+/* 類型區域 */
+#type {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* 類型標籤樣式 */
+.typeLable {
+    background-color: #3d7041;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.typeLable:hover {
+    transform: scale(1.1); /* 懸停放大效果 */
+}

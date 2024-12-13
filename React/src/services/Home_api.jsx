@@ -9,18 +9,17 @@ const API_BASE_URL = 'https://06b3b194-3a22-44c9-85c7-9a77138d0e79.mock.pstmn.io
  * @returns {object} 過濾後的查詢參數
  */
 export const filterParams = (params) => {
-    if (!params || typeof params !== 'object') return {};
-    // 遞迴處理嵌套物件
+    if (!params || typeof params !== 'object') return {}; // 檢查參數是否有效
     const cleanParams = {};
     Object.entries(params).forEach(([key, value]) => {
         if (value !== '' && value !== null && value !== undefined) {
-            // 如果值是物件，遞迴過濾
             cleanParams[key] = typeof value === 'object' && !Array.isArray(value)
-                ? filterParams(value)
-                : value;
+                ? filterParams(value) // 遞迴過濾物件值
+                : value; // 保留非空值
         }
     });
-    return cleanParams;
+
+    return cleanParams; // 返回過濾後的參數
 };
 
 /**
@@ -31,9 +30,9 @@ export const filterParams = (params) => {
 export const fetchResults = async (data) => {
     try {
         console.log('發送的請求資料：', data);
-        const response = await axios.post(API_BASE_URL, data);
+        const response = await axios.post(API_BASE_URL, data); // 發送 POST 請求
         console.log('回應資料：', response.data);
-        return response.data;
+        return response.data; // 返回回應資料
     } catch (error) {
         console.error('API 請求失敗：', error.response || error.message);
         throw new Error('伺服器回應失敗');
@@ -44,48 +43,35 @@ export const fetchResults = async (data) => {
 // 封裝具體查詢函式
 /**
  * 一般搜尋課程
- * @param {string} searchTerm - 搜尋字串
+ * @param {string} searchTerm - 搜尋關鍵字
  * @param {boolean} isFuzzySearch - 是否進行模糊搜尋
  * @returns {Promise<object>} - 查詢結果
  */
-export const searchCourses = (searchTerm, isFuzzySearch) => {
-    const sanitizedSearchTerm = typeof searchTerm === 'string' ? searchTerm.trim() : '';
-    return fetchResults({ action: 'search', searchTerm: sanitizedSearchTerm, isFuzzySearch });
-}; // 用於處理一般表單提交
+export const searchCourses = (searchTerm) => {
+    // 發送 API 請求
+    return fetchResults({
+        action: 'search',
+        searchTerm: searchTerm.searchTerm,
+        isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
+    });
+};// 用於處理一般表單提交
 
 /**
- * 查詢特定類型資料
+ * 根據查詢類型獲取特定資料
  * @param {string} queryType - 查詢類型
+ * @param {object} userInfo - 使用者資訊
  * @returns {Promise<object>} - 查詢結果
  */
-
-export const queryByType = (queryType, userInfo) => {
-    if (!userInfo || typeof userInfo !== 'object') {
-        console.error('userInfo 無效或未傳遞');
-        throw new Error('userInfo 無效或未傳遞');
-    }
-    const queryTypeConfig = {
-        destinedCourse: () => ({ class: userInfo.class, term: userInfo.term }),
-        selectiveCourse: () => ({
-            department: userInfo.department,
-            grade: userInfo.grade,
-            term: userInfo.term,
-        }),
-        searchedRecord: () => ({ userId: userInfo.userId }),
-    };
-    // 確保 API 支援這些類型
-    
-    if (!queryTypeConfig[queryType]) {
-        throw new Error('無效的查詢類型');
-    }
+export const queryByType = (queryType) => {
 
     const requestData = {
         action: 'query',
-        queryType,
-        ...queryTypeConfig[queryType](),
+        queryType: queryType.queryType,
+        userID: queryType.userID
     };
 
-    return fetchResults(filterParams(requestData));
+    return fetchResults(
+        filterParams(requestData));
 }; // 用於處理單一按鈕提交
 
 /**
@@ -100,7 +86,19 @@ export const complexSearch = (queryParams) => {
 
     const finalParams = filterParams({
         action: 'complex-search',
-        ...queryParams, // 保留其他查詢參數
+        term: queryParams.term,
+        teacher: queryParams.teacher,
+        system: queryParams.system,
+        room: queryParams.room,
+        period: queryParams.period,
+        grade: queryParams.grade,
+        department: queryParams.department,
+        day: queryParams.day,
+        courseType: queryParams.courseType,
+        course: queryParams.course,
+        class: queryParams.class,
+        category: queryParams.category,
+        capacity: queryParams.capacity,
     });
 
     return fetchResults(finalParams);

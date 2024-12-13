@@ -1,0 +1,152 @@
+/* 頁面標題 */
+.main h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 休課紀錄表 */
+.record-list {
+    margin: 20px auto;
+    width: 80%;
+}
+@media(max-width: 540px){
+    .record-list {
+        margin: 20px auto;
+        width: 90%;
+    }
+}
+
+/* 學期區塊 */
+.record-term {
+    margin-bottom: 40px;
+}
+
+/* 學期 */
+.term-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* record-item 核心樣式 */
+.record-item {
+    width: calc(100%-20px);
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+/* 課程顯示區塊 */
+.record-content {
+    display: flex;
+    align-items: center;    
+    justify-content: space-between;
+    width: 100%;
+}
+@media(max-width: 540px) {
+    .record-content {
+        flex-direction: column;
+    }
+}
+
+/* 課程操作區塊 */
+.record-actions {
+    padding: 10px;
+}
+
+/* 課程操作按鈕 */
+.record-action{
+    position: relative;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    background-color: var(--primary-color);
+}
+.record-action:hover{
+    background-color: #808080;
+}
+
+/* 課程操作之未評論提示 */
+.red-dot {
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* Comment 區域 */
+.Comment {
+    width: calc(100% - 20px);
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+/* 評論輸入框 */
+.comment-input {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* 按鈕容器 */
+.comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 按鈕樣式 */
+.clear-comment,
+.submit-comment,
+.close-comment {
+    padding: 6px 12px;
+    font-size: 0.6rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.clear-comment {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.clear-comment:hover {
+    background-color: #f5c6cb;
+}
+
+.submit-comment {
+    background-color: #d4edda;
+    color: #155724;
+}
+.submit-comment:hover {
+    background-color: #c3e6cb;
+}
+
+.close-comment {
+    background-color: #cce5ff;
+    color: #004085;
+}
+.close-comment:hover {
+    background-color: #b8daff;
+}

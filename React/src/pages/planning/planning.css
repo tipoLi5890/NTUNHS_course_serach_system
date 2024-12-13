@@ -1,0 +1,131 @@
+.schedule_container, .storageCourses {
+    width: 70%;
+    margin: auto;
+    padding: 5px 20px;
+    font-size: 0.6rem;
+    max-width: 740px;
+  }
+  @media(max-width: 540px) {
+    .schedule_container, .storageCourses {
+      width: 90%;
+      margin: 5% 5%;
+      line-height: 1.2; /* 調整文字行距，可以根據需求調整數值 */
+    }
+  }
+  
+  .schedule {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); /* 9 列 */
+    grid-template-rows: repeat(15, minmax(0, 1fr)); /* 每行高度均分 */
+    width: 100%;
+    aspect-ratio: 9 / 15; /* 9列和15行比例 */
+    margin: auto;
+    border: 1px solid #ccc;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  /* 每個格子的樣式 */
+  .cell {
+    border: 1px solid #ccc; /* 每個格子的邊框 */
+    display: flex; /* 使內容可以居中 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    background-color: #f9f9f9; /* 背景顏色 */
+    font-family: Arial, sans-serif;
+    font-size: 0.6rem;
+    box-sizing: border-box; /* 確保邊框不影響大小 */
+  }
+  
+  /* 鼠標懸停樣式 */
+  .cell:hover {
+    background-color: #e0e0e0; /* 鼠標懸停時改變背景顏色 */
+  }
+  
+  .first-row {
+    background-color: #ccc;
+    font-weight: bold;
+    height: 100%; /* 確保高度與其他格子一致 */
+    display: flex; /* 使內容居中 */
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box; /* 避免邊框影響尺寸 */
+  }
+  
+  .courseMustOnSchedule, .courseOnSchedule {
+    position: absolute; /* 跳脫文檔流，允許自由定位 */
+    background-color: var(--primary-color); /* 淡藍色背景 */
+    opacity: 0.8;
+    color: #fff; /* 文字顏色 */
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 10; /* 提升層級，確保在格子之上 */
+    border-radius: 0.5rem;
+  }
+  
+  .courseMustOnSchedule {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  
+  .storageCourses {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .storageCourses h4 {
+    margin-bottom: 10px; /* 與表格之間的間距 */
+    font-size: 18px; /* 標題文字大小 */
+    color: #333; /* 深色文字 */
+  }
+  
+  .storageCourses table {
+    width: 100%; /* 表格寬度全滿 */
+    border-collapse: collapse; /* 移除表格間隙 */
+  }
+  
+  .storageCourses th,
+  .storageCourses td {
+    align-items: center;
+    text-align: center;
+    padding: 8px; /* 儲存格內邊距 */
+    border: 1px solid #ddd; /* 儲存格邊框 */
+  }
+  
+  .storageCourses th {
+    background-color: #f0f0f0; /* 表頭背景色 */
+    font-weight: bold; /* 加粗表頭文字 */
+  }
+  
+  .storageCourses tr:nth-child(even) {
+    background-color: #f9f9f9; /* 偶數行背景色 */
+  }
+  
+  .storageCourses tr:hover {
+    background-color: var(--button-hover-color); /* 滑鼠懸停時的行背景色 */
+  }
+  
+  /* 查看課程 */
+  .storageCourses_content {
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .storageCourses_content:hover {
+    color: #777;
+    text-decoration: underline;
+  }
+  
+  /* 控制取消儲存 */
+  .storageCourses_star {
+    color: var(--mark-on-color);
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .storageCourses_star:hover {
+    color: #777;
+  }
