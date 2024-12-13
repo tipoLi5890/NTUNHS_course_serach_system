@@ -13,6 +13,7 @@ const Courses = () => {
     const location = useLocation();
     const { state } = location || {};
     const { results } = state || {}; // 從 state 中解構結果資料
+    console.log(results);
     const [courses, setCourses] = useState(results?.courses || []); // 確保 courses 為陣列，即使查詢結果為空
     const [groupKey, setGroupKey] = useState("department"); // 分隔條件
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
@@ -48,8 +49,10 @@ const Courses = () => {
     // 分類課程
     const groupedCourses = courses.reduce((acc, course) => {
         let key = course[groupKey];
-        if (groupKey === "day") key = course.time.substring(0, 3); // 提取 time 的前三字元
-        if (groupKey === "department") key = course.belongs.substring(0, 6); // 提取 belongs 的前六字元
+        console.log(course.time);
+        console.log(groupKey)
+        if (groupKey === "day") key = course['上課星期'].substring(0, 3); // 提取 time 的前三字元
+        if (groupKey === "department") key = course['科目代碼_新碼'].substring(0, 6); // 提取 belongs 的前六字元
         if (!acc[key]) acc[key] = [];
         acc[key].push(course);
         return acc;

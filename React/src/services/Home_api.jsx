@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 // 定義 API 基底 URL
-const API_BASE_URL = 'https://06b3b194-3a22-44c9-85c7-9a77138d0e79.mock.pstmn.io/home.php';
-
+const API_BASE_URL = 'http://localhost/api/courses.php';
 /**
  * 遞迴過濾查詢參數，移除空值或無效條件
  * @param {object} params - 原始查詢參數
@@ -30,7 +29,11 @@ export const filterParams = (params) => {
 export const fetchResults = async (data) => {
     try {
         console.log('發送的請求資料：', data);
-        const response = await axios.post(API_BASE_URL, data); // 發送 POST 請求
+        const response = await axios.post(
+            '/api/courses.php',
+            { data }, // 請求的主體，包含帳號和密碼
+            { withCredentials: true } // 設置 withCredentials 為 true，以便攜帶 Cookie
+        );
         console.log('回應資料：', response.data);
         return response.data; // 返回回應資料
     } catch (error) {
@@ -69,7 +72,6 @@ export const queryByType = (queryType) => {
         queryType: queryType.queryType,
         userID: queryType.userID
     };
-
     return fetchResults(
         filterParams(requestData));
 }; // 用於處理單一按鈕提交
