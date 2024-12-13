@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate,useLocation } from "react-router-dom";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import "./recommendation.css";
@@ -12,12 +13,62 @@ import pic3 from "../../assets/recommendation/3.png";
 import pic4 from "../../assets/recommendation/4.png";
 import pic5 from "../../assets/recommendation/5.png";
 import personalPic1 from "../../assets/recommendation/personal1.png";
+import TestAnalyze from "./testAnalyze";
 
 const Recommendation = () => {
+    const navigate = useNavigate(); // React Router 的導引函數
+    const [selectedAnswers, setSelectedAnswers] = useState({}); // 儲存用戶選擇答案
+    const [results] = useState([]); // 儲存完整測驗資料
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const location = useLocation();
+    const { analyzeType } = location.state || {};
     //登入
     const isLoggedIn = window.Cookies.get("isLoggedIn");
     const savedUsername = window.Cookies.get("username");
+
+    // 定義 analyzeType 對應的文字轉換表
+    const analyzeTypeMapping = {
+        "111": ["百尺竿頭", "諸神的晨練"],
+        "112": ["登峰造極", "武鬥場戰士"],
+        "113": ["夜總會之王", "暗夜之智"],
+        "121": ["匠心獨運", "晨光守望者"],
+        "122": ["踏雪無痕", "金色夕陽"],
+        "123": ["至理傳承", "星夜追夢人"],
+        "131": ["百尺竿頭", "逐光者"],
+        "132": ["學識高峰", "黃昏行者"],
+        "133": ["暗影之狼"],
+        "211": ["七海舵主", "晨起打卡王"],
+        "212": ["開疆闢土", "落日遠行者"],
+        "213": ["燈火守望人", "開拓者"],
+        "221": ["學術匠人", "破曉之翼"],
+        "222": ["探索先鋒", "來杯下午茶"],
+        "223": ["靈感捕手", "月光追逐者"],
+        "231": ["學海逐光", "日出夢想家"],
+        "232": ["來杯下午茶", "探索無界"],
+        "233": ["午夜旅人", "星夜築夢師"],
+        "311": ["飄飄拳", "晨曦學徒"],
+        "312": ["穩步前行", "江湖新秀"],
+        "313": ["江湖新秀", "夢中覺醒者"],
+        "321": ["根基構築者", "初入江湖"],
+        "322": ["初入江湖", "來杯下午茶"],
+        "323": ["星夜守望人","俠影初現"],
+        "331": ["晨起打卡王","初入江湖"],
+        "332": ["黃昏築路人", "初入江湖"],
+        "333": ["俠影初現", "暗夜創造家"],
+        "411": ["江湖風雲客", "晨曦逐光者"],
+        "412": ["小品達人", "夕陽漫步"],
+        "413": ["江湖風雲客", "星河"],
+        "421": ["神機閣主", "編織晨光"],
+        "422": ["小品達人", "隨心而行"],
+        "423": ["獨攬星辰"],
+        "431": ["自由建築師", "旭日築夢人"],
+        "432": ["小品達人", "來杯下午茶"],
+        "433": ["午夜探險家", "星夜交響曲"]
+    }
+    
+
+    // 根據 analyzeType 查找對應文字，若無對應則回傳空陣列
+    const typeLabels = ["資訊管理系四年級", ...(analyzeTypeMapping[analyzeType] || [])];
 
     // 如果未登入，跳轉至 /Login
     useEffect(() => {
@@ -26,9 +77,9 @@ const Recommendation = () => {
         }
     }, [isLoggedIn]);
 
-     // 幻燈片圖片
-     const slides = [pic1, pic2, pic3, pic4, pic5];
-     const [currentSlide, setCurrentSlide] = useState(0);
+    // 幻燈片圖片
+    const slides = [pic1, pic2, pic3, pic4, pic5];
+    const [currentSlide, setCurrentSlide] = useState(0);
 
     // 自動換頁功能
     useEffect(() => {
@@ -37,11 +88,6 @@ const Recommendation = () => {
         }, 5000); // 每3秒切換
         return () => clearInterval(interval);
     }, [slides.length]);
-
-    
-
-    const typeLabels = ["資訊管理系四年級", "冒險家", "休閒小品達人"];
-
 
     // 處理儲存按鈕的點擊事件
     const handleToggleSave = (id) => {
@@ -161,28 +207,49 @@ const Recommendation = () => {
     const questions = [
         {
             question: "您打算規劃的學習方向？",
-            options: ["深度學習", "廣度探索", "基礎能力", "生活休閒"],
+            options: ["深度學習", "廣度探索", "基礎能力", "其他技能與休閒"],
             //1.本系選修、2.外系選修、3.通識必修、4.通識選修
         },
         {
-            question: "您偏好的學習形式？",
-            options: ["理論為主", "實作為主", "混合型", "隨意"],
+            question: "您想要尋找？",
+            options: ["火辣辣的熱門課程", "較佳的師生比", "隨意"],
+            //歷史或上次休課人數
         },
         {
-            question: "您喜歡的課堂模式？",
-            options: ["團體合作", "獨立完成", "半團體、半獨立", "都可以"],
+            question: "您喜歡的學習時間？",
+            options: ["早上", "下午", "晚上"],
+            //課程時間
         },
     ];
 
-    const handleNextQuestion = () => {
-        if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion((prev) => prev + 1);
-        } else {
-            setShowAnalyzePopup(false); // 完成後關閉彈窗
-            alert("測驗完成！感謝您的參與！");
-            setCurrentQuestion(0); // 重置問題索引
-        }
-    };
+    // 處理選擇答案
+  const handleOptionChange = (questionIndex, optionValue) => {
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionIndex]: optionValue,
+    }));
+  };
+
+
+  // 下一題或完成測驗
+  const handleNextQuestion = () => {
+    if (!selectedAnswers[currentQuestion]) {
+        alert("請選擇一個選項才能繼續！");
+        return;
+    }
+
+    if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion((prev) => prev + 1);
+    } else {
+        const completedResults = questions.map((q, index) => ({
+            question: index + 1, // 問題編號 (從 1 開始)
+            answer: selectedAnswers[index], // 選項的編號
+        }));
+
+        // 傳遞使用者名稱和測驗結果
+        navigate("/testAnalyze", { state: { username: savedUsername, results: completedResults } });
+    }
+};
 
     const openAnalyzePopup = () => {
         setShowAnalyzePopup(true);
@@ -191,7 +258,10 @@ const Recommendation = () => {
     const closeAnalyzePopup = () => {
         setShowAnalyzePopup(false);
         setCurrentQuestion(0);
+        setSelectedAnswers({});
     };
+
+    
 
     //圖片提式
     const [showTooltip, setShowTooltip] = useState(false);
@@ -326,42 +396,55 @@ const Recommendation = () => {
 
             {/* 測驗彈窗 */}
             {showAnalyzePopup && (
-                <>
+            <>
                 <div className="overlay" onClick={closeAnalyzePopup}></div>
                 <div className="popup">
-                    <div className="popup-content">
-                        <button onClick={closeAnalyzePopup} id="close-analyze">
-                            <CloseIcon />
-                        </button>
+                <div className="popup-content">
+                    <button onClick={closeAnalyzePopup} id="close-analyze">
+                        <CloseIcon />
+                    </button>
 
-                        {/* 進度條 */}
-                        <div className="progress-bar-container">
-                            <div
-                                className="progress-bar"
-                                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                            ></div>
-                        </div>
-                        <p className="progress-text">
-                            問題 {currentQuestion + 1} / {questions.length}
-                        </p>
-
-                        <h4>{questions[currentQuestion].question}</h4>
-                        {questions[currentQuestion].options.map((option, index) => (
-                            <div key={index} className="option">
-                                <input type="radio" id={`q${currentQuestion}-${index}`} name={`q${currentQuestion}`} />
-                                <label htmlFor={`q${currentQuestion}-${index}`}>{option}</label>
-                            </div>
-                        ))}
-                        <button onClick={handleNextQuestion}>
-                            {currentQuestion < questions.length - 1 ? "下一題" : "完成測驗"}
-                        </button>
+                    {/* 進度條 */}
+                    <div className="progress-bar-container">
+                        <div
+                            className="progress-bar"
+                            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+                        ></div>
                     </div>
+
+                    <h4>{questions[currentQuestion].question}</h4>
+                    {questions[currentQuestion].options.map((option, index) => (
+                    <div key={index} className="option">
+                        <input
+                        type="radio"
+                        id={`q${currentQuestion}-${index}`}
+                        name={`q${currentQuestion}`}
+                        value={index + 1} // 編號從 1 開始
+                        checked={selectedAnswers[currentQuestion] === index + 1}
+                        onChange={() =>
+                            handleOptionChange(currentQuestion, index + 1)
+                        }
+                        />
+                        <label htmlFor={`q${currentQuestion}-${index}`}>
+                        {option}
+                        </label>
+                    </div>
+                    ))}
+                    <button onClick={handleNextQuestion}>
+                    {currentQuestion < questions.length - 1 ? "下一題" : "完成測驗"}
+                    </button>
                 </div>
-                </>
+                </div>
+            </>
             )}
             
             {/* 頁尾 */}
             <Footer />
+
+            {/* 傳送測驗資料到 TestAnalyze */}
+            {results.length > 0 && (
+                <TestAnalyze username={savedUsername} results={results} />
+            )}
         </div>
     );
 };

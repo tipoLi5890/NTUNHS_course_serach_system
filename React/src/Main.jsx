@@ -10,6 +10,7 @@ import Recommendation from './pages/recommendation/Recommendation';
 import Record from './pages/record/Record';
 import NotFound from './pages/notFound/NotFound';
 import TestPage from './test'; // 測試頁面
+import TestAnalyze from './pages/recommendation/testAnalyze'; // 測試頁面
 import './styles/styles.css';
 
 // 設定 Cookies 為全域變數
@@ -25,7 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/Recommendation" element={<Recommendation />} />
             <Route path="/Record" element={<Record />} />
             <Route path="/test" element={<TestPage />} />
-
+            <Route path="/testAnalyze" element={<TestAnalyze />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     </BrowserRouter>
