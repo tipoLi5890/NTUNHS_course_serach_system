@@ -48,6 +48,7 @@ body {
     text-align: center;
     margin: 0px;
     padding: 0px;
+    z-index: 1;
 }
 
 /* 定義元素屬性 */
