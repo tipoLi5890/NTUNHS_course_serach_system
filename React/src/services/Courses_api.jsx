@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://06b3b194-3a22-44c9-85c7-9a77138d0e79.mock.pstmn.io/courses.php';
+const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io';
 
 /**
  * 儲存課程
  * @param {number} id - 課程 ID
- * @param {string} userID - 使用者名稱
+ * @param {string} userID - 使用者 ID
  * @returns {Promise<void>}
  */
 export const saveCourse = async (id, userID) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}`, {
+        const response = await axios.post(`${API_BASE_URL}/save`, {
             action: 'save-course',
             id,
             userID,
@@ -30,7 +30,7 @@ export const saveCourse = async (id, userID) => {
  */
 export const unsaveCourse = async (id, userID) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}`, {
+        const response = await axios.post(`${API_BASE_URL}/unsave`, {
             action: 'unsave-course',
             id,
             userID,
@@ -44,13 +44,36 @@ export const unsaveCourse = async (id, userID) => {
 };
 
 /**
+ * 更新儲存(收藏)課程
+ * @param {number} userID - 使用者 ID
+ * @param {number} id - 課程 ID
+ * @param {number} mark - 課程 儲存/取消儲存 mark: 1/0
+ * @returns {Promise<void>}
+ */
+export const toggleCourseMark = async (userID, id, mark) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/mark`, {
+            action: 'update-course-mark',
+            userID,
+            id,
+            mark
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating course mark:', error);
+        throw error;
+    }
+};
+
+/**
  * 取得使用者已儲存的課程
- * @param {string} userID - 使用者名稱
+ * @param {string} userID - 使用者 ID
  * @returns {Promise<Array>} 已儲存課程的清單
  */
 export const getSavedCourses = async (userID) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}`, {
+        const response = await axios.get(`${API_BASE_URL}/courses`, {
             action: 'get-saved-courses',
             userID,
         });
@@ -63,45 +86,7 @@ export const getSavedCourses = async (userID) => {
 };
 
 /**
- * 提交課程評價
- * @param {number} courseId - 課程 ID
- * @param {string} username - 使用者名稱
- * @param {number} rating - 評分 (1~5)
- * @param {string} review - 使用者評論
- * @returns {Promise<void>}
- */
-export const submitCourseReview = async (courseId, username, rating, review) => {
-    try {
-        await axios.post(`${API_BASE_URL}`, {
-            action: 'submit-review',
-            courseId,
-            username,
-            rating,
-            review,
-        });
-    } catch (error) {
-        console.error('Error submitting course review:', error.response || error.message);
-        throw new Error('提交課程評價失敗');
-    }
-};
-
-/**
- * 取得課程評價清單
- * @param {number} courseId - 課程 ID
- * @returns {Promise<object[]>} - 評價清單
- */
-export const fetchCourseReviews = async (courseId) => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}?action=fetch-reviews&courseId=${courseId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching course reviews:', error.response || error.message);
-        throw new Error('課程評價取得失敗');
-    }
-};
-
-/**
- * 取得熱門排行榜課程
+ * 取得熱門排行榜課程 (未串接)
  * @returns {Promise<object[]>} - 熱門課程清單
  */
 export const fetchHotCourses = async () => {

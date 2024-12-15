@@ -1,31 +1,25 @@
 /* 背景圖片容器 */
 .background-container {
-    position: fixed; /* 背景固定在畫面 */
-    top: 70px; /* 頁首高度 */
-    bottom: 70px; /* 頁尾高度 */
+    position: fixed;
+    top: 3.5rem;
+    bottom: 3.5rem;
     left: 0;
     right: 0;
-    width: 100%; /* 寬度填滿父容器 */
-    overflow: hidden; /* 超出部分隱藏 */
-    z-index: -1; /* 放在最底層 */
+    width: 100%;
+    overflow: hidden;
+    z-index: -1;
 }
 
 /* 背景圖片 */
 .background-image {
-    position: fixed; /* 固定在畫面 */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 等比例填滿畫面 */
-    z-index: -1; /* 確保圖片在所有內容的後面 */
-    overflow: hidden; /* 隱藏圖片溢出的部分 */
-}
-
-/* Login 容器調整 */
-#returnPlace {
-    position: relative; /* 為了讓內部內容和背景區分 */
-    z-index: 1; /* 讓內容顯示在背景之上 */
+    object-fit: cover;
+    z-index: -1;
+    overflow: hidden;
 }
 
 .login-container {
@@ -33,8 +27,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 140px);
-    background-color: rgba(0, 0, 0, 0.35); /* 半透明背景 */
+    height: calc(100vh - 7rem);
+    background-color: rgba(0, 0, 0, 0.35);
 }
 
 /* 登入表單的外框 */
@@ -43,67 +37,67 @@
     flex-direction: column;
     align-items: center;
     padding: 30px 20px;
-    width: 90%; /* 在小螢幕上保持寬度 */
-    max-width: 400px; /* 最大寬度 */
+    width: 100%;
 }
 
 /* 將輸入框與左側文字對齊的容器 */
 .input-group {
     display: flex;
-    align-items: center; /* 垂直置中 */
-    margin: 10px 0; /* 上下間距 */
+    align-items: center;
+    width: 28%;
+    min-width: 300px;
+    margin: 10px 0;
 }
 
 /* 左側的文字標籤 */
 .input-label {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
-    color: #ffffff; /* 深灰色文字 */
-    margin-right: 10px; /* 與輸入框的距離 */
-    min-width: 50px; /* 固定寬度確保對齊 */
-    text-align: right; /* 向右對齊 */
+    color: #ffffff;
+    margin-right: 10px;
+    min-width: 50px;
+    text-align: right;
 }
 
 /* 輸入框樣式 */
 .login-box input {
-    flex: 1; /* 輸入框自適應寬度 */
-    width: 270px;
-    height: 30px;
-    border: 1px solid #cccccc; /* 邊框顏色 */
-    border-radius: 150px; /* 圓角 */
-    padding: 0 15px; /* 內邊距 */
-    font-size: 16px;
-    background-color: #ffffff; /* 白色背景 */
+    flex: 1;
+    width: 100%;
+    height: 1.85rem;
+    border: 1px solid #cccccc;
+    border-radius: 1rem;
+    padding: 0 15px; 
+    font-size: 1rem;
+    background-color: #ffffff;
 }
 
 /* 按鈕樣式 */
 #start {
-    width: 100px;
-    height: 30px;
-    margin-top: 10px;
-    background-color: var(--primary-color); /* 使用主要顏色變數 */
-    color: #ffffff; /* 白色文字 */
+    width: 6rem;
+    height: 1.85rem;
+    margin-top: 0.8rem;
+    background-color: var(--primary-color); 
+    color: #ffffff;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius:0.2rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
-.login-box button:hover {
-    background-color: var(--button-hover-color); /* 滑鼠懸停顏色 */
+#start:hover {
+    background-color: var(--button-hover-color);
 }
 
 /* "忘記密碼"文字樣式 */
 .login-box a {
-    margin-top: 10px;
-    font-size: 10px;
-    color: #ffffff; /* 使用主要顏色 */
-    text-decoration: none; /* 去掉底線 */
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: #ffffff;
+    text-decoration: none;
 }
 
 .login-box a:hover {
-    text-decoration: underline; /* 滑鼠懸停時加底線 */
+    text-decoration: underline;
 }
 
 /* 已登入使用者 */
