@@ -27,12 +27,12 @@ html {
 }
 @media(min-width: 1440px) {
     html {
-        font-size: 30px;
+        font-size: 22px;
     }
 }
 @media(min-width: 1920px) {
     html {
-        font-size: 40px;
+        font-size: 28px;
     }
 }
 
@@ -213,6 +213,12 @@ header {
         margin: 3px;
     }
 }
+@media(min-width: 1440px) {
+    #header-menu-nav-ul li span {
+        margin: 10px;
+        padding: 15px 0;
+    }
+}
 
 /* 頁首選單選項選取 */
 #header-menu-nav-ul li span:hover {
@@ -228,7 +234,7 @@ header {
 /* 頁尾 */
 footer {
     width: 100%; 
-    height: 3rem;
+    height: 3.5rem;
     color: var(--text-color);
     background-color: var(--primary-color);
     padding: 0 ;
@@ -251,7 +257,7 @@ source{
 /*內容區域*/
 .main{
     width: 100%;
-    min-height: calc(100vh - 6.5rem); 
+    min-height: calc(100vh - 7rem); 
     margin: 0;
     padding: 0;
     overflow: hidden;
