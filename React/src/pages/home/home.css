@@ -6,6 +6,12 @@
     margin: 0 0 5px 0;
     display: flex;
 }
+@media(max-width: 540px) {
+    #face{
+        height: 90vw;
+    }
+}
+
 
 /* 主視區左側 */
 #face-left {
@@ -16,6 +22,7 @@
 @media(max-width: 540px) {
     #face-left {
         width: 75vw;
+        background-color: #000000;
     }
 }
 
@@ -24,6 +31,11 @@
     z-index: -1;
     height: 100%;
     left: 0;
+}
+@media(max-width: 540px) {
+    #face-left img {
+       display: none;
+    }
 }
 
 /* 關鍵字尋表單 */
@@ -36,6 +48,7 @@
     #face-left form {
         right: 25vw;
         width: 75vw;
+        top: 50vw;
     }
 }
 
@@ -102,6 +115,7 @@
 @media(max-width: 540px) {
     #face-right div{
         width: 25vw;
+        height: 30vw;
     }
 }
 
