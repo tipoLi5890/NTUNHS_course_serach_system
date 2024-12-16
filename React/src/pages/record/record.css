@@ -55,6 +55,10 @@
     }
 }
 
+.course-card {
+    width: 40%;
+}
+
 /* 課程操作區塊 */
 .record-actions {
     padding: 10px;
@@ -76,11 +80,12 @@
 
 /* 課程操作之未評論提示 */
 .red-dot {
-    width: 8px;
-    height: 8px;
+    width: 0.6rem;
+    height: 0.6rem;
     background-color: red;
     border-radius: 50%;
     position: absolute;
+    transform: translate(30%,-30%);
     top: 0;
     right: 0;
 }
@@ -91,7 +96,7 @@
     margin-top: 10px;
     padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 0.8rem;
     background-color: #fff;
 }
 
@@ -105,7 +110,7 @@
     padding: 8px;
     margin-bottom: 10px;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 /* 按鈕容器 */
@@ -120,7 +125,7 @@
 .submit-comment,
 .close-comment {
     padding: 6px 12px;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
