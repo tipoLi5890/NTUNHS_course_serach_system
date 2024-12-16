@@ -21,7 +21,7 @@
 
 /* 熱門排行榜選項 */
 .hot {
-  margin: 0 0.5rem 0.5rem 0.5rem;
+  margin: 0 1rem 0.5rem 1rem;
   border-radius: 0.2rem;
 }
 #hot1 {
@@ -42,7 +42,7 @@
 
 /* 排行榜連結 */
 .besider a {
-  font-size: 0.6rem;
+  font-size: 0.85rem;
   line-height: 2;
   color: #ffffff;
   text-decoration: none;
@@ -68,11 +68,11 @@
 
 /* 下拉選單樣式 */
 .classification-selector select {
-  padding: 4px 6px;
-  font-size: 16px;
+  padding: 0.25rem 0.35rem;
+  font-size: 0.85rem;
   color: #333;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   background: #ddd;
   cursor: pointer;
   outline: none;
@@ -92,9 +92,9 @@
 .course-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* 卡片之間的間距 */
+  gap: 20px;
   padding: 20px;
-  justify-content: flex-start; /* 讓卡片靠左對齊 */
+  justify-content: flex-start;
 }
   
 /* 單個課程卡片 */
@@ -105,7 +105,7 @@
   border-radius: 8px;
   padding: 10px;
   background-color: #fff;
-  width: calc(20% - 80px); /* 每列顯示兩筆卡片，左右留間距 */
+  width: 30%;
   min-width: 300px;
   transition: border 0.3s;
 }
@@ -116,7 +116,8 @@
 /* 課程圖示 */
 .courseImage {
   width: auto;
-  height: 3.8rem;
+  height: 4.7rem;
+  margin: auto;
   margin-right: 10px;
   padding: 0;
   border-radius: 10px;
@@ -139,7 +140,7 @@
   
 /* 課程名稱 */
 .course-name {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: bold;
   color: var(--primary-color);
 }
@@ -148,7 +149,7 @@
 .save-button {
   background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 1.2rem;
   width: 1rem;
   height: 1rem;
   color: var(--mark-on-color);
@@ -162,14 +163,14 @@
   
 /* 課程細節 */
 .course-details {
-  font-size: 0.5rem;
+  font-size: 0.8rem;
   color: #555;
   width: 100%;
   text-align: left;
 }
   
 .course-belongs {
-  font-size: 0.5rem;
+  font-size: 0.8rem;
   color: #555;
   width: 100%;
   text-align: left;
@@ -186,7 +187,7 @@
   padding: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  width: 30%;
+  width: 32%;
   min-width: 300px;
   max-height: 80%;
   overflow-y: auto; /* 當內容超出視窗時滾動 */
@@ -196,17 +197,17 @@
 .content-header h4 {
   flex: 1; /* 自動調整寬度以適應剩餘空間 */
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: left;
-  padding-right: 2.5rem; /* 保留空間以避免與按鈕重疊 */
+  padding-right: 2.5rem;
 }
 
 .showContent::-webkit-scrollbar {
-  width: 10px; /* 調整滾動條的寬度 */
+  width: 10px;
 }
 
 .showContent::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2); /* 滾動條的樣式 */
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
 
@@ -236,7 +237,7 @@ body.modal-open .overlay {
 }
 
 .showContent p{
-  font-size: 0.5rem;
+  font-size: 0.85rem;
   text-align: left;
   margin: 10px 0;
   line-height: 1.6;
@@ -263,8 +264,9 @@ body.modal-open {
   cursor: pointer;
 }
 
-.MuiSvgIcon-root {
-  font-size: 1rem !important;
+.tabs button svg {
+  width: 1.25rem; /* 設定圖示寬度 */
+  height: 1.25rem; /* 設定圖示高度 */
 }
 
 .tabs button.active {
@@ -283,8 +285,8 @@ body.modal-open {
   display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center; /* 垂直居中 */
-  width: 1rem;
-  height: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
   right: 0;
   margin: 0;
   padding: 0;
@@ -295,8 +297,8 @@ body.modal-open {
 }
 
 .close-showContent svg {
-  height: 0.8rem;
-  width: 0.8rem;
+  height: 1rem;
+  width: 1rem;
   fill: #000;
 }
 
@@ -336,13 +338,14 @@ body.modal-open {
 }
 
 .review-creator {
+  font-size: 1rem;
   display: flex; /* 讓圖示和文字在同一行 */
   align-items: center; /* 圖示與文字垂直置中 */
   gap: 0.2rem; /* 圖示與文字之間的間距 */
 }
 
 .review-date {
-  font-size: 0.6rem; /* 日期字體大小 */
+  font-size: 0.8rem; /* 日期字體大小 */
   color: #888; /* 日期的輕微次要顏色 */
   font-weight: 300;
 }

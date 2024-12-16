@@ -41,24 +41,24 @@ const CoursesDeatial = ({
 
             {/* 頁面切換區域 */}
             <div className="tabs">
-            <button
-                onClick={() => setPage(1)}
-                className={page === 1 ? "active" : ""}
-            >
-                <DescriptionIcon />
-            </button>
-            <button
-                onClick={() => setPage(2)}
-                className={page === 2 ? "active" : ""}
-            >
-                <AnalyticsIcon />
-            </button>
-            <button
-                onClick={() => setPage(3)}
-                className={page === 3 ? "active" : ""}
-            >
-                <CommentIcon />
-            </button>
+                <button
+                    onClick={() => setPage(1)}
+                    className={page === 1 ? "active" : ""}
+                >
+                    <DescriptionIcon />
+                </button>
+                <button
+                    onClick={() => setPage(2)}
+                    className={page === 2 ? "active" : ""}
+                >
+                    <AnalyticsIcon />
+                </button>
+                <button
+                    onClick={() => setPage(3)}
+                    className={page === 3 ? "active" : ""}
+                >
+                    <CommentIcon />
+                </button>
             </div>
 
             {/* 分頁內容 */}
@@ -131,13 +131,13 @@ const CoursesDeatial = ({
                     .map((review, index) => (
                     <div className="review" key={index}>
                         <div className="review-header">
-                        <span className="review-creator">
-                            <FaceIcon />
-                            {review.creater}
-                        </span>
-                        <span className="review-date">
-                            {review["review-date"]}
-                        </span>
+                            <span className="review-creator">
+                                <FaceIcon />
+                                {review.creater}
+                            </span>
+                            <span className="review-date">
+                                {review["review-date"]}
+                            </span>
                         </div>
                         <p>{review.comment}</p>
                     </div>
