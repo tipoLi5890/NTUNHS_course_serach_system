@@ -1,7 +1,14 @@
 import axios from 'axios';
 
 // 定義 API 基底 URL
-const API_BASE_URL = 'http://localhost/api/courses.php';
+const API_URLS = {
+    fuzzySearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/fuzzySearch', // 模糊查詢
+    exactSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/exactSearch', // 精確查詢
+    queryByRequired: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/queryByRequired', //當期預排
+    queryByElective: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/queryByElective', //科系選修
+    complexSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/complexSearch', //複合查詢
+}
+
 /**
  * 遞迴過濾查詢參數，移除空值或無效條件
  * @param {object} params - 原始查詢參數
@@ -23,17 +30,14 @@ export const filterParams = (params) => {
 
 /**
  * 通用查詢函式
+ * @param {string} url - API 端點
  * @param {object} data - 傳送的資料
  * @returns {Promise<object>} - 查詢結果
  */
-export const fetchResults = async (data) => {
+export const fetchResults = async (url, data) => {
     try {
         console.log('發送的請求資料：', data);
-        const response = await axios.post(
-            '/api/courses.php',
-            { data }, // 請求的主體，包含帳號和密碼
-            { withCredentials: true } // 設置 withCredentials 為 true，以便攜帶 Cookie
-        );
+        const response = await axios.post(url, data); // 發送 POST 請求
         console.log('回應資料：', response.data);
         return response.data; // 返回回應資料
     } catch (error) {
@@ -46,13 +50,16 @@ export const fetchResults = async (data) => {
 // 封裝具體查詢函式
 /**
  * 一般搜尋課程
- * @param {string} searchTerm - 搜尋關鍵字
+ * @param {object} searchTerm - 搜尋參數物件
+ * @param {string} searchTerm.searchTerm  - 搜尋關鍵字
  * @param {boolean} isFuzzySearch - 是否進行模糊搜尋
  * @returns {Promise<object>} - 查詢結果
  */
 export const searchCourses = (searchTerm) => {
+    // 根據 isFuzzySearch 動態選擇 URL
+    const targetURL = searchTerm.isFuzzySearch ? API_URLS.fuzzySearch : API_URLS.exactSearch;
     // 發送 API 請求
-    return fetchResults({
+    return fetchResults(targetURL, {
         action: 'search',
         searchTerm: searchTerm.searchTerm,
         isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
@@ -61,19 +68,23 @@ export const searchCourses = (searchTerm) => {
 
 /**
  * 根據查詢類型獲取特定資料
- * @param {string} queryType - 查詢類型
- * @param {object} userInfo - 使用者資訊
+ * @param {object} queryType - 類別參數物件
+ * @param {string} queryType.queryType - 查詢類型 (destinedCourse 或 selectiveCourse)
+ * @param {string} queryType.userID - 使用者 ID
  * @returns {Promise<object>} - 查詢結果
  */
 export const queryByType = (queryType) => {
-
-    const requestData = {
+    // 根據 queryType.queryType 動態選擇 URL
+    const targetURL = queryType.queryType === "destinedCourse"
+     ? API_URLS.queryByRequired 
+     : API_URLS.queryByElective;
+    const requestData = filterParams({
         action: 'query',
         queryType: queryType.queryType,
         userID: queryType.userID
-    };
-    return fetchResults(
-        filterParams(requestData));
+    });
+
+    return fetchResults(targetURL, requestData);
 }; // 用於處理單一按鈕提交
 
 /**
@@ -101,7 +112,9 @@ export const complexSearch = (queryParams) => {
         class: queryParams.class,
         category: queryParams.category,
         capacity: queryParams.capacity,
+        courseID: queryParams.cpurseID,
+        id: queryParams.id
     });
 
-    return fetchResults(finalParams);
+    return fetchResults(API_URLS.complexSearch, finalParams);
 }; //複合式查詢

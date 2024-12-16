@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://06b3b194-3a22-44c9-85c7-9a77138d0e79.mock.pstmn.io';
+const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io';
 
 /**
  * 取得使用者的歷史課程
@@ -80,8 +80,8 @@ export const getRecords = async (id) => {
                 id: id,
             },
         });
-        console.log(response.data.courseRecord);
-        return response.data.courseRecord; // 假設後端回傳格式包含 `courseRecord` 欄位
+        console.log(response.data.record);
+        return response.data.record; // 假設後端回傳格式包含 `record` 欄位
     } catch (error) {
         console.error('Error fetching user records:', error.response || error.message);
         throw new Error(error.response?.data?.error || '無法取得課程評論');

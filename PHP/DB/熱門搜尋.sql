@@ -10,6 +10,7 @@ CREATE TABLE 熱門搜尋 (
 INSERT INTO 熱門搜尋 (課程ID)
 SELECT 編號 FROM 課程;
 
+-- 儲存程序: 更新熱門搜尋次數
 DELIMITER $$
 
 CREATE PROCEDURE 更新熱門搜尋次數(IN 搜尋課程ID INT)
@@ -24,6 +25,23 @@ BEGIN
         -- 如果不存在，插入新的記錄，並設置查詢次數為1
         INSERT INTO 熱門搜尋 (課程ID, 查詢次數)
         VALUES (搜尋課程ID, 1);
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- 儲存程序: 新課程引入後，將新課程插入熱門搜尋表
+DELIMITER $$
+
+CREATE TRIGGER 新增課程時更新熱門搜尋
+AFTER INSERT ON 課程
+FOR EACH ROW
+BEGIN
+    -- 檢查熱門搜尋表中是否已經存在該課程
+    IF NOT EXISTS (SELECT 1 FROM 熱門搜尋 WHERE 課程ID = NEW.編號) THEN
+        -- 如果不存在該課程ID，則插入新的熱門搜尋記錄
+        INSERT INTO 熱門搜尋 (課程ID, 查詢次數)
+        VALUES (NEW.編號, 0);
     END IF;
 END$$
 

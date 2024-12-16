@@ -1,3 +1,4 @@
+/* 第一區塊 */
 #section1 {
     display: flex;
     gap: 20px;
@@ -5,25 +6,13 @@
     flex-wrap: wrap; /* 讓子元素在視窗變小時換行 */
 }
 
+/* 課程廣告區域 */
 #ad_courses {
     flex: 1 1 60%;
     max-width: 60%;
     position: relative;
     margin: auto;
     overflow: hidden;
-}
-
-#personal {
-    flex: 1 1 calc(40% - 20px);
-    max-width: calc(40% - 20px);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    background: linear-gradient(135deg, #444f42, #a3a3a3); /* 漸層背景 */
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 幻燈片樣式 */
@@ -36,6 +25,7 @@
     border-radius: 10px;
 }
 
+/* 幻燈片單張 */
 .slide {
     position: absolute;
     top: 0;
@@ -47,32 +37,44 @@
     opacity: 0;
     transition: left 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
-
 .slide.active {
     left: 0;
     opacity: 1;
 }
 
+/* 幻燈片下方點點 */
 .dots {
     position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    gap: 0.6rem;
 }
 
+/* 幻燈片下方點點 */
 .dot {
-    width: 10px;
-    height: 10px;
+    width: 0.6rem;
+    height: 0.6rem;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
 .dot.active {
     background-color: rgba(255, 255, 255, 1);
+}
+
+/* 個人展示區域 */
+#personal {
+    flex: 1 1 calc(40% - 20px);
+    max-width: calc(40% - 20px);
+    display: flex;
+    flex-direction: column;
+    justify-content:start;
+    align-items: center;
+    background: linear-gradient(135deg, #93a88c, #c8c9c7); /* 漸層背景 */
+    border-radius: 15px;
 }
 
 /* 響應式設計：當視窗寬度小於 540px 時 */
@@ -88,43 +90,29 @@
     }
 }
 
-/* 個人標題 */
+/* 使用者名稱 */
 #person {
-    font-size: 24px;
-    color: #ffffff;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #000000;
+    margin-top: 30px;
     text-align: center;
 }
 
-/* 等級樣式 */
-#level {
-    font-size: 18px;
-    color: #555;
-    background-color: #fff;
-    padding: 5px 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
+/* 圖片 */
+#photo {
+    width: 30%;
+    cursor: "pointer";
+}
+@media (max-width: 1020px) {
+    #photo {
+        display: none;
+    }
 }
 
-/* 渡劫按鈕 */
-#personal_levelUp,
-#personal_analyze {
-    background-color: #000000;
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-bottom: 5%;
-}
-
-#personal_levelUp:hover,
-#personal_analyze:hover {
-    background-color: #809d7d; /* 懸停顏色 */
+/* 江湖稱號 */
+#personal h6 {
+    padding: 0;
+    margin: 3% auto;
 }
 
 /* 類型區域 */
@@ -132,22 +120,202 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 1%;
+    width: 100%;
 }
 
 /* 類型標籤樣式 */
 .typeLable {
-    background-color: #3d7041;
+    background-color: #5a7d5d;
     color: #fff;
-    font-size: 14px;
+    font-size: 0.6rem;
     font-weight: bold;
     padding: 5px 15px;
-    border-radius: 20px;
+    border-radius: 1.2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    margin: 1%;
+    flex: 0 1 auto;
+}
+.typeLable:hover {
+    transform: scale(1.1);
+}
+@media (min-width: 1440px) {
+    .typeLable {
+        padding: 10px 25px;
+    }
 }
 
-.typeLable:hover {
-    transform: scale(1.1); /* 懸停放大效果 */
+/* 使用者系別標籤 */
+#typeOfIdentity {
+    background-color: #4d4d4d;
+    color: #fff;
+}
+
+/* 測驗按鈕 */
+#personal_analyze {
+    background-color: #000000;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 3% auto;
+}
+#personal_analyze:hover {
+    border: #fff 3px solid;
+}
+
+  /* 彈窗背景 */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+/* 彈窗內容 */
+.popup-content {
+    background: #ffffff;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    width: 40%;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+@media (max-width: 540px) {
+    .popup-content {
+        width: 80%;
+    }
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 彈窗標題 */
+.popup-content h4 {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 選項容器 */
+.option {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+/* 選項的單選框 */
+.option input[type="radio"] {
+    margin-right: 10px;
+    accent-color: var(--primary-color); /* 改變選框顏色 */
+}
+
+/* 選項文字 */
+.option label {
+    font-size: 0.8rem;
+    color: #555;
+    cursor: pointer;
+}
+
+/* 下一題/完成按鈕 */
+.popup-content button {
+    margin-top: 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.popup-content button:hover {
+    background-color: var(--button-hover-color);
+}
+
+/* 進度條容器 */
+.progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 10px 0 20px;
+    overflow: hidden;
+}
+
+/* 進度條本體 */
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
+    border-radius: 5px;
+}
+
+/* 進度條文字 */
+.progress-text {
+    font-size: 0.6rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* 關閉按鈕 */
+#close-analyze {
+    position: absolute;
+    top: -20px;
+    right: -40px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.8rem;
+    background-color: #fff;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 210;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+#close-analyze:hover {
+    background-color: #8d8d8d;
+}
+@media (max-width: 1020px) {
+    #close-analyze {
+        top: -60px;
+        right: 0px;
+    }
+}
+
+/* 彈出視窗的背景覆蓋層 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100; /* 遮罩層 */
 }
