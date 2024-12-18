@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io';
+const API_BASE_URL = 'http://localhost/api/record.php';
 
 /**
  * 取得使用者的歷史課程
@@ -9,7 +9,7 @@ const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io
  */
 export const getHistoryCourses = async (userID) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/history`, {
+        const response = await axios.get(`${API_BASE_URL}`, {
             params: {
                 action: 'get-history-courses',
                 userID: userID,
@@ -30,7 +30,7 @@ export const getHistoryCourses = async (userID) => {
  */
 export const getUserRecords = async (userID) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/record`, {
+        const response = await axios.get(`${API_BASE_URL}`, {
             params: {
                 action: 'get-user-record',
                 userID: userID,
@@ -54,7 +54,7 @@ export const getUserRecords = async (userID) => {
 export const commentData = async (id, userID, commentInput) => {
     try {
         // 發送 POST 請求
-        const response = await axios.post(`${API_BASE_URL}/submitComment`, {
+        const response = await axios.post(`${API_BASE_URL}?action=submit-comment`, {
             id: id,
             userID: userID,
             comment: commentInput,
@@ -74,7 +74,7 @@ export const commentData = async (id, userID, commentInput) => {
  */
 export const getRecords = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/courseRecord`, {
+        const response = await axios.get(`${API_BASE_URL}`, {
             params: {
                 action: 'get-course-record',
                 id: id,

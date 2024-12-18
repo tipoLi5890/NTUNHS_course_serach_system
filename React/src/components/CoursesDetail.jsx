@@ -32,7 +32,7 @@ const CoursesDeatial = ({
             {/* 頁面標題與關閉按鈕 */}
             <div className="content-header">
             <h4>
-                {selectedCourse.course} ({selectedCourse.courseE})
+                {selectedCourse['科目中文名稱']} ({selectedCourse['科目英文名稱']})
             </h4>
             <button className="close-showContent" onClick={closeContent}>
                 <CloseIcon />
@@ -65,48 +65,47 @@ const CoursesDeatial = ({
             {page === 1 && (
             <div>
                 <p>
-                <strong>課程代碼:</strong> {selectedCourse.code || '未知'}
+                <strong>系所代碼:</strong> {selectedCourse['系所代碼'] || '未知'}
                 </p>
                 <p>
-                <strong>課程全碼:</strong> {selectedCourse.courseID || '未知'}
+                <strong>課程全碼:</strong> {selectedCourse['科目代碼_新碼'] || '未知'}
                 </p>
                 <p>
-                <strong>學期:</strong> {selectedCourse.term || '未知'}
+                <strong>學期:</strong> {selectedCourse['學期'] || '未知'}
                 </p>
                 <p>
-                <strong>科系:</strong> {selectedCourse.department || '未知'}
+                <strong>系所:</strong> {selectedCourse['系所名稱'] || '未知'}
                 </p>
                 <p>
-                <strong>課程類型:</strong> {selectedCourse.courseType || '未知'} 
+                <strong>課程類型:</strong> {selectedCourse['課別名稱'] || '未知'} 
                 </p>
                 <p>
-                <strong>年級:</strong> {selectedCourse.grade || '未知'}
+                <strong>年級:</strong> {selectedCourse['年級'] || '未知'}
                 </p>
                 <p>
-                <strong>班級:</strong> {selectedCourse.class || '未知'}
+                <strong>班級:</strong> {selectedCourse['課表名稱_舊碼'] || '未知'}
                 </p>
                 <p>
-                <strong>授課教師:</strong> {selectedCourse.teacher || '未知'} (
+                <strong>授課教師:</strong> {selectedCourse['授課教師姓名'] || '未知'} (
                 {selectedCourse.teacherM})
                 </p>
                 <p>
-                <strong>學分數:</strong> {selectedCourse.credits || '未知'}
+                <strong>學分數:</strong> {selectedCourse['學分數'] || '未知'}
                 </p>
                 <p>
-                <strong>修課人數/容量:</strong>{" "}
-                {selectedCourse["number-capacity"]  || '未知'}
+                <strong>修課人數:</strong> {selectedCourse['上課人數'] || '未知'}
                 </p>
                 <p>
-                <strong>週次:</strong> {selectedCourse.week || '未知'}
+                <strong>週次:</strong> {selectedCourse['上課週次']  || '未知'}
                 </p>
                 <p>
-                <strong>上課時間:</strong> {selectedCourse.time || '未知'}
+                <strong>上課時間:</strong> {selectedCourse['上課星期中文'] || '未知'} {selectedCourse['上課節次'] || '未知'}
                 </p>
                 <p>
-                <strong>上課地點:</strong> {selectedCourse.room || '未知'}
+                <strong>上課地點:</strong> {selectedCourse['上課地點'] || '未知'}
                 </p>
                 <p>
-                <strong>備註:</strong> {selectedCourse.note || '未知'}
+                <strong>備註:</strong> {selectedCourse['課表備註'] || '未知'}
                 </p>
             </div>
             )}
@@ -127,7 +126,7 @@ const CoursesDeatial = ({
                 </p>
                 <div className="reviews">
                 {courseReviews
-                    .filter((review) => review.id === selectedCourse.id)
+                    .filter((review) => review.id === selectedCourse['編號'])
                     .map((review, index) => (
                     <div className="review" key={index}>
                         <div className="review-header">

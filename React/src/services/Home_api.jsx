@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URLS = {
     fuzzySearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/fuzzySearch', // 模糊查詢
     exactSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/exactSearch', // 精確查詢
-    queryByRequired: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/queryByRequired', //當期預排
+    queryByRequired: 'http://localhost/api/required.php', //當期預排
     queryByElective: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/queryByElective', //科系選修
     complexSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/complexSearch', //複合查詢
 }
@@ -37,7 +37,11 @@ export const filterParams = (params) => {
 export const fetchResults = async (url, data) => {
     try {
         console.log('發送的請求資料：', data);
-        const response = await axios.post(url, data); // 發送 POST 請求
+        const response = await axios.post(
+             url , // URL 字串
+             data , // 傳送的資料物件
+            { withCredentials: true } // 攜帶 Cookie
+        ); // 發送 POST 請求
         console.log('回應資料：', response.data);
         return response.data; // 返回回應資料
     } catch (error) {
@@ -47,8 +51,7 @@ export const fetchResults = async (url, data) => {
 };
 
 
-// 封裝具體查詢函式
-/**
+/** 封裝具體查詢函式
  * 一般搜尋課程
  * @param {object} searchTerm - 搜尋參數物件
  * @param {string} searchTerm.searchTerm  - 搜尋關鍵字
@@ -74,14 +77,16 @@ export const searchCourses = (searchTerm) => {
  * @returns {Promise<object>} - 查詢結果
  */
 export const queryByType = (queryType) => {
-    // 根據 queryType.queryType 動態選擇 URL
+    // 動態選擇 URL
     const targetURL = queryType.queryType === "destinedCourse"
      ? API_URLS.queryByRequired 
      : API_URLS.queryByElective;
+
+    // 過濾參數
     const requestData = filterParams({
         action: 'query',
         queryType: queryType.queryType,
-        userID: queryType.userID
+        userID: queryType.userID,
     });
 
     return fetchResults(targetURL, requestData);
