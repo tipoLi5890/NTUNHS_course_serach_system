@@ -3,7 +3,7 @@ CREATE TABLE 熱門搜尋 (
     ID INT AUTO_INCREMENT NOT NULL PRIMARY KEY,  -- 熱門搜尋唯一ID
     課程ID INT NOT NULL,                         -- 外鍵，指向課程表的課程ID
     查詢次數 INT DEFAULT 0,                      -- 默認查詢次數為0
-    FOREIGN KEY (課程ID) REFERENCES 課程(編號)   -- 外鍵約束
+    FOREIGN KEY (課程ID) REFERENCES 課程(編號) ON DELETE CASCADE  -- 外鍵約束
 );
 
 -- 初始化熱門搜尋數據，為現有課程插入記錄
@@ -43,6 +43,19 @@ BEGIN
         INSERT INTO 熱門搜尋 (課程ID, 查詢次數)
         VALUES (NEW.編號, 0);
     END IF;
+END$$
+
+DELIMITER ;
+
+
+-- 當刪除課程時，對應的熱門搜尋記錄也會自動被刪除。
+DELIMITER $$
+
+CREATE TRIGGER 刪除課程時更新熱門搜尋
+AFTER DELETE ON 課程
+FOR EACH ROW
+BEGIN
+    DELETE FROM 熱門搜尋 WHERE 課程ID = OLD.編號;
 END$$
 
 DELIMITER ;
