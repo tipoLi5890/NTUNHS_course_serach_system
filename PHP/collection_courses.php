@@ -87,7 +87,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
         if (isset($_SESSION['userID'])) {
             $userID = $_SESSION['userID']; // 取得用戶ID
-            $inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據
+            $inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據 
 
             if (isset($inputData['action'])) {
                 $action = $inputData['action'];

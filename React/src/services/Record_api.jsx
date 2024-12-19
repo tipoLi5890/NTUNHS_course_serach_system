@@ -9,12 +9,10 @@ const API_BASE_URL = 'http://localhost/api/record.php';
  */
 export const getHistoryCourses = async (userID) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}`, {
-            params: {
-                action: 'get-history-courses',
-                userID: userID,
-            },
-        });
+        const response = await axios.post(`${API_BASE_URL}`, {
+            action: 'get-history-courses',
+            userID: userID,
+        },{ withCredentials: true });
         console.log(response.data.history);
         return response.data.history; // 確認回傳的資料格式
     } catch (error) {
@@ -30,12 +28,9 @@ export const getHistoryCourses = async (userID) => {
  */
 export const getUserRecords = async (userID) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}`, {
-            params: {
-                action: 'get-user-record',
-                userID: userID,
-            },
-        });
+        const response = await axios.post(`${API_BASE_URL}`, {
+            action: 'get-user-record',
+        },{ withCredentials: true });
         console.log(response.data.record);
         return response.data.record; // 假設後端回傳格式包含 `record` 欄位
     } catch (error) {
@@ -54,11 +49,12 @@ export const getUserRecords = async (userID) => {
 export const commentData = async (id, userID, commentInput) => {
     try {
         // 發送 POST 請求
-        const response = await axios.post(`${API_BASE_URL}?action=submit-comment`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
+            action: 'submit-comment',
             id: id,
             userID: userID,
             comment: commentInput,
-        });
+        },{ withCredentials: true });
         console.log('評論提交成功，回傳資料:', response.data.updatedRecord);
         return response.data.updatedRecord; // 假設後端返回 updatedRecord 為更新後的紀錄
     } catch (error) {
@@ -79,7 +75,7 @@ export const getRecords = async (id) => {
                 action: 'get-course-record',
                 id: id,
             },
-        });
+        },{ withCredentials: true });
         console.log(response.data.record);
         return response.data.record; // 假設後端回傳格式包含 `record` 欄位
     } catch (error) {
