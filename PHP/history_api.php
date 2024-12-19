@@ -8,6 +8,4 @@ header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
 
 session_start(); // 初始化 Session
 include("configure.php");
-
-
 ?>

@@ -65,7 +65,6 @@
  *     "message": "Session 過期或未登入。"
  *   }
  */
-
 // 設定 CORS 和 JSON 回應格式
 header('Access-Control-Allow-Origin: http://localhost:5173'); // 指定允許的來源
 header('Content-Type: application/json'); // 指定回應格式為 JSON

@@ -19,7 +19,7 @@ if ($_SERVER["CONTENT_TYPE"] === "application/json") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // 驗證輸入完整性
+    // 驗證輸入完整性 
     if (empty($_POST['username']) || empty($_POST['password'])) {
         http_response_code(400);
         echo json_encode(array(
