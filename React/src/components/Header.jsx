@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../services/Login_api';
 import { useAuth } from '../hook/AuthProvider.jsx';
 
 const Header = () => {

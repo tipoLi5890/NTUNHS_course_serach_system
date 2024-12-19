@@ -6,11 +6,13 @@ import Footer from "../../components/Footer";
 import hostView from '../../assets/home/NTUNHS.png';
 import { searchCourses, queryByType, complexSearch, filterParams } from '../../services/Home_api';
 import { useAuth } from '../../hook/AuthProvider.jsx';
+import { useSearch } from '../../hook/SearchProvider.jsx';
 
 const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [isFuzzySearch, setIsFuzzySearch] = useState(false); // 新增模糊搜尋的狀態
+    const [isFuzzySearch, setIsFuzzySearch] = useState(false); // 模糊搜尋的狀態
     const [isLoading, setIsLoading] = useState(false);
+    const { lastSearchResult, updateLastSearchResult } = useSearch(); // 歷史查詢結果
     const navigate = useNavigate();
     const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
 
@@ -48,6 +50,14 @@ const Home = () => {
             console.log('傳遞參數:', filteredParams); // 確認參數內容
             const results = await apiCall(filteredParams);
             console.log('查詢結果：', results); // 確認回傳的資料是否正確
+
+            // 儲存查詢結果作為歷史記錄
+            updateLastSearchResult({
+                queryParams: filteredParams,
+                results,
+                isComplexSearch,
+            });
+
             navigate('/Courses', { state: { queryParams: filteredParams, results, isComplexSearch } });
             setSearchTerm(''); // 確保搜尋結束後才清空
         } catch (error) {
@@ -56,6 +66,22 @@ const Home = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // 處理歷史查詢
+    const handleHistorySearch = () => {
+        if (!isAuthenticated) {
+            alert('此功能僅提供已登入的使用者使用');
+            return;
+        }
+
+        if (!lastSearchResult) {
+            alert('目前並無歷史查詢紀錄');
+            return;
+        }
+
+        // 導向 Courses 頁面並顯示歷史查詢結果
+        navigate('/Courses', { state: lastSearchResult });
     };
 
     return (
@@ -99,7 +125,13 @@ const Home = () => {
                         <form id="queryForm" key={type}>
                             <div
                                 className="query-button"
-                                onClick={() => handleQuery(queryByType, { queryType: type }, type)}
+                                onClick={() => {
+                                    if (type === 'searchedRecord') {
+                                        handleHistorySearch();
+                                    } else {
+                                        handleQuery(queryByType, { queryType: type }, type);
+                                    }
+                                }}
                                 role="button"
                                 tabIndex={0}
                             >
@@ -282,7 +314,7 @@ const Home = () => {
                 <br /><br />
                 <div id="submit-container">
                     <button type="submit" disabled={isLoading}>
-                    {isLoading ? '查詢中...' : '送出查詢'}
+                        {isLoading ? '查詢中...' : '送出查詢'}
                     </button>
                 </div>
             </form>
