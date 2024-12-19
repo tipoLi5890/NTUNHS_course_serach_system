@@ -79,17 +79,27 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                     // 查詢該班級的課表
                     $scheduleStmt = $link->prepare("
                         SELECT k.*,
-                        CASE 
-                            WHEN k.上課星期 = '1' THEN '星期一'
-                            WHEN k.上課星期 = '2' THEN '星期二'
-                            WHEN k.上課星期 = '3' THEN '星期三'
-                            WHEN k.上課星期 = '4' THEN '星期四'
-                            WHEN k.上課星期 = '5' THEN '星期五'
-                            WHEN k.上課星期 = '6' THEN '星期六'
-                            WHEN k.上課星期 = '7' THEN '星期日'
-                            ELSE '未知'
-                        END AS 上課星期中文,
-                        p.評價文本, p.評價時間, d.系所名稱
+                            CASE 
+                                WHEN k.上課星期 = '1' THEN '星期一'
+                                WHEN k.上課星期 = '2' THEN '星期二'
+                                WHEN k.上課星期 = '3' THEN '星期三'
+                                WHEN k.上課星期 = '4' THEN '星期四'
+                                WHEN k.上課星期 = '5' THEN '星期五'
+                                WHEN k.上課星期 = '6' THEN '星期六'
+                                WHEN k.上課星期 = '7' THEN '星期日'
+                                ELSE '未知'
+                            END AS 上課星期中文,
+                            p.評價文本, 
+                            p.評價時間, 
+                            d.系所名稱,
+                            CASE 
+                                WHEN EXISTS (
+                                    SELECT 1 
+                                    FROM 用戶收藏 u 
+                                    WHERE u.用戶ID = :userID AND u.課程ID = k.編號
+                                ) THEN 1
+                                ELSE 0
+                            END AS mark
                         FROM 課程 k
                         LEFT JOIN 課程評價 p ON k.編號 = p.課程ID
                         LEFT JOIN 系所對照表 d ON k.系所代碼 = d.系所代碼
@@ -97,9 +107,14 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                         AND k.年級 = :gradeLevel
                         AND k.上課班組 = :classCode
                     ");
-                    $scheduleStmt->bindParam(':departmentCode', $departmentCode);
-                    $scheduleStmt->bindParam(':gradeLevel', $gradeLevel);
-                    $scheduleStmt->bindParam(':classCode', $classLetter);
+                    
+                    // 綁定參數
+                    $scheduleStmt->bindParam(':userID', $userID, PDO::PARAM_STR);
+                    $scheduleStmt->bindParam(':departmentCode', $departmentCode, PDO::PARAM_STR);
+                    $scheduleStmt->bindParam(':gradeLevel', $gradeLevel, PDO::PARAM_STR);
+                    $scheduleStmt->bindParam(':classCode', $classLetter, PDO::PARAM_STR);
+                    
+                    // 執行查詢
                     $scheduleStmt->execute();
 
                     // 檢查是否有課程資料

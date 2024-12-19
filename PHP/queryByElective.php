@@ -32,29 +32,6 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                     $academicYear = '1'.$academicYear;
                     $departmentCode = substr($studentNumber, 2, 4); // 第3到第6位為系所代碼
                     $departmentCode .= '0'; 
-                    $classCode = substr($studentNumber, 6, 1);      // 第7位為班級
-
-                    // 定義班級數字與字母的映射
-                    $classMapping = [
-                        '1' => 'A',
-                        '2' => 'B',
-                        '3' => 'C',
-                        '4' => 'D',
-                        '5' => 'E'
-                    ];
-
-                    // 檢查是否有對應的班級字母
-                    if (array_key_exists($classCode, $classMapping)) {
-                        $classLetter = $classMapping[$classCode];
-                    } else {
-                        // 如果班級代碼不在映射範圍內
-                        http_response_code(400);
-                        echo json_encode([
-                            "message" => "無效的班級代碼",
-                            "success" => false
-                        ]);
-                        exit;
-                    }
 
                     // 計算學生年級
                     $currentAcademicYear = 113; // 想象當前學年為 113
@@ -77,8 +54,8 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                         FROM 課程 k
                         LEFT JOIN 課程評價 p ON k.編號 = p.課程ID
                         WHERE k.系所代碼 = :departmentCode
-                        AND k.年級 = :gradeLevel
-                        AND k.上課班組 = :classCode
+                        AND k.年級 <= :gradeLevel
+                        AND (k.課別名稱 = '專業選修' OR k.課別名稱 = '通識選修')
                     ");
                     $scheduleStmt->bindParam(':departmentCode', $departmentCode);
                     $scheduleStmt->bindParam(':gradeLevel', $gradeLevel);

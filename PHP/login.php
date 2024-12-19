@@ -43,30 +43,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             $sessionToken = bin2hex(random_bytes(32));  //生成隨機會話令牌
-
-            $_SESSION['userID'] = $user['用戶ID'];
-            $_SESSION['username'] = $user['帳號'];
-            $_SESSION['sessionToken'] = $sessionToken;
-
-            // 設置 Cookie（HttpOnly 選項避免前端 JavaScript 存取）
-            setcookie(
-                'sessionToken',                  // Cookie 名稱
-                $sessionToken,                  // Cookie 值
-                time() + 3600,              // 過期時間（1小時後）
-                '/',                        // 路徑
-                '',                         // 域名
-                false,                      // 是否僅限 HTTPS
-                true                        // HttpOnly 設置
-            );
-
-            // 回傳成功結果
-            echo json_encode(array(
-                "message" => "登入成功",
-                "success" => true
-            ));
-            exit;
+            if($user['密碼'] === $password){
+                $_SESSION['userID'] = $user['用戶ID'];
+                $_SESSION['sessionToken'] = $sessionToken;
+    
+                // 設置 Cookie（HttpOnly 選項避免前端 JavaScript 存取）
+                setcookie(
+                    'sessionToken',                  // Cookie 名稱
+                    $sessionToken,                  // Cookie 值
+                    time() + 3600,              // 過期時間（1小時後）
+                    '/',                        // 路徑
+                    '',                         // 域名
+                    false,                      // 是否僅限 HTTPS
+                    true                        // HttpOnly 設置
+                );
+    
+                // 回傳成功結果
+                echo json_encode(array(
+                    "message" => "登入成功",
+                    "success" => true
+                ));
+                exit;
+            }else{
+                // 若帳號或密碼不匹配
+                http_response_code(401);
+                echo json_encode(array(
+                    "message" => "帳號或密碼錯誤",
+                    "success" => false
+                ));
+            }
         }
-
         // 若帳號或密碼不匹配
         http_response_code(401);
         echo json_encode(array(
