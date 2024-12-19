@@ -21,6 +21,9 @@
   @media(max-width: 540px) {
     .add-course, .batch-upload {
         width: 90%;
+        padding: 20px;
+        border: none;
+        box-shadow: none;
     }
 }
   
@@ -43,6 +46,14 @@
     border-radius: 5px;
     font-size: 14px;
   }
+  @media(max-width: 540px) {
+    .form input[type="text"],
+  .form input[type="number"],
+  .form input[type="file"],
+  .form textarea {
+    flex: 1 1 100%; 
+    }
+}
   
   /* textarea 和 file 欄位特殊處理 */
   .form textarea,
