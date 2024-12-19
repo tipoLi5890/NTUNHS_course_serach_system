@@ -50,6 +50,35 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
         if (isset($_SESSION['userID'])) {
             $userId = $_SESSION['userID'];  // 取得用戶ID
+            // 步驟 1: 取得當前的西元年月日
+            $gregorianYear = date('Y'); // 西元年，例如 2024
+            $month = date('n');          // 月份，1-12
+            $day = date('j');            // 日，1-31
+
+            // 步驟 2: 轉換為民國年
+            $minguoYear = $gregorianYear - 1911;
+
+            // 初始化學年度和學期變數
+            $academicYear = '';
+            $semester = '';
+
+            // 步驟 3: 判斷目前所在的學期
+            if ($month >= 8) {
+                // 如果現在是8月到12月，屬於當前年份的上學期
+                $academicYear = $minguoYear;
+                $semester = '1';
+            } elseif ($month >= 2 && $month <= 7) {
+                // 如果現在是2月到7月，屬於前一年的下學期
+                $academicYear = $minguoYear - 1;
+                $semester = '2';
+            } else { // $month == 1
+                // 如果現在是1月，屬於前一年的上學期
+                $academicYear = $minguoYear - 1;
+                $semester = '1';
+            }
+
+            // 步驟 4: 設置 $academicYear 變數，尾部加上學期數字
+            $academicYear .= $semester;
             
             try {
                 // 準備 SQL 查詢
@@ -82,7 +111,8 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                         LEFT JOIN `課程評價` p ON k.`編號` = p.`課程ID`
                         LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
                         WHERE 
-                            (`k`.`科目中文名稱` LIKE :keyword 
+                            k.`學期` = :academicYear AND (
+                            `k`.`科目中文名稱` LIKE :keyword 
                             OR `k`.`科目英文名稱` LIKE :keyword 
                             OR `k`.`授課教師姓名` LIKE :keyword 
                             OR `k`.`主開課教師姓名` LIKE :keyword 
@@ -133,7 +163,8 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                         LEFT JOIN `課程評價` p ON k.`編號` = p.`課程ID`
                         LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
                         WHERE 
-                            (`k`.`科目中文名稱` = :keyword 
+                            k.`學期` = :academicYear AND(
+                            `k`.`科目中文名稱` = :keyword 
                             OR `k`.`科目英文名稱` = :keyword 
                             OR `k`.`授課教師姓名` = :keyword 
                             OR `k`.`主開課教師姓名` = :keyword 
@@ -156,6 +187,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
                 // 綁定 userID 參數
                 $stmt->bindParam(':userID', $userId, PDO::PARAM_STR);
+                $stmt->bindValue(':academicYear', $academicYear, PDO::PARAM_STR);
 
                 // 執行查詢
                 $stmt->execute();

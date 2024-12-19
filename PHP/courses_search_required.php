@@ -23,9 +23,38 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
             $userID = $_SESSION['userID'];  // 取得用戶ID
             try {
                 $studentNumber = $userID;
+                // 步驟 1: 取得當前的西元年月日
+                $gregorianYear = date('Y'); // 西元年，例如 2024
+                $month = date('n');          // 月份，1-12
+                $day = date('j');            // 日，1-31
+
+                // 步驟 2: 轉換為民國年
+                $minguoYear = $gregorianYear - 1911;
+
+                // 初始化學年度和學期變數
+                $academicYear = '';
+                $semester = '';
+
+                // 步驟 3: 判斷目前所在的學期
+                if ($month >= 8) {
+                    // 如果現在是8月到12月，屬於當前年份的上學期
+                    $academicYear = $minguoYear;
+                    $semester = '1';
+                } elseif ($month >= 2 && $month <= 7) {
+                    // 如果現在是2月到7月，屬於前一年的下學期
+                    $academicYear = $minguoYear - 1;
+                    $semester = '2';
+                } else { // $month == 1
+                    // 如果現在是1月，屬於前一年的上學期
+                    $academicYear = $minguoYear - 1;
+                    $semester = '1';
+                }
+
+                // 步驟 4: 設置 $academicYear 變數，尾部加上學期數字
+                $academicYear .= $semester;
+
+
                 // 從學號中提取學年、系所代碼和班級
-                $academicYear = substr($studentNumber, 0, 2); // 前兩位為學年
-                $academicYear = '1'.$academicYear;
                 $departmentCode = substr($studentNumber, 2, 4); // 第3到第6位為系所代碼
                 $departmentCode .= '0'; 
                 $classCode = substr($studentNumber, 6, 1);      // 第7位為班級
@@ -54,7 +83,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
                 // 計算學生年級
                 $currentAcademicYear = 113; // 想象當前學年為 113
-                $gradeLevel = $currentAcademicYear - (int)$academicYear+1; // 計算年級
+                $gradeLevel = $currentAcademicYear - (int)('1'.substr($studentNumber, 0, 2))+1; // 計算年級
                 if ($gradeLevel <= 0) {
                     $gradeLevel = 1; // 如果計算結果對不上，導致第一年級
                 }
@@ -88,6 +117,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                     WHERE k.系所代碼 = :departmentCode
                     AND k.年級 = :gradeLevel
                     AND k.上課班組 = :classCode
+                    AND k.`學期` = :academicYear
                 ");
                 
                 // 綁定參數
@@ -95,6 +125,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                 $scheduleStmt->bindParam(':departmentCode', $departmentCode, PDO::PARAM_STR);
                 $scheduleStmt->bindParam(':gradeLevel', $gradeLevel, PDO::PARAM_STR);
                 $scheduleStmt->bindParam(':classCode', $classLetter, PDO::PARAM_STR);
+                $scheduleStmt->bindParam(':academicYear', $academicYear, PDO::PARAM_STR);
                 
                 // 執行查詢
                 $scheduleStmt->execute();
