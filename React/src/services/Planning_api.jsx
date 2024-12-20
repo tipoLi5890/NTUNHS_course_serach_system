@@ -1,17 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io';
+const API_BASE_URL = '/api/planning.php';
 
 /**
  * 取得使用者已儲存的當期科系必修課程
- * @param {string} userID - 使用者ID
  * @returns {Promise<Array>} 已儲存當期必修課程的清單
  */
-export const getSavedRequiredCourses = async (userID) => {
+export const getSavedRequiredCourses = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/required`, {
-            action: 'get-saved-required',
-            userID,
+        const response = await axios.post(`${API_BASE_URL}`, {
+            action: 'get-saved-required'
         });
         console.log(response.data.savedRequired);
         return response.data.savedRequired; // 假設後端回傳格式包含 `savedRequired` 欄位
@@ -23,14 +21,12 @@ export const getSavedRequiredCourses = async (userID) => {
 
 /**
  * 取得使用者已儲存的其他課程
- * @param {string} userID - 使用者ID
  * @returns {Promise<Array>} 已儲存其他課程的清單
  */
-export const getSavedElectiveCourses = async (userID) => {
+export const getSavedElectiveCourses = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/elective`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-elective',
-            userID,
         });
         console.log(response.data.savedElective);
         return response.data.savedElective; // 假設後端回傳格式包含 `savedElective` 欄位
@@ -42,16 +38,14 @@ export const getSavedElectiveCourses = async (userID) => {
 
 /**
  * 更新課程的顯示/隱藏狀態
- * @param {string} userID - 使用者ID
  * @param {string} id - 課程 ID
  * @param {string} isPlaced - 課程顯示/隱藏 isPlaced: 1/0
  * @returns {Promise<Array>} ？
  */
-export const updateCourseVisibility = async (userID, id, isPlaced) => {
+export const updateCourseVisibility = async (id, isPlaced) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/visibility`, {
+      const response = await axios.post(`${API_BASE_URL}`, {
         action: 'update-course-visibility',
-        userID,
         id,
         isPlaced,
       });
@@ -65,15 +59,13 @@ export const updateCourseVisibility = async (userID, id, isPlaced) => {
 
 /**
  * 取得使用者已儲存的某課程詳細資訊
- * @param {string} userID - 使用者ID
  * @param {string} id - 課程 ID
  * @returns {Promise<Array>} 已儲存的某課程詳情
  */
-export const savedCourseDetail = async (userID, id) => {
+export const savedCourseDetail = async (id) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/detail`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-detail',
-            userID,
             id,
         });
 

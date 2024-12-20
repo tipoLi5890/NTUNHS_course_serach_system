@@ -124,22 +124,26 @@ const CoursesDeatial = ({
                         <p>
                             <strong>評論:</strong>
                         </p>
-                        <div className="reviews">
-                            {selectedCourse && selectedCourse['評價列表'] && selectedCourse['評價列表'].length > 0 ? (
-                                selectedCourse['評價列表'].map((review, index) => (
+                        {selectedCourse?.['評價文本']?.length > 0 ? (
+                            <div className="reviews">
+                                {selectedCourse['評價文本'].map((review, index) => (
                                     <div className="review" key={index}>
                                         <div className="review-header">
+                                            <span className="review-creator">
+                                                <FaceIcon />
+                                                {review.creater || '匿名用戶'}
+                                            </span>
                                             <span className="review-date">
-                                                {review['評價時間']}
+                                                {review['評價時間'] || '未知日期'}
                                             </span>
                                         </div>
-                                        <p>{review['評價文本']}</p>
+                                        <p>{review.comment || '無評論內容'}</p>
                                     </div>
-                                ))
-                            ) : (
-                                <p>目前暫無該課程的評論</p>
-                            )}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>目前無評論</p>
+                        )}
                     </div>
                 )}
             </div>

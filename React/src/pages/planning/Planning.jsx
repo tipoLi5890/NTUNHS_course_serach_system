@@ -6,21 +6,31 @@ import Footer from '../../components/Footer';
 import './planning.css';
 import '../courses/courses.css';
 import { useAuth } from '../../hook/AuthProvider.jsx';
-import { toggleCourseMark } from '../../services/Courses_api';
+import { toggleCourseMark, getSavedCourses } from '../../services/Courses_api';
 import { getSavedRequiredCourses, getSavedElectiveCourses, updateCourseVisibility, savedCourseDetail } from '../../services/Planning_api';
 import { getRecords } from '../../services/Record_api';
 
 const Planning = () => {
-    const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
+    const { isAuthenticated } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
+    const [courseSaveData, setCourseSaveData] = useState([]); // 儲存使用者收藏的課程資料
     const [requiredCourses, setRequiredCourses] = useState([]);// 儲存使用者收藏的必修(預設)課程資料
     const [electiveCourses, setElectiveCourses] = useState([]);// 儲存使用者收藏的選修(其他)課程資料
 
     // 取得儲存的課程列表
     useEffect(() => {
-        if (isAuthenticated && userInfo?.userID) {
+        if (isAuthenticated) {
+            const loadSavedCourses = async () => {
+                try {
+                    const savedCourses = await getSavedCourses();
+                    setCourseSaveData(savedCourses);
+                } catch (error) {
+                    console.error('無法載入已儲存的課程:', error);
+                }
+            };
+            loadSavedCourses();
             const loadSavedElective = async () => {
                 try {
-                    const savedRequired = await getSavedRequiredCourses(userInfo.userID);
+                    const savedRequired = await getSavedRequiredCourses();
                     setRequiredCourses(savedRequired);
                 } catch (error) {
                     console.error('無法載入已儲存的預設課程:', error);
@@ -29,7 +39,7 @@ const Planning = () => {
             loadSavedElective();
             const loadSavedRequired = async () => {
                 try {
-                    const savedElective = await getSavedElectiveCourses(userInfo.userID);
+                    const savedElective = await getSavedElectiveCourses();
                     setElectiveCourses(savedElective);
                 } catch (error) {
                     console.error('無法載入已儲存的其他課程:', error);
@@ -37,13 +47,13 @@ const Planning = () => {
             };
             loadSavedRequired();
         }
-    }, [isAuthenticated, userInfo]);
+    }, [isAuthenticated]);
 
     // 檢查重疊
     const checkConflict = (newCourse, existingCourses) => {
         return existingCourses.some(
             (existingCourse) =>
-                existingCourse.isPlaced === 1 &&
+                existingCourse.isPlaced === "1" &&
                 existingCourse.weekDay === newCourse.weekDay &&
                 Math.max(existingCourse.startPeriod, newCourse.startPeriod) <=
                 Math.min(existingCourse.endPeriod, newCourse.endPeriod)
@@ -54,10 +64,10 @@ const Planning = () => {
     const handleVisibilityToggle = async (id, currentVisibility) => {
         try {
             // 明確定義新狀態：0 -> 1，1 -> 0
-            const updatedVisibility = currentVisibility === 1 ? 0 : 1;
+            const updatedVisibility = currentVisibility === "1" ? "0" : "1";
 
             // 先檢查課程是否衝突，只在「要顯示」時進行檢查
-            if (updatedVisibility === 1) {
+            if (updatedVisibility === "1") {
                 const targetCourse = electiveCourses.find((course) => course.id === id);
                 const conflict = checkConflict(targetCourse, coursesBySemester[targetCourse.semester]);
                 if (conflict) {
@@ -66,7 +76,7 @@ const Planning = () => {
                 }
             }
             // 更新狀態到後端
-            const response = await updateCourseVisibility(userInfo.userID, id, updatedVisibility);
+            const response = await updateCourseVisibility(id, updatedVisibility);
 
             // 確保後端回傳新狀態
             if (response.success && response.updatedCourse) {
@@ -87,7 +97,7 @@ const Planning = () => {
     const handleMarkToggle = async (id, currentMark) => {
         try {
             // 如果是取消儲存，先提示使用者確認
-            if (currentMark === 1) {
+            if (currentMark === "1") {
                 const isConfirmed = window.confirm(
                     "取消儲存後該課程將不會在儲存的課程中顯示"
                 );
@@ -95,9 +105,9 @@ const Planning = () => {
                     return; // 使用者取消操作，不繼續執行
                 }
             }
-            const updatedMark = currentMark === 1 ? 0 : 1; // 切換狀態 1 -> 0, 0 -> 1
+            const updatedMark = currentMark === "1" ? "0" : "1"; // 切換狀態 1 -> 0, 0 -> 1
 
-            const response = await toggleCourseMark(userInfo.userID, id, updatedMark);
+            const response = await toggleCourseMark(id, updatedMark);
 
             if (response.success) {
                 // 更新狀態到前端
@@ -142,8 +152,8 @@ const Planning = () => {
     // 按學期分類課程
     const coursesBySemester = semesters.reduce((acc, semester) => {
         acc[semester] = [
-            ...requiredCourses.filter(course => course.isPlaced === 1 && course.semester === semester),
-            ...electiveCourses.filter(course => course.isPlaced === 1 && course.semester === semester)
+            ...requiredCourses.filter(course => course.isPlaced === "1" && course.semester === semester),
+            ...electiveCourses.filter(course => course.isPlaced === "1" && course.semester === semester)
         ];
         return acc;
     }, {});
@@ -159,7 +169,7 @@ const Planning = () => {
             return;
         }
         try {
-            const courseDetails = await savedCourseDetail(userInfo?.userID, course.id);
+            const courseDetails = await savedCourseDetail(course.id);
             if (courseDetails && courseDetails.length > 0) {
                 const selectedCourseDetails = courseDetails[0];
                 setSelectedCourse({ ...selectedCourseDetails });
@@ -237,7 +247,7 @@ const Planning = () => {
                 {semesters.map(semester => {
                     // 計算該學期的總學分
                     const totalCredits = coursesBySemester[semester]
-                        .filter(course => course.isPlaced === 1)
+                        .filter(course => course.isPlaced === "1")
                         .reduce((sum, course) => sum + (course.credits || 0), 0);
 
                     return semester === selectedSemester && (
@@ -251,7 +261,7 @@ const Planning = () => {
                                 {coursesBySemester[semester].map((course, index) => (
                                     <div
                                         key={`course-${semester}-${index}`}
-                                        className={course.category === 0 ? "courseMustOnSchedule" : "courseOnSchedule"}
+                                        className={course.category === "0" ? "courseMustOnSchedule" : "courseOnSchedule"}
                                         style={{
                                             top: `calc(${(course.startPeriod) * (100 / 15)}% + 0.5%)`,
                                             height: `calc(${(course.endPeriod - course.startPeriod + 1) * (100 / 15)}% - 1%)`,
@@ -323,13 +333,13 @@ const Planning = () => {
                                         <div
                                             className='storageCourses_star'
                                             onClick={() => {
-                                                if (course.mark === 1) {
+                                                if (course.mark === "1") {
                                                     alert("此課程為該學期科系必修無法取消儲存");
-                                                    course.mark === 1;
+                                                    course.mark === "1";
                                                     return;
                                                 }
                                             }}
-                                            title={course.mark === 1 ? "取消儲存" : "儲存"}
+                                            title={course.mark === "1" ? "取消儲存" : "儲存"}
                                         >
                                             ★
                                         </div>
@@ -337,14 +347,14 @@ const Planning = () => {
                                     <td>
                                         <button
                                             onClick={() => {
-                                                if (course.isPlaced === 1) {
+                                                if (course.isPlaced === "1") {
                                                     alert("此課程為該學期科系必修無法隱藏");
-                                                    course.isPlaced === 1;
+                                                    course.isPlaced === "1";
                                                     return;
                                                 }
                                             }}
                                         >
-                                            {course.isPlaced === 1 ? '隱藏' : '顯示'}
+                                            {course.isPlaced === "1" ? '隱藏' : '顯示'}
                                         </button>
                                     </td>
                                 </tr>
@@ -368,7 +378,7 @@ const Planning = () => {
                                         <div
                                             className='storageCourses_star'
                                             onClick={() => handleMarkToggle(course.id, course.mark)}
-                                            title={course.mark === 1 ? "取消儲存" : "儲存"}
+                                            title={course.mark === "1" ? "取消儲存" : "儲存"}
                                         >
                                             ★
                                         </div>
@@ -379,7 +389,7 @@ const Planning = () => {
                                                 handleVisibilityToggle(course.id, course.isPlaced)
                                             }}
                                         >
-                                            {course.isPlaced === 1 ? '隱藏' : '顯示'}
+                                            {course.isPlaced === "1" ? '隱藏' : '顯示'}
                                         </button>
                                     </td>
                                 </tr>

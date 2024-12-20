@@ -22,11 +22,11 @@ const CourseCard = ({
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleToggleSave(course['編號'], course.mark === 1);
+                                handleToggleSave(course['編號'], course.mark === "1");
                             }}
-                            className={`save-button ${course.mark === 1 ? "saved" : ""}`}
+                            className={`save-button ${course.mark === "1" ? "saved" : ""}`}
                         >
-                            {course.mark === 1 ? "★" : "☆"}
+                            {course.mark === "1" ? "★" : "☆"}
                         </button>
                     )}
                 </div>

@@ -4,14 +4,12 @@ const API_BASE_URL = 'http://localhost/api/record.php';
 
 /**
  * 取得使用者的歷史課程
- * @param {string} userID - 使用者ID
  * @returns {Promise<Array>} 歷史課程的清單
  */
-export const getHistoryCourses = async (userID) => {
+export const getHistoryCourses = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-history-courses',
-            userID: userID,
         },{ withCredentials: true });
         console.log(response.data.history);
         return response.data.history; // 確認回傳的資料格式
@@ -23,10 +21,9 @@ export const getHistoryCourses = async (userID) => {
 
 /**
  * 取得學生的評論記錄
- * @param {string} userID - 用戶ID
  * @returns {Promise<Object[]>} 返回記錄數據
  */
-export const getUserRecords = async (userID) => {
+export const getUserRecords = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-user-record',
@@ -42,17 +39,15 @@ export const getUserRecords = async (userID) => {
 /**
  * 學生提交評價 
  * @param {string} id - 課程 ID
- * @param {string} userID - 使用者 ID
  * @param {string} commentInput - 使用者輸入的評論
  * @returns {Promise<Object>} 返回更新後的記錄數據
  */
-export const commentData = async (id, userID, commentInput) => {
+export const commentData = async (id, commentInput) => {
     try {
         // 發送 POST 請求
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'submit-comment',
             id: id,
-            userID: userID,
             comment: commentInput,
         },{ withCredentials: true });
         console.log('評論提交成功，回傳資料:', response.data.updatedRecord);
@@ -70,7 +65,7 @@ export const commentData = async (id, userID, commentInput) => {
  */
 export const getRecords = async (id) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             params: {
                 action: 'get-course-record',
                 id: id,

@@ -70,7 +70,7 @@ const Login = () => {
                     // 如果使用者已登入，顯示使用者名稱和登出按鈕
                     <div>
                         {/* 顯示使用者名稱 */}
-                        <h3>{userInfo?.username}</h3>
+                        <h3>{userInfo?.userID}</h3>
                         {/* 登出按鈕 */}
                         <button onClick={handleLogout}>登出</button>
                     </div>

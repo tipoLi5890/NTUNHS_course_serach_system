@@ -1,20 +1,18 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io';
+const API_BASE_URL = '/api/collection_courses.php';
 
 /**
  * 儲存課程
  * @param {number} id - 課程 ID
- * @param {string} userID - 使用者 ID
  * @returns {Promise<void>}
  */
-export const saveCourse = async (id, userID) => {
+export const saveCourse = async (id) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/save`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             action: 'save-course',
             id,
-            userID,
-        });
+        }, { withCredentials: true });
         console.log(response.data);
         return response.data; // 回傳伺服器回應，用於 UI 更新
     } catch (error) {
@@ -28,13 +26,12 @@ export const saveCourse = async (id, userID) => {
  * @param {number} id - 課程 ID
  * @returns {Promise<void>}
  */
-export const unsaveCourse = async (id, userID) => {
+export const unsaveCourse = async (id) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/unsave`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             action: 'unsave-course',
             id,
-            userID,
-        });
+        }, { withCredentials: true });
         console.log(response.data);
         return response.data; // 回傳伺服器回應，用於 UI 更新
     } catch (error) {
@@ -71,11 +68,10 @@ export const toggleCourseMark = async (userID, id, mark) => {
  * @param {string} userID - 使用者 ID
  * @returns {Promise<Array>} 已儲存課程的清單
  */
-export const getSavedCourses = async (userID) => {
+export const getSavedCourses = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/courses`, {
+        const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-courses',
-            userID,
         });
         console.log(response.data.savedCourses);
         return response.data.savedCourses; // 假設後端回傳格式包含 `savedCourses` 欄位
@@ -91,7 +87,7 @@ export const getSavedCourses = async (userID) => {
  */
 export const fetchHotCourses = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}?action=hot-courses`);
+        const response = await axios.post(`${API_BASE_URL}?action=hot-courses`);
         return response.data;
     } catch (error) {
         console.error('Error fetching hot courses:', error.response || error.message);

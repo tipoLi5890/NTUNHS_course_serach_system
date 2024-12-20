@@ -2,10 +2,9 @@ import axios from 'axios';
 
 // 定義 API 基底 URL
 const API_URLS = {
-    fuzzySearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/fuzzySearch', // 模糊查詢
-    exactSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/exactSearch', // 精確查詢
-    queryByRequired: 'http://localhost/api/required.php', //當期預排
-    queryByElective: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/queryByElective', //科系選修
+    keywordSearch: '/api/courses_search_keyword.php', // 關鍵字搜尋
+    queryByRequired: '/api/courses_search_required.php', //當期預排
+    queryByElective: '/api/courses_search_elective.php', //科系選修
     complexSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/complexSearch', //複合查詢
 }
 
@@ -59,15 +58,14 @@ export const fetchResults = async (url, data) => {
  * @returns {Promise<object>} - 查詢結果
  */
 export const searchCourses = (searchTerm) => {
-    // 根據 isFuzzySearch 動態選擇 URL
-    const targetURL = searchTerm.isFuzzySearch ? API_URLS.fuzzySearch : API_URLS.exactSearch;
     // 發送 API 請求
-    return fetchResults(targetURL, {
+    return fetchResults(API_URLS.keywordSearch, {
         action: 'search',
         searchTerm: searchTerm.searchTerm,
         isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
     });
 };// 用於處理一般表單提交
+
 
 /**
  * 根據查詢類型獲取特定資料

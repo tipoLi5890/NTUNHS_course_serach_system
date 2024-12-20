@@ -24,7 +24,7 @@ const Header = () => {
         { label: '課程規劃', path: '/Planning' },
         { label: '歷史修課', path: '/Record' },
         isAuthenticated
-            ? { label: `登出 (${userInfo?.username})`, onClick: handleLogout }
+            ? { label: `登出 (${userInfo?.userID})`, onClick: handleLogout }
             : { label: '學生登入', path: '/Login' }
     ];
 

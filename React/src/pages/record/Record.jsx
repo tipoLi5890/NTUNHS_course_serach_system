@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import '../courses/courses.css'
 import './record.css';
 import courseImage from "../../assets/courses/course.png";
-import { useAuth } from '../../hook/AuthProvider.jsx';
 import { getHistoryCourses, getUserRecords, commentData } from '../../services/Record_api.jsx';
 
 const Record = () => {
-    const { userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -26,24 +25,26 @@ const Record = () => {
     useEffect(() => {
         const loadHistoryCourses = async () => {
             try {
-                const courseData = await getHistoryCourses(userInfo?.userID);
+                const courseData = await getHistoryCourses();
                 if (Array.isArray(courseData)) {
                     setCourseDisplayData(courseData); // 確保資料是陣列形式
                 } else {
                     console.error("無效的課程資料結構:", courseData);
+                    setCourseDisplayData([]); // 回傳空陣列以避免畫面崩潰
                 }
             } catch (error) {
                 console.error("無法載入已儲存的課程:", error);
+                setCourseDisplayData([]); // 發生錯誤時設為空資料
             }
         };
         loadHistoryCourses();
-    }, [userInfo]);
+    }, []);
 
     useEffect(() => {
         const fetchRecords = async () => {
             try {
                 setLoading(true);
-                const userRecords = await getUserRecords(userInfo?.userID);
+                const userRecords = await getUserRecords();
                 setRecords(userRecords);
             } catch (err) {
                 setError(err.message);
@@ -53,7 +54,7 @@ const Record = () => {
         };
 
         fetchRecords();
-    }, [userInfo]);
+    }, []);
 
     if (loading) return <p>資料載入中...</p>;
     if (error) return <p>發生錯誤: {error}</p>;
@@ -83,7 +84,7 @@ const Record = () => {
     const handleCommentSubmit = async (id) => {
         try {
             // 呼叫 API 提交評論
-            const updatedRecord = await commentData(id, userInfo?.userID, commentInput);
+            const updatedRecord = await commentData(id, commentInput);
             // 更新 records 資料
             setRecords((prevRecords) =>
                 prevRecords.map((record) =>

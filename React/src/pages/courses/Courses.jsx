@@ -8,7 +8,7 @@ import CoursesDetial from "../../components/CoursesDetail"; // 引入彈出視�
 import { useAuth } from '../../hook/AuthProvider';
 import { useSearch } from '../../hook/SearchProvider';
 import { getSavedCourses, saveCourse, unsaveCourse } from '../../services/Courses_api';
-import { getRecords } from '../../services/Record_api.jsx';
+//import { getRecords } from '../../services/Record_api.jsx';
 
 const Courses = () => {
     const location = useLocation();
@@ -19,8 +19,8 @@ const Courses = () => {
     const [groupKey, setGroupKey] = useState("department"); // 分隔條件
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
     const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
-    const [courseSaveData, setCourseSaveData] = useState([]);// 儲存使用者收藏的課程資料
-    const [courseReviews, setCourseReviews] = useState([]);// 儲存使用者評論內容的資料
+    const [courseSaveData, setCourseSaveData] = useState([]); // 儲存使用者收藏的課程資料
+    const [courseReviews, setCourseReviews] = useState([]); // 儲存使用者評論內容的資料
 
     //判斷是否為歷史搜尋
     useEffect(() => {
@@ -38,39 +38,79 @@ const Courses = () => {
         }
     }, [lastSearchResult, results]);
 
-    // 取得已儲存的課程
+    // 初始化課程和儲存狀態
     useEffect(() => {
-        if (isAuthenticated && userInfo?.userID) {
-            const loadSavedCourses = async () => {
-                try {
-                    const savedCourses = await getSavedCourses(userInfo.userID);
-                    setCourseSaveData(savedCourses);
-                } catch (error) {
-                    console.error('無法載入已儲存的課程:', error);
+        const fetchData = async () => {
+            try {
+                let initialCourses = [];
+                if (lastSearchResult?.results?.length > 0) {
+                    initialCourses = lastSearchResult.results;
+                } else if (results?.courses?.length > 0) {
+                    initialCourses = results.courses;
+                    updateLastSearchResult({ results: results.courses });
                 }
-            };
-            loadSavedCourses();
-        }
-    }, [isAuthenticated, userInfo]);
 
-    // 更新課程狀態
-    useEffect(() => {
-        if (courseSaveData.length > 0) {
-            setCourses(prevCourses =>
-                prevCourses.map(course => {
-                    const savedCourse = courseSaveData.find(saved => saved.id === course.id);
-                    return { ...course, mark: savedCourse ? savedCourse.mark : 0 };
-                })
-            );
+                if (isAuthenticated) {
+                    const savedCourses = await getSavedCourses();
+                    setCourseSaveData(savedCourses);
+
+                    // 合併儲存狀態到課程資料
+                    const updatedCourses = initialCourses.map(course => {
+                        const isSaved = savedCourses.some(saved => saved['編號'] === course['編號']);
+                        return { ...course, mark: isSaved ? "1" : "0" };
+                    });
+                    setCourses(updatedCourses);
+                } else {
+                    setCourses(initialCourses);
+                }
+            } catch (error) {
+                console.error('載入課程或儲存狀態失敗:', error);
+            }
+        };
+
+        fetchData();
+    }, [lastSearchResult, results, isAuthenticated]);
+
+// 更新課程儲存狀態
+    const handleToggleSave = async (id, isSaved) => {
+        try {
+            let updatedCourses;
+            let updatedSaveData;
+
+            if (isSaved) {
+                await unsaveCourse(id);
+                updatedSaveData = courseSaveData.
+              
+filter(course => course['編號'] !== id);
+            } 
+      
+else {
+                await saveCourse(id);
+                const newSavedCourse = courses.find(course => course['編號'] === id);
+                updatedSaveData = [...courseSaveData, newSavedCourse];
+            }
+
+            setCourseSaveData(updatedSaveData);
+            updatedCourses = courses.map(course => {
+                if (course['編號'] === id) {
+                    return { ...course, mark: isSaved ? "0" : "1" };
+                }
+                return course;
+            });
+            setCourses(updatedCourses);
+        } catch (error) {
+            
+            
+console.error("更新課程儲存狀態失敗:", error);
         }
-    }, [courseSaveData]);
+    };
 
     // 分類課程
     const groupedCourses = Array.isArray(courses)
         ? courses.reduce((acc, course) => {
             let key = course[groupKey];
             if (groupKey === "day") key = course['上課星期中文'].substring(0, 3); // 提取 time 的前三字元
-            if (groupKey === "department") key = course['系所名稱'].substring(0, 6); // 提取 belongs 的前六字元
+            if (groupKey === "department") key = course['系所名稱'].substring(0, 7); // 提取 belongs 的前七字元
             if (groupKey === "courseType") key = course['課別名稱'].substring(0, 4); // 提取 courseType 的前四字元
             if (!acc[key]) acc[key] = [];
             acc[key].push(course);
@@ -78,44 +118,18 @@ const Courses = () => {
         }, {})
         : {};
 
-    // 處理儲存按鈕的點擊事件
-    const handleToggleSave = async (id, isSaved) => {
-        try {
-            let response;
-            if (isSaved) {
-                response = await unsaveCourse(id, userInfo?.userID);
-            } else {
-                response = await saveCourse(id, userInfo?.userID);
-            }
-            if (response.success) {
-                // 再次獲取最新的已儲存課程資料
-                const updatedSaveData = await getSavedCourses(userInfo.userID);
-                setCourseSaveData(updatedSaveData);
-            } else {
-                console.error("操作失敗:", response.message);
-            }
-        } catch (error) {
-            console.error("更新課程儲存狀態失敗:", error);
-        }
-    };
-
-    const handleCardClick = async (id) => {
+    // 點擊課程卡片顯示詳細資訊
+    const handleCardClick = (id) => {
         const courseDetails = courses.find(course => course['編號'] === id);
         if (!courseDetails) {
             alert('無法取得課程詳細資料');
             return;
         }
-        // 設定當前選中的課程
         setSelectedCourse(courseDetails || null);
 
-        // 檢查評價列表是否存在，並確保它是陣列
-    const reviews = Array.isArray(courseDetails['評價列表'])
-        ? courseDetails['評價列表']
-        : [];
-        
-        // 更新課程評論的狀態
+        // 提取課程內的評論資料
+        const reviews = courseDetails['評價文本'] || [];
         setCourseReviews(reviews);
-        console.log('課程評論內容:', reviews);
     };
 
     const closeContent = () => {
@@ -157,7 +171,7 @@ const Courses = () => {
                                                     key={course['編號']}
                                                     course={course}
                                                     isAuthenticated={isAuthenticated}
-                                                    savedCourse={savedCourse || { mark: 0 }} // 確保有預設值
+                                                    savedCourse={savedCourse || { mark: "0" }} // 確保有預設值
                                                     handleToggleSave={handleToggleSave}
                                                     handleCardClick={handleCardClick}
                                                 />

@@ -14,10 +14,10 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
         // 驗證成功，可以進一步處理請求
 
         if(isset($_SESSION['userID'])){
-            $userId = $_SESSION['userID'];  // 取得用戶ID
+            $userID = $_SESSION['userID'];  // 取得用戶ID
             
             try {
-                $studentNumber = $userId;
+                $studentNumber = $userID;
                 // 步驟 1: 取得當前的西元年月日
                 $gregorianYear = date('Y'); // 西元年，例如 2024
                 $month = date('n');          // 月份，1-12
