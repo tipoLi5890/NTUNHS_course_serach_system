@@ -9,107 +9,43 @@ header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
 session_start(); // 初始化 Session
 include("configure.php");
 
-// 處理 OPTIONS 請求
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200); // No Content
+    http_response_code(204); // No Content
     exit();
 }
 
-// 獲取前端傳入的 JSON 資料（適用於 POST 請求）
-$inputData = json_decode(file_get_contents('php://input'), true);
-if (!$inputData) {
-    http_response_code(400);
-    echo json_encode(["message" => "無效的請求格式", "success" => false]);
-    exit;
-}
+$inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據 
 
-// 確保 action 存在
-$action = $inputData['action'] ?? '';
-
-if (empty($action)) {
+if (!isset($inputData['action'])) {
+    // 缺少參數
     http_response_code(400);
     echo json_encode([
-        "message" => "缺少 action 參數",
-        "success" => false
+        "success" => false,
+        "message" => "缺少必要參數。"
     ]);
-    exit;
 }
 
+// 處理 API 請求
+$action = $inputData['action'];
+
 switch ($action) {
-    case 'get-saved-required'://1. 取得使用者專業必修 ok
-        getSavedRequiredCourses($link, $inputData);
+    case 'get-saved-required'://1. 取得使用者專業必修 
+        getSavedRequiredCourses($link);
         break;
     case 'get-saved-elective': //2. 取得使用者已儲存的其他課程 ok
-        getSavedElectiveCourses($link, $inputData);
+        getSavedElectiveCourses($link);
         break;
     case 'update-course-visibility'://3. 更新課程的顯示/隱藏狀態 ok
-        updateCourseVisibility($link, $inputData);
+        updateCourseVisibility($link);
         break;
-    case 'update-course-mark'://4. 更新課程的收藏狀態 
-        toggleCourseMark($link, $inputData);
-        break;
+    case 'get-saved-detail':
+        savedCourseDetail($link);
     default:
         http_response_code(400);
         echo json_encode(["error" => "未知的請求"]);
 }
 
-/* getSavedRequiredCourses 回傳格式
-    {
-      "id": 410,
-      "mark": 1,
-      "courseName": "系統分析與設計",
-      "startPeriod": 2,
-      "endPeriod": 4,
-      "weekDay": "5",
-      "category": 0,
-      "isPlaced": 1,
-      "semester": "1131",
-      "credits": "3.00"
-    },
-    {
-      "id": 411,
-      "mark": 1,
-      "courseName": "研究概論",
-      "startPeriod": 5,
-      "endPeriod": 7,
-      "weekDay": "2",
-      "category": 0,
-      "isPlaced": 1,
-      "semester": "1131",
-      "credits": "3.00"
-    }
-*/
-
-// 定義當前學期（可根據實際情況調整）
-function getCurrentSemester() {
-    // 取得當前日期與時間
-    $currentDate = new DateTime();
-    $currentYear = (int) $currentDate->format('Y'); // 西元年
-    $currentMonth = (int) $currentDate->format('n'); // 月份 (1-12)
-
-    // 計算民國年
-    $rocYear = $currentYear - 1911; // 民國年份
-
-    // 判斷學期
-    if ($currentMonth >= 9 || $currentMonth <= 1) {
-        // 9 月到隔年 1 月為上學期
-        $semester = 1;
-        if ($currentMonth <= 1) {
-            // 1 月時，學年為前一年
-            $rocYear -= 1;
-        }
-    } else {
-        // 2 月到 8 月為下學期
-        $semester = 2;
-    }
-
-    // 回傳當前學期
-    return "{$rocYear}{$semester}";
-}
-
-
-
-//1. 取得使用者專業必修
+//1. 取得使用者專業必修 && 通識必修
 function getSavedRequiredCourses($link)
 {
     // 檢查 Session 和 Cookie 是否有效
@@ -149,47 +85,55 @@ function getSavedRequiredCourses($link)
 
                     $classLetter = $classMapping[$classCode];
                     $currentAcademicYear = 113; // 當前學年
-                    $gradeLevel = max(1, $currentAcademicYear - (int)$academicYear + 1);
+                    
+                    $gradeLevel = max(1, $currentAcademicYear - (int)$academicYear + 1); // 計算年級
 
-                    // 取得當前學期
-                    $currentSemester = getCurrentSemester();
+                    // 初始化返回的必修課程清單
+                    $savedRequired = [];
 
+                    // 從當前年級往前逐年查詢課程
+                    for ($year = $gradeLevel; $year >= 1; $year--) { //4 3 2 1
+                        // 計算對應的學年和學期
+                        $targetSemesterCode = 1131 - ($gradeLevel -  $year) * 10; 
 
-                    // 查詢已儲存的當期科系必修課程
-                    $query = "
-                        SELECT  
-                            課程.編號 AS id, 
-                            1 AS mark, 
-                            課程.科目中文名稱 AS courseName, 
-                            CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS UNSIGNED) AS startPeriod, -- 起始節次
-                            CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS UNSIGNED) AS endPeriod, -- 結束節次
-                            課程.上課星期 AS weekDay,
-                            0 AS category, 
-                            1 AS isPlaced, 
-                            課程.學期 AS semester, 
-                            課程.學分數 AS credits 
-                        FROM  
-                            課程
-                        WHERE  
-                            (課程.課別名稱 LIKE '%專業必修%') -- 篩選 category = 0
-                            AND 課程.系所代碼 = :departmentCode
-                            AND 課程.年級 = :gradeLevel
-                            AND SUBSTRING(課程.科目代碼_新碼, -2, 1) = :classCode
-                            AND 課程.學期 = :currentSemester -- 確保只查詢當前學期
-                    ";
+                        // 查詢課程
+                        $query = "
+                            SELECT DISTINCT  
+                                課程.編號 AS id, 
+                                1 AS mark, 
+                                課程.科目中文名稱 AS courseName, 
+                                CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS INT) AS startPeriod, -- 起始節次
+                                CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
+                                CAST(課程.上課星期 AS INT) AS weekDay,
+                                0 AS category, 
+                                '1' AS isPlaced, 
+                                課程.學期 AS semester, 
+                                CAST(課程.學分數 AS INT) AS credits
+                            FROM  
+                                課程
+                            WHERE  
+                                (課程.課別名稱 LIKE '%專業必修%' OR 課程.課別名稱 LIKE '%通識必修%') -- 篩選專業必修課程
+                                AND 課程.系所代碼 = :departmentCode
+                                AND 課程.年級 = :year
+                                AND SUBSTRING(課程.科目代碼_新碼, -2, 1) = :classCode
+                                AND 課程.學期 = :targetSemesterCode -- 使用學期代碼
+                        ";
 
-                    $courseStmt = $link->prepare($query);       
-                    $courseStmt->bindParam(':departmentCode', $departmentCode, PDO::PARAM_STR);
-                    $courseStmt->bindParam(':gradeLevel', $gradeLevel, PDO::PARAM_INT);
-                    $courseStmt->bindParam(':classCode', $classLetter, PDO::PARAM_STR);
-                    $courseStmt->bindParam(':currentSemester', $currentSemester, PDO::PARAM_INT);  // 綁定 currentSemester
+                        $courseStmt = $link->prepare($query);       
+                        $courseStmt->bindParam(':departmentCode', $departmentCode, PDO::PARAM_STR);
+                        $courseStmt->bindParam(':year', $year, PDO::PARAM_INT);
+                        $courseStmt->bindParam(':classCode', $classLetter, PDO::PARAM_STR);
+                        $courseStmt->bindParam(':targetSemesterCode', $targetSemesterCode, PDO::PARAM_INT);
 
-                    // 執行查詢
-                    $courseStmt->execute();
+                        // 執行查詢
+                        $courseStmt->execute();
 
-                    // 處理查詢結果
-                    if ($courseStmt->rowCount() > 0) {
-                        $savedRequired = $courseStmt->fetchAll(PDO::FETCH_ASSOC);
+                        // 合併查詢結果
+                        $savedRequired = array_merge($savedRequired, $courseStmt->fetchAll(PDO::FETCH_ASSOC));
+                    }
+
+                    // 回傳結果
+                    if (!empty($savedRequired)) {
                         http_response_code(200);
                         echo json_encode([
                             "success" => true,
@@ -224,70 +168,31 @@ function getSavedRequiredCourses($link)
     }
 }
 
-/* getSavedElectiveCourses 回傳格式
-{
-    "success": true,
-    "savedElective": [
-      {
-        "id": 397,
-        "mark": 1,
-        "courseName": "R語言統計",
-        "startPeriod": 6,
-        "endPeriod": 7,
-        "category": 1,
-        "isPlaced": "0",
-        "semester": "1131",
-        "credits": "2.00"
-      },
-      {
-        "id": 430,
-        "mark": 1,
-        "courseName": "網路與資訊安全",
-        "startPeriod": 2,
-        "endPeriod": 4,
-        "category": 1,
-        "isPlaced": "0",
-        "semester": "1131",
-        "credits": "3.00"
-      }
-    ]
-  }
-  */
+
 //2. 取得使用者已儲存的課程
 function getSavedElectiveCourses($link)
 {
-    // 從 Session 中取得 userID
-    $userID = $_SESSION['userID'] ?? null;
-    if (!$userID || !filter_var($userID, FILTER_VALIDATE_INT)) {
-        http_response_code(401); // 未授權
-        echo json_encode(["error" => "用戶未登入或無效的用戶 ID"]);
-        return;
-    }
-
+    // 獲取請求中的 userID
+    $userID = $_SESSION['userID']; // 取得用戶ID
     // 定義 SQL 查詢
     $query = "
         SELECT  
             課程.編號 AS id, 
             1 AS mark, 
             課程.科目中文名稱 AS courseName, 
-            CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS UNSIGNED) AS startPeriod, -- 起始節次
-            CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS UNSIGNED) AS endPeriod, -- 結束節次
-            課程.上課星期 AS weekDay,
+            CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS INT) AS startPeriod, -- 起始節次
+            CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
+            CAST(課程.上課星期 AS INT) AS weekDay,
             1 AS category, 
-            課程規劃.放置狀態 AS isPlaced, 
+            課程規劃.放置狀態 AS isPlaced,
             課程.學期 AS semester, 
-            課程.學分數 AS credits 
+            CAST(課程.學分數 AS INT) AS credits 
         FROM  
-            用戶收藏 
-        INNER JOIN  
-            課程 ON 用戶收藏.課程ID = 課程.編號 
-        INNER JOIN  
-            課程規劃 ON 課程.編號 = 課程規劃.課程ID 
+            課程規劃 
+        JOIN  
+            課程 ON 課程規劃.課程ID = 課程.編號 
         WHERE  
-            (課程.課別名稱 NOT LIKE '%專業必修%') -- 篩選 category = 1
-            AND 用戶收藏.用戶ID = :userID
-        GROUP BY 
-            課程.編號, 課程規劃.放置狀態, 課程.科目中文名稱, 課程.上課節次, 課程.上課星期, 課程.學期, 課程.學分數;
+            課程規劃.用戶ID = :userID
     ";
 
     try {
@@ -315,26 +220,17 @@ function getSavedElectiveCourses($link)
     }
 }
 
-/*
-成功:
 
+/**
+ * 3. 更新課程的顯示/隱藏狀態
+ */
+function updateCourseVisibility($link)
 {
-  "success": true,
-  "message": "課程顯示狀態更新成功",
-  "updatedCourse": {
-    "id": "397",
-    "isPlaced": "1"
-  }
-}
-*/
+    $userID = $_SESSION['userID']; // 取得用戶ID
+    $inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據 
 
-//3. 更新課程的顯示/隱藏狀態 
-function updateCourseVisibility($link, $inputData)
-{
-    // 獲取請求中的資料
-    $userID = $_SESSION['userID'] ?? null;
-    $id = $inputData['id'] ?? null;
-    $isPlaced = $inputData['isPlaced'] ?? null;
+    $id = $inputData['id'] ?? null; // 從 JSON 數據中獲取課程 ID
+    $isPlaced = $inputData['isPlaced'] ?? null; // 從 JSON 數據中獲取顯示狀態
 
     // 驗證必要參數
     if (empty($userID) || empty($id) || !isset($isPlaced)) {
@@ -344,7 +240,7 @@ function updateCourseVisibility($link, $inputData)
     }
 
     // 把 isPlaced 轉換為字串 ('0' 或 '1')
-    $isPlaced = (string) $isPlaced; 
+    $isPlaced = (string)$isPlaced;
 
     // 檢查 isPlaced 是否為有效的字串 '0' 或 '1'
     if ($isPlaced !== '0' && $isPlaced !== '1') {
@@ -363,9 +259,8 @@ function updateCourseVisibility($link, $inputData)
     try {
         // 檢查是否有對應的課程資料
         $checkStmt = $link->prepare($checkQuery);
-        $checkStmt->bindParam(':userID', $userID, PDO::PARAM_INT); // 綁定用戶ID
-        $checkStmt->bindParam(':id', $id, PDO::PARAM_INT); // 綁定課程ID
-
+        $checkStmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $checkStmt->bindParam(':id', $id, PDO::PARAM_INT);
         $checkStmt->execute();
 
         // 如果資料不存在，返回錯誤
@@ -382,12 +277,12 @@ function updateCourseVisibility($link, $inputData)
             WHERE 用戶ID = :userID AND 課程ID = :id
         ";
 
-        $stmt = $link->prepare($updateQuery); // 預處理查詢
-        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT); // 綁定用戶ID
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // 綁定課程ID
-        $stmt->bindParam(':isPlaced', $isPlaced, PDO::PARAM_STR); // 綁定顯示狀態為字串
+        $stmt = $link->prepare($updateQuery);
+        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':isPlaced', $isPlaced, PDO::PARAM_STR);
 
-        if ($stmt->execute()) { // 執行查詢
+        if ($stmt->execute()) {
             echo json_encode([
                 "success" => true,
                 "message" => "課程顯示狀態更新成功",
@@ -406,5 +301,93 @@ function updateCourseVisibility($link, $inputData)
     }
 }
 
+/**
+ * 4. 取得使用者已儲存的某課程詳細資訊
+ */
+function savedCourseDetail($link)
+{
+    $userID = $_SESSION['userID']; // 取得用戶ID
+    $inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據 
 
+    $id = $inputData['id'] ?? null; // 從 JSON 數據中獲取課程 ID
 
+    $classCode = substr($userID, 6, 1);
+
+    // 定義班級數字與字母的映射
+    $classMapping = [
+        '1' => 'A',
+        '2' => 'B',
+        '3' => 'C',
+        '4' => 'D',
+        '5' => 'E',
+    ];
+
+    if (!isset($classMapping[$classCode])) {
+        http_response_code(400);
+        echo json_encode(["message" => "無效的班級代碼", "success" => false]);
+        exit;
+    }
+
+    $classLetter = $classMapping[$classCode];
+
+    // 驗證必要參數
+    if (empty($userID) || empty($id)) {
+        http_response_code(400);
+        echo json_encode(["error" => "缺少必要參數"]);
+        return;
+    }
+
+// 定義 SQL 查詢，查詢該用戶已儲存的課程詳細資料
+    $query = "
+        SELECT 
+            k.*, 
+            CASE 
+                WHEN k.上課星期 = '1' THEN '星期一'
+                WHEN k.上課星期 = '2' THEN '星期二'
+                WHEN k.上課星期 = '3' THEN '星期三'
+                WHEN k.上課星期 = '4' THEN '星期四'
+                WHEN k.上課星期 = '5' THEN '星期五'
+                WHEN k.上課星期 = '6' THEN '星期六'
+                WHEN k.上課星期 = '7' THEN '星期日'
+                ELSE '未知'
+            END AS 上課星期中文,
+            p.評價文本, 
+            p.評價時間, 
+            d.系所名稱
+        FROM 課程 k
+        LEFT JOIN 課程評價 p 
+            ON k.編號 = p.課程ID
+        LEFT JOIN 系所對照表 d 
+            ON k.系所代碼 = d.系所代碼
+        WHERE k.編號 = :id;
+    ";
+
+    try {
+        $stmt = $link->prepare($query); // 預處理查詢
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT); // 綁定課程ID
+
+        if ($stmt->execute()) { // 執行查詢
+            // 抓取該課程詳細資料
+            $courseDetail = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($courseDetail) {
+                // 回傳課程詳細資訊
+                echo json_encode([
+                    "success" => true,
+                    "courseDetail" => $courseDetail
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                http_response_code(404);
+                echo json_encode(["error" => "找不到該課程的詳細資料"]);
+            }
+        } else {
+            // 查詢執行失敗
+            http_response_code(500);
+            echo json_encode(["error" => "無法取得課程詳細資料"]);
+        }
+    } catch (PDOException $e) {
+        // 捕捉資料庫例外，回傳伺服器錯誤信息
+        http_response_code(500);
+        echo json_encode(["error" => "伺服器錯誤: " . $e->getMessage()], JSON_UNESCAPED_UNICODE);
+    }
+}
