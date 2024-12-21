@@ -2,7 +2,7 @@
 // 設定 CORS 和 JSON 回應格式
 header('Access-Control-Allow-Origin: http://localhost:5173'); // 指定允許的來源
 header('Content-Type: application/json'); // 指定回應格式為 JSON
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // 設定允許的 HTTP 方法
+header('Access-Control-Allow-Methods: POST, OPTIONS'); // 設定允許的 HTTP 方法
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // 設定允許的請求標頭
 header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
 
@@ -100,8 +100,6 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                             WHEN k.上課星期 = '7' THEN '星期日'
                             ELSE '未知'
                         END AS 上課星期中文,
-                        p.評價文本, 
-                        p.評價時間, 
                         d.系所名稱,
                         CASE 
                             WHEN EXISTS (
@@ -112,7 +110,6 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                             ELSE 0
                         END AS mark
                     FROM 課程 k
-                    LEFT JOIN 課程評價 p ON k.編號 = p.課程ID
                     LEFT JOIN 系所對照表 d ON k.系所代碼 = d.系所代碼
                     WHERE k.系所代碼 = :departmentCode
                     AND k.年級 = :gradeLevel

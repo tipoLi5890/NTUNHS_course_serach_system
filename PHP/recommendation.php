@@ -470,8 +470,6 @@ function handleGetElectiveCourses($input) {
                 WHEN k.`上課星期` = '7' THEN '星期日'
                 ELSE '未知'
             END AS `上課星期中文`,
-            p.`評價文本`, 
-            p.`評價時間`, 
             d.`系所名稱`,
             CASE 
                 WHEN EXISTS (
@@ -482,7 +480,6 @@ function handleGetElectiveCourses($input) {
                 ELSE 0
             END AS `mark`
         FROM `課程` k
-        LEFT JOIN `課程評價` p ON k.`編號` = p.`課程ID`
         LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
         WHERE " . implode(' AND ', $sqlConditions) . "
     ";

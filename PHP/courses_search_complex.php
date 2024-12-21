@@ -1,10 +1,18 @@
+<!-- 尚未完成 -->
+
 <?php
 // 設定 CORS 和 JSON 回應格式
-header('Access-Control-Allow-Origin: http://localhost:5173');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST, OPTIONS'); // 添加 GET 方法
-header('Access-Control-Allow-Headers: Content-Type, Authorization'); // 添加 Authorization 標頭
+header('Access-Control-Allow-Origin: http://localhost:5173'); // 指定允許的來源
+header('Content-Type: application/json'); // 指定回應格式為 JSON
+header('Access-Control-Allow-Methods: POST, OPTIONS'); // 設定允許的 HTTP 方法
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // 設定允許的請求標頭
 header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
+
+// 檢查是否為 OPTIONS 預檢請求
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200); // 返回 200 狀態碼，表明預檢成功
+    exit;
+}
 
 session_start(); // 初始化 Session
 include("configure.php");
@@ -15,55 +23,10 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
         if(isset($_SESSION['userID'])){
             $userID = $_SESSION['userID'];  // 取得用戶ID
-            
             try {
-                $studentNumber = $userID;
-                // 步驟 1: 取得當前的西元年月日
-                $gregorianYear = date('Y'); // 西元年，例如 2024
-                $month = date('n');          // 月份，1-12
-                $day = date('j');            // 日，1-31
-
-                // 步驟 2: 轉換為民國年
-                $minguoYear = $gregorianYear - 1911;
-
-                // 初始化學年度和學期變數
-                $academicYear = '';
-                $semester = '';
-
-                // 步驟 3: 判斷目前所在的學期
-                if ($month >= 8) {
-                    // 如果現在是8月到12月，屬於當前年份的上學期
-                    $academicYear = $minguoYear;
-                    $semester = '1';
-                } elseif ($month >= 2 && $month <= 7) {
-                    // 如果現在是2月到7月，屬於前一年的下學期
-                    $academicYear = $minguoYear - 1;
-                    $semester = '2';
-                } else { // $month == 1
-                    // 如果現在是1月，屬於前一年的上學期
-                    $academicYear = $minguoYear - 1;
-                    $semester = '1';
-                }
-
-                // 步驟 4: 設置 $academicYear 變數，尾部加上學期數字
-                $academicYear .= $semester;
-
-                // 從學號中提取學年、系所代碼和班級
-                $departmentCode = substr($studentNumber, 2, 4); // 第3到第6位為系所代碼
-                $departmentCode .= '0'; 
-
-                // 計算學生年級
-                $currentAcademicYear = 113; // 想象當前學年為 113
-                $gradeLevel = $currentAcademicYear - (int)('1'.substr($studentNumber, 0, 2))+1; // 計算年級
-
-                if ($gradeLevel <= 0) {
-                    $gradeLevel = 1; // 如果計算結果對不上，導致第一年級
-                }
-
                 // 查詢該班級的課表
                 $scheduleStmt = $link->prepare("
-                    SELECT 
-                        k.*, 
+                    SELECT k.*,
                         CASE 
                             WHEN k.上課星期 = '1' THEN '星期一'
                             WHEN k.上課星期 = '2' THEN '星期二'
@@ -84,17 +47,21 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                             ELSE 0
                         END AS mark
                     FROM 課程 k
-                    LEFT JOIN 系所對照表 d 
-                        ON k.系所代碼 = d.系所代碼
+                    LEFT JOIN 系所對照表 d ON k.系所代碼 = d.系所代碼
                     WHERE k.系所代碼 = :departmentCode
-                    AND k.年級 <= :gradeLevel
-                    AND (k.課別名稱 = '專業選修(系所)' OR k.課別名稱 = '通識選修(通識)')
-                    AND k.`學期` = :academicYear;
+                    AND k.年級 = :gradeLevel
+                    AND k.上課班組 = :classCode
+                    AND k.`學期` = :academicYear
                 ");
+                
+                // 綁定參數
                 $scheduleStmt->bindParam(':userID', $userID, PDO::PARAM_STR);
-                $scheduleStmt->bindParam(':departmentCode', $departmentCode);
-                $scheduleStmt->bindParam(':gradeLevel', $gradeLevel);
+                $scheduleStmt->bindParam(':departmentCode', $departmentCode, PDO::PARAM_STR);
+                $scheduleStmt->bindParam(':gradeLevel', $gradeLevel, PDO::PARAM_STR);
+                $scheduleStmt->bindParam(':classCode', $classLetter, PDO::PARAM_STR);
                 $scheduleStmt->bindParam(':academicYear', $academicYear, PDO::PARAM_STR);
+                
+                // 執行查詢
                 $scheduleStmt->execute();
 
                 // 檢查是否有課程資料
