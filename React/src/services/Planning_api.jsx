@@ -39,8 +39,8 @@ export const getSavedElectiveCourses = async () => {
 /**
  * 更新課程的顯示/隱藏狀態
  * @param {string} id - 課程 ID
- * @param {string} isPlaced - 課程顯示/隱藏 isPlaced: 1/0
- * @returns {Promise<Array>} ？
+ * @param {string} isPlaced - 課程顯示/隱藏 isPlaced: "1"/"0"
+ * @returns {Promise<Array>} - 更新isPlaced狀況
  */
 export const updateCourseVisibility = async (id, isPlaced) => {
     try {

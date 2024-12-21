@@ -45,6 +45,9 @@ switch ($action) {
     case 'update-course-visibility'://3. 更新課程的顯示/隱藏狀態 ok
         updateCourseVisibility($link, $inputData);
         break;
+    case 'update-course-mark'://4. 更新課程的收藏狀態 
+        toggleCourseMark($link, $inputData);
+        break;
     default:
         http_response_code(400);
         echo json_encode(["error" => "未知的請求"]);
@@ -261,14 +264,6 @@ function getSavedElectiveCourses($link)
         return;
     }
 
-    // 獲取當前學期（假設從資料庫查詢或固定的學期邏輯）
-    $currentSemester = getCurrentSemester($link);
-    if (!$currentSemester) {
-        http_response_code(500);
-        echo json_encode(["error" => "無法取得當前學期"]);
-        return;
-    }
-
     // 定義 SQL 查詢
     $query = "
         SELECT  
@@ -291,13 +286,13 @@ function getSavedElectiveCourses($link)
         WHERE  
             (課程.課別名稱 NOT LIKE '%專業必修%') -- 篩選 category = 1
             AND 用戶收藏.用戶ID = :userID
-            AND 課程.學期 = :currentSemester
+        GROUP BY 
+            課程.編號, 課程規劃.放置狀態, 課程.科目中文名稱, 課程.上課節次, 課程.上課星期, 課程.學期, 課程.學分數;
     ";
 
     try {
         $stmt = $link->prepare($query); // 預處理查詢
         $stmt->bindParam(':userID', $userID, PDO::PARAM_INT); // 綁定用戶ID
-        $stmt->bindParam(':currentSemester', $currentSemester, PDO::PARAM_INT); // 綁定學期
 
         if ($stmt->execute()) { // 執行查詢
             // 抓取所有符合條件的課程
@@ -334,13 +329,12 @@ function getSavedElectiveCourses($link)
 */
 
 //3. 更新課程的顯示/隱藏狀態 
-
-function updateCourseVisibility($link)
+function updateCourseVisibility($link, $inputData)
 {
     // 獲取請求中的資料
     $userID = $_SESSION['userID'] ?? null;
-    $id = $_GET['id'] ?? null;
-    $isPlaced = $_GET['isPlaced'] ?? null;
+    $id = $inputData['id'] ?? null;
+    $isPlaced = $inputData['isPlaced'] ?? null;
 
     // 驗證必要參數
     if (empty($userID) || empty($id) || !isset($isPlaced)) {

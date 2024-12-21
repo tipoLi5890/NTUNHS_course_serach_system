@@ -41,29 +41,6 @@ export const unsaveCourse = async (id) => {
 };
 
 /**
- * 更新儲存(收藏)課程
- * @param {number} userID - 使用者 ID
- * @param {number} id - 課程 ID
- * @param {number} mark - 課程 儲存/取消儲存 mark: 1/0
- * @returns {Promise<void>}
- */
-export const toggleCourseMark = async (userID, id, mark) => {
-    try {
-        const response = await axios.post(`${API_BASE_URL}/mark`, {
-            action: 'update-course-mark',
-            userID,
-            id,
-            mark
-        });
-        console.log(response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error updating course mark:', error);
-        throw error;
-    }
-};
-
-/**
  * 取得使用者已儲存的課程
  * @param {string} userID - 使用者 ID
  * @returns {Promise<Array>} 已儲存課程的清單

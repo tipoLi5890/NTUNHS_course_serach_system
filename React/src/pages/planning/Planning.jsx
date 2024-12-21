@@ -4,30 +4,23 @@ import html2canvas from 'html2canvas';
 import Header from "../../components/Header";
 import Footer from '../../components/Footer';
 import './planning.css';
-import '../courses/courses.css';
 import { useAuth } from '../../hook/AuthProvider.jsx';
-import { toggleCourseMark, getSavedCourses } from '../../services/Courses_api';
+import { unsaveCourse } from '../../services/Courses_api';
 import { getSavedRequiredCourses, getSavedElectiveCourses, updateCourseVisibility, savedCourseDetail } from '../../services/Planning_api';
 import { getRecords } from '../../services/Record_api';
 
 const Planning = () => {
     const { isAuthenticated } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
-    const [courseSaveData, setCourseSaveData] = useState([]); // 儲存使用者收藏的課程資料
     const [requiredCourses, setRequiredCourses] = useState([]);// 儲存使用者收藏的必修(預設)課程資料
     const [electiveCourses, setElectiveCourses] = useState([]);// 儲存使用者收藏的選修(其他)課程資料
+    const [selectedSemester, setSelectedSemester] = useState(null); // 狀態：當前選中的學期，預設為第一個學期
+    const [semesters, setSemesters] = useState([]); // 單獨管理學期列表
+    const [selectedCourse, setSelectedCourse] = useState(null); // 用於存放選中的課程資料
+    const [courseReviews, setCourseReviews] = useState([]);// 儲存使用者評論內容的資料
 
     // 取得儲存的課程列表
     useEffect(() => {
         if (isAuthenticated) {
-            const loadSavedCourses = async () => {
-                try {
-                    const savedCourses = await getSavedCourses();
-                    setCourseSaveData(savedCourses);
-                } catch (error) {
-                    console.error('無法載入已儲存的課程:', error);
-                }
-            };
-            loadSavedCourses();
             const loadSavedElective = async () => {
                 try {
                     const savedRequired = await getSavedRequiredCourses();
@@ -94,27 +87,23 @@ const Planning = () => {
     };
 
     // 切換儲存/取消儲存狀態 (當期科系必修不能調整)
-    const handleMarkToggle = async (id, currentMark) => {
+    const handleMarkToggle = async (id) => {
         try {
-            // 如果是取消儲存，先提示使用者確認
-            if (currentMark === "1") {
-                const isConfirmed = window.confirm(
-                    "取消儲存後該課程將不會在儲存的課程中顯示"
-                );
-                if (!isConfirmed) {
-                    return; // 使用者取消操作，不繼續執行
-                }
+            // 提示使用者確認取消儲存
+            const isConfirmed = window.confirm(
+                "取消儲存後該課程將不會在儲存的課程中顯示"
+            );
+            if (!isConfirmed) {
+                return; // 使用者取消操作，不繼續執行
             }
-            const updatedMark = currentMark === "1" ? "0" : "1"; // 切換狀態 1 -> 0, 0 -> 1
-
-            const response = await toggleCourseMark(id, updatedMark);
+    
+            // 呼叫 API 取消儲存
+            const response = await unsaveCourse(id);
 
             if (response.success) {
-                // 更新狀態到前端
+                // 成功後，從前端移除該課程
                 setElectiveCourses((prevCourses) =>
-                    prevCourses.map((course) =>
-                        course.id === id ? { ...course, mark: updatedMark } : course
-                    )
+                    prevCourses.filter((course) => course.id !== id)
                 );
             } else {
                 console.error("後端更新儲存狀態失敗");
@@ -140,27 +129,33 @@ const Planning = () => {
     // 定義第一列
     const firstColumnContent = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四"];
 
-    // 獲取所有的學期
-    const semesters = Array.from(
-        new Set([
-            ...requiredCourses.map(course => course.semester),
-            ...electiveCourses.map(course => course.semester)
-        ])
-    ).sort((a, b) => b.localeCompare(a)); // 由大到小排列
+    // 計算學期列表
+    useEffect(() => {
+        const allSemesters = Array.from(
+            new Set([
+                ...requiredCourses.map((course) => course.semester),
+                ...electiveCourses.map((course) => course.semester),
+            ])
+        ).sort((a, b) => b.localeCompare(a)); //由大到小排列
 
+        setSemesters(allSemesters);
+
+        // 當學期列表更新，且尚未設置 selectedSemester 時，設置預設值
+        if (allSemesters.length > 0 && !selectedSemester) {
+            setSelectedSemester(allSemesters[0]);
+        }
+    }, [requiredCourses, electiveCourses, selectedSemester]);
 
     // 按學期分類課程
-    const coursesBySemester = semesters.reduce((acc, semester) => {
-        acc[semester] = [
-            ...requiredCourses.filter(course => course.isPlaced === "1" && course.semester === semester),
-            ...electiveCourses.filter(course => course.isPlaced === "1" && course.semester === semester)
-        ];
-        return acc;
-    }, {});
-
-    const [selectedSemester, setSelectedSemester] = useState(semesters[0]); // 狀態：當前選中的學期，預設為第一個學期
-    const [selectedCourse, setSelectedCourse] = useState(null); // 用於存放選中的課程資料
-    const [courseReviews, setCourseReviews] = useState([]);// 儲存使用者評論內容的資料
+    const coursesBySemester = useMemo(() => {
+        return semesters.reduce((acc, semester) => {
+            acc[semester] = [
+                ...requiredCourses.filter((course) => course.isPlaced === "1" && course.semester === semester),
+                ...electiveCourses.filter((course) => course.isPlaced === "1" && course.semester === semester),
+            ];
+            return acc;
+        }, {});
+    }, [semesters, requiredCourses, electiveCourses]);
 
     // 顯示課程詳情
     const handleCourseClick = async (course) => {
@@ -248,7 +243,7 @@ const Planning = () => {
                     // 計算該學期的總學分
                     const totalCredits = coursesBySemester[semester]
                         .filter(course => course.isPlaced === "1")
-                        .reduce((sum, course) => sum + (course.credits || 0), 0);
+                        .reduce((sum, course) => sum + (parseFloat(course.credits) || 0), 0);
 
                     return semester === selectedSemester && (
                         <div className='schedule_container' key={semester}>
@@ -258,20 +253,31 @@ const Planning = () => {
                                 {tableCells}
 
                                 {/* 渲染該學期的課程到課表上 */}
-                                {coursesBySemester[semester].map((course, index) => (
-                                    <div
-                                        key={`course-${semester}-${index}`}
-                                        className={course.category === "0" ? "courseMustOnSchedule" : "courseOnSchedule"}
-                                        style={{
-                                            top: `calc(${(course.startPeriod) * (100 / 15)}% + 0.5%)`,
-                                            height: `calc(${(course.endPeriod - course.startPeriod + 1) * (100 / 15)}% - 1%)`,
-                                            left: `calc(${(course.weekDay + 1) * (100 / 9)}% + 0.5%)`,
-                                            width: `calc(${(100 / 9)}% - 1%)`
-                                        }}
-                                    >
-                                        {course.courseName}
-                                    </div>
-                                ))}
+                                {coursesBySemester[semester].map((course, index) => {
+                                    // 確保所有相關欄位皆被解析為整數
+                                    const startPeriod = parseInt(course.startPeriod, 10);
+                                    const endPeriod = parseInt(course.endPeriod, 10);
+                                    const weekDay = parseInt(course.weekDay, 10);
+
+                                    // 檢查是否有無效數值，並跳過無效資料
+                                    if (isNaN(startPeriod) || isNaN(endPeriod) || isNaN(weekDay)) {
+                                        console.error(`無效資料: `, course);
+                                        return null;
+                                    } return (
+                                        <div
+                                            key={`course-${semester}-${index}`}
+                                            className={course.category === "0" ? "courseMustOnSchedule" : "courseOnSchedule"}
+                                            style={{
+                                                top: `calc(${startPeriod * (100 / 15)}% + 0.5%)`,
+                                                height: `calc(${(endPeriod - startPeriod + 1) * (100 / 15)}% - 1%)`,
+                                                left: `calc(${(weekDay + 1) * (100 / 9)}% + 0.5%)`,
+                                                width: `calc(${(100 / 9)}% - 1%)`
+                                            }}
+                                        >
+                                            {course.courseName}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     );
@@ -319,8 +325,8 @@ const Planning = () => {
                                 <tr key={index}>
                                     <td>{course.courseName}</td>
                                     <td>{course.semester}</td>
-                                    <td>{`星期${course.weekDay}`}</td>
-                                    <td>{`${course.startPeriod}~${course.endPeriod}`}</td>
+                                    <td>{`星期${parseInt(course.weekDay)}`}</td>
+                                    <td>{`${parseInt(course.startPeriod)}~${parseInt(course.endPeriod)}`}</td>
                                     <td>
                                         <div
                                             className="storageCourses_content"
@@ -364,8 +370,8 @@ const Planning = () => {
                                 <tr key={index}>
                                     <td>{course.courseName}</td>
                                     <td>{course.semester}</td>
-                                    <td>{`星期${course.weekDay}`}</td>
-                                    <td>{`${course.startPeriod}~${course.endPeriod}`}</td>
+                                    <td>{`星期${parseInt(course.weekDay)}`}</td>
+                                    <td>{`${parseInt(course.startPeriod)}~${parseInt(course.endPeriod)}`}</td>
                                     <td>
                                         <div
                                             className="storageCourses_content"
