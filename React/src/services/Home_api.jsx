@@ -5,7 +5,7 @@ const API_URLS = {
     keywordSearch: '/api/courses_search_keyword.php', // 關鍵字搜尋
     queryByRequired: '/api/courses_search_required.php', //當期預排
     queryByElective: '/api/courses_search_elective.php', //科系選修
-    complexSearch: 'https://65b93dd5-f8eb-42bb-a10c-7a8c9a61162f.mock.pstmn.io/complexSearch', //複合查詢
+    complexSearch: '/api/courses_search_complex.php', //複合查詢
 }
 
 /**
@@ -17,7 +17,7 @@ export const filterParams = (params) => {
     if (!params || typeof params !== 'object') return {}; // 檢查參數是否有效
     const cleanParams = {};
     Object.entries(params).forEach(([key, value]) => {
-        if (value !== '' && value !== null && value !== undefined) {
+        if (value !== null && value !== undefined) {
             cleanParams[key] = typeof value === 'object' && !Array.isArray(value)
                 ? filterParams(value) // 遞迴過濾物件值
                 : value; // 保留非空值

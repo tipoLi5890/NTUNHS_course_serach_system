@@ -196,7 +196,7 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">學制：</span>
                     <div className="checkbox-group">
-                        {["二技", "二技(三年)", "四技", "學士後多元專長", "碩士", "博士", "學士後學位學程", "學士後系"].map(system => (
+                        {["二年制", "四年制", "學士後多元專長", "碩士", "博士", "學士後學位學程", "學士後"].map(system => (
                             <label key={system} className="custom-checkbox">
                                 <input type="checkbox" name="system" value={system} />
                                 <div><span>{system}</span></div>
@@ -208,7 +208,22 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">系所：</span>
                     <div className="checkbox-group">
-                        {["護理系", "高照系", "資管系", "健管系", "生諮系", "幼保系", "運保系"].map(department => (
+                        {[
+                            "護理系", 
+                            "高齡健康照護系", 
+                            "護理助產及婦女健康系", 
+                            "醫護教育暨數位學習系", 
+                            "健康事業管理系", 
+                            "資訊管理系", 
+                            "休閒產業與健康促進系", 
+                            "長期照護系", 
+                            "語言治療與聽力學系", 
+                            "國際健康科技碩士學位學程",
+                            "嬰幼兒保育系",
+                            "運動保健系",
+                            "生死與健康心理諮商系",
+                            "智慧健康科技技優專班",
+                            "人工智慧與健康大數據研究所"].map(department => (
                             <label key={department} className="custom-checkbox">
                                 <input type="checkbox" name="department" value={department} />
                                 <div><span>{department}</span></div>
@@ -220,10 +235,10 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">年級：</span>
                     <div className="checkbox-group">
-                        {["一", "二", "三", "四", "五", "六", "七"].map(grade => (
+                        {["一1", "二2", "三3", "四4"].map(grade => (
                             <label key={grade} className="custom-checkbox">
-                                <input type="checkbox" name="grade" value={grade} />
-                                <div><span>{grade}</span></div>
+                                <input type="checkbox" name="grade" value={grade.substring(1,2)} />
+                                <div><span>{grade.substring(0,1)}</span></div>
                             </label>
                         ))}
                     </div>
@@ -232,7 +247,7 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">課別：</span>
                     <div className="checkbox-group">
-                        {["通識必修", "通識選修", "系所必修", "系所選修"].map(courseType => (
+                        {["專業必修(系所)", "專業選修(系所)", "通識必修(通識)", "通識選修(通識)"].map(courseType => (
                             <label key={courseType} className="custom-checkbox">
                                 <input type="checkbox" name="courseType" value={courseType} />
                                 <div><span>{courseType}</span></div>
@@ -244,10 +259,10 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">星期：</span>
                     <div className="checkbox-group">
-                        {["一", "二", "三", "四", "五", "六", "日"].map(day => (
+                        {["一1", "二2", "三3", "四4", "五5", "六6", "日7"].map(day => (
                             <label key={day} className="custom-checkbox">
-                                <input type="checkbox" name="day" value={day} />
-                                <div><span>{day}</span></div>
+                                <input type="checkbox" name="day" value={day.substring(1,2)} />
+                                <div><span>{day.substring(0,1)}</span></div>
                             </label>
                         ))}
                     </div>
@@ -256,7 +271,7 @@ const Home = () => {
                 <div className="flex-label-container">
                     <span className="label-title">節次：</span>
                     <div className="checkbox-group">
-                        {["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三", "十四"].map(period => (
+                        {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"].map(period => (
                             <label key={period} className="custom-checkbox">
                                 <input type="checkbox" name="period" value={period} />
                                 <div><span>{period}</span></div>
@@ -289,27 +304,27 @@ const Home = () => {
                 <hr />
                 <label>
                     教師：
-                    <input className="testFactor" type="text" name="teacher" />
+                    <input className="testFactor" type="text" name="teacher" placeholder='請輸入老師名稱' />
                 </label>
                 <hr />
                 <label>
                     課程：
-                    <input className="testFactor" type="text" name="course" />
+                    <input className="testFactor" type="text" name="course" placeholder='請輸入課程名稱' />
                 </label>
                 <hr />
                 <label>
                     班級：
-                    <input className="testFactor" type="text" name="class" />
+                    <input className="testFactor" type="text" name="class" placeholder='請輸入班級編號' />
                 </label>
                 <hr />
                 <label>
                     教室：
-                    <input className="testFactor" type="text" name="room" />
+                    <input className="testFactor" type="text" name="room" placeholder='請輸入教室編號'/>
                 </label>
                 <hr />
                 <label>
                     人數：
-                    <input className="testFactor" type="text" name="capacity" />
+                    <input className="testFactor" type="text" name="capacity" placeholder='請輸入人數'/>
                 </label>
                 <br /><br />
                 <div id="submit-container">
