@@ -39,7 +39,7 @@ switch ($action) {
         updateCourseVisibility($link);
         break;
     case 'get-saved-detail':
-        savedCourseDetail($link);
+        savedCourseDetail($link); //4. 取得使用者已儲存的某課程詳細資訊 ok
         break;
     default:
         http_response_code(400);
@@ -106,8 +106,12 @@ function getSavedRequiredCourses($link)
                                 CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS INT) AS startPeriod, -- 起始節次
                                 CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
                                 CAST(課程.上課星期 AS INT) AS weekDay,
-                                '0' AS category, 
-                                '1' AS isPlaced, 
+                                CASE 
+                                    -- WHEN 課程.課別名稱 LIKE '%專業必修%' THEN '0'
+                                    WHEN 課程.課別名稱 LIKE '%專業必修%' OR 課程.課別名稱 LIKE '%通識必修%' THEN '0'
+                                    ELSE '1'
+                                END AS category,  -- 根據課別名稱設置category
+                                '1' AS isPlaced,
                                 課程.學期 AS semester, 
                                 CAST(課程.學分數 AS INT) AS credits
                             FROM  
@@ -184,7 +188,7 @@ function getSavedElectiveCourses($link)
             CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS INT) AS startPeriod, -- 起始節次
             CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
             CAST(課程.上課星期 AS INT) AS weekDay,
-            1 AS category, 
+            1 AS category,  
             課程規劃.放置狀態 AS isPlaced,
             課程.學期 AS semester, 
             CAST(課程.學分數 AS INT) AS credits 
@@ -193,7 +197,8 @@ function getSavedElectiveCourses($link)
         JOIN  
             課程 ON 課程規劃.課程ID = 課程.編號 
         WHERE  
-            課程規劃.用戶ID = :userID
+            課程規劃.用戶ID = :userID;
+
     ";
 
     try {
@@ -302,6 +307,7 @@ function updateCourseVisibility($link)
     }
 }
 
+
 /**
  * 4. 取得使用者已儲存的某課程詳細資訊
  */
@@ -352,8 +358,12 @@ function savedCourseDetail($link)
                 WHEN k.上課星期 = '7' THEN '星期日'
                 ELSE '未知'
             END AS 上課星期中文,
+            p.評價文本, 
+            p.評價時間, 
             d.系所名稱
         FROM 課程 k
+        LEFT JOIN 課程評價 p 
+            ON k.編號 = p.課程ID
         LEFT JOIN 系所對照表 d 
             ON k.系所代碼 = d.系所代碼
         WHERE k.編號 = :id;
