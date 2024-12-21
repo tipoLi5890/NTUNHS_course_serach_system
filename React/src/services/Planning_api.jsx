@@ -10,7 +10,7 @@ export const getSavedRequiredCourses = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-required'
-        });
+        }, { withCredentials: true });
         console.log(response.data.savedRequired);
         return response.data.savedRequired; // 假設後端回傳格式包含 `savedRequired` 欄位
     } catch (error) {
@@ -27,7 +27,7 @@ export const getSavedElectiveCourses = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-elective',
-        });
+        }, { withCredentials: true });
         console.log(response.data.savedElective);
         return response.data.savedElective; // 假設後端回傳格式包含 `savedElective` 欄位
     } catch (error) {
@@ -48,7 +48,7 @@ export const updateCourseVisibility = async (id, isPlaced) => {
         action: 'update-course-visibility',
         id,
         isPlaced,
-      });
+      }, { withCredentials: true });
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -67,15 +67,9 @@ export const savedCourseDetail = async (id) => {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-saved-detail',
             id,
-        });
-
-        if (response.data?.success && Array.isArray(response.data.courseDetail)) {
-            console.log(response.data.courseDetail);
-            return response.data.courseDetail; // 假設後端回傳格式包含 `courseDetail` 欄位
-        } else {
-            console.error('Unexpected response structure:', response.data);
-            throw new Error('後端回傳格式不正確');
-        }
+        }, { withCredentials: true });
+        console.log(response.data.courseDetail);
+        return response.data.courseDetail; // 假設後端回傳格式包含 `record` 欄位
     } catch (error) {
         console.error('Error fetching saved course detail:', error.response || error.message);
         throw new Error('無法取得該課程的詳細資訊');

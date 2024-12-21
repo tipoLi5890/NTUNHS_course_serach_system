@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost/api/record.php';
+const API_BASE_URL = '/api/record.php';
 
 /**
  * 取得使用者的歷史課程
@@ -10,7 +10,7 @@ export const getHistoryCourses = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-history-courses',
-        },{ withCredentials: true });
+        }, { withCredentials: true });
         console.log(response.data.history);
         return response.data.history; // 確認回傳的資料格式
     } catch (error) {
@@ -27,7 +27,7 @@ export const getUserRecords = async () => {
     try {
         const response = await axios.post(`${API_BASE_URL}`, {
             action: 'get-user-record',
-        },{ withCredentials: true });
+        }, { withCredentials: true });
         console.log(response.data.record);
         return response.data.record; // 假設後端回傳格式包含 `record` 欄位
     } catch (error) {
@@ -49,7 +49,7 @@ export const commentData = async (id, commentInput) => {
             action: 'submit-comment',
             id: id,
             comment: commentInput,
-        },{ withCredentials: true });
+        }, { withCredentials: true });
         console.log('評論提交成功，回傳資料:', response.data.updatedRecord);
         return response.data.updatedRecord; // 假設後端返回 updatedRecord 為更新後的紀錄
     } catch (error) {
@@ -65,14 +65,14 @@ export const commentData = async (id, commentInput) => {
  */
 export const getRecords = async (id) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}`, {
-            params: {
+        const response = await axios.post(
+            `/api/courses_record_list.php`,
+            {
                 action: 'get-course-record',
                 id: id,
-            },
-        },{ withCredentials: true });
-        console.log(response.data.record);
-        return response.data.record; // 假設後端回傳格式包含 `record` 欄位
+            }, { withCredentials: true });
+        console.log(response.data?.courses);
+        return response.data.courses; // 假設後端回傳格式包含 `courses` 欄位
     } catch (error) {
         console.error('Error fetching user records:', error.response || error.message);
         throw new Error(error.response?.data?.error || '無法取得課程評論');

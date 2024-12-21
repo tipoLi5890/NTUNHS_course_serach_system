@@ -8,7 +8,7 @@ import CoursesDetial from "../../components/CoursesDetail"; // 引入彈出視�
 import { useAuth } from '../../hook/AuthProvider';
 import { useSearch } from '../../hook/SearchProvider';
 import { getSavedCourses, saveCourse, unsaveCourse } from '../../services/Courses_api';
-//import { getRecords } from '../../services/Record_api.jsx';
+import { getRecords } from '../../services/Record_api.jsx';
 
 const Courses = () => {
     const location = useLocation();
@@ -18,7 +18,7 @@ const Courses = () => {
     const [courses, setCourses] = useState([]); // 確保 courses 為陣列 //儲存查詢結果
     const [groupKey, setGroupKey] = useState("department"); // 分隔條件
     const [selectedCourse, setSelectedCourse] = useState(null); // 當前選中的課程資料
-    const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
+    const { isAuthenticated } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
     const [courseSaveData, setCourseSaveData] = useState([]); // 儲存使用者收藏的課程資料
     const [courseReviews, setCourseReviews] = useState([]); // 儲存使用者評論內容的資料
 
@@ -71,7 +71,7 @@ const Courses = () => {
         fetchData();
     }, [lastSearchResult, results, isAuthenticated]);
 
-// 更新課程儲存狀態
+    // 更新課程儲存狀態
     const handleToggleSave = async (id, isSaved) => {
         try {
             let updatedCourses;
@@ -80,11 +80,11 @@ const Courses = () => {
             if (isSaved) {
                 await unsaveCourse(id);
                 updatedSaveData = courseSaveData.
-              
-filter(course => course['編號'] !== id);
-            } 
-      
-else {
+
+                    filter(course => course['編號'] !== id);
+            }
+
+            else {
                 await saveCourse(id);
                 const newSavedCourse = courses.find(course => course['編號'] === id);
                 updatedSaveData = [...courseSaveData, newSavedCourse];
@@ -99,9 +99,9 @@ else {
             });
             setCourses(updatedCourses);
         } catch (error) {
-            
-            
-console.error("更新課程儲存狀態失敗:", error);
+
+
+            console.error("更新課程儲存狀態失敗:", error);
         }
     };
 
@@ -119,7 +119,7 @@ console.error("更新課程儲存狀態失敗:", error);
         : {};
 
     // 點擊課程卡片顯示詳細資訊
-    const handleCardClick = (id) => {
+    const handleCardClick = async(id) => {
         const courseDetails = courses.find(course => course['編號'] === id);
         if (!courseDetails) {
             alert('無法取得課程詳細資料');
@@ -128,8 +128,13 @@ console.error("更新課程儲存狀態失敗:", error);
         setSelectedCourse(courseDetails || null);
 
         // 提取課程內的評論資料
-        const reviews = courseDetails['評價文本'] || [];
-        setCourseReviews(reviews);
+        try {
+            const courseReviews = await getRecords(id);
+            setCourseReviews(courseReviews);
+            console.log(courseReviews);
+        } catch (error) {
+            console.error("取得課程評論失敗:", error);
+        }
     };
 
     const closeContent = () => {

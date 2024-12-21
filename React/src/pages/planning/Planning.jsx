@@ -3,6 +3,7 @@ import CoursesDetail from "../../components/CoursesDetail"; // 引入彈出視�
 import html2canvas from 'html2canvas';
 import Header from "../../components/Header";
 import Footer from '../../components/Footer';
+import '../courses/courses.css';
 import './planning.css';
 import { useAuth } from '../../hook/AuthProvider.jsx';
 import { unsaveCourse } from '../../services/Courses_api';
@@ -13,7 +14,7 @@ const Planning = () => {
     const { isAuthenticated } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
     const [requiredCourses, setRequiredCourses] = useState([]);// 儲存使用者收藏的必修(預設)課程資料
     const [electiveCourses, setElectiveCourses] = useState([]);// 儲存使用者收藏的選修(其他)課程資料
-    const [selectedSemester, setSelectedSemester] = useState(null); // 狀態：當前選中的學期，預設為第一個學期
+    const [selectedSemester, setSelectedSemester] = useState(""); // 狀態：當前選中的學期，預設為第一個學期
     const [semesters, setSemesters] = useState([]); // 單獨管理學期列表
     const [selectedCourse, setSelectedCourse] = useState(null); // 用於存放選中的課程資料
     const [courseReviews, setCourseReviews] = useState([]);// 儲存使用者評論內容的資料
@@ -96,7 +97,7 @@ const Planning = () => {
             if (!isConfirmed) {
                 return; // 使用者取消操作，不繼續執行
             }
-    
+
             // 呼叫 API 取消儲存
             const response = await unsaveCourse(id);
 
@@ -165,13 +166,13 @@ const Planning = () => {
         }
         try {
             const courseDetails = await savedCourseDetail(course.id);
-            if (courseDetails && courseDetails.length > 0) {
-                const selectedCourseDetails = courseDetails[0];
-                setSelectedCourse({ ...selectedCourseDetails });
+            if (courseDetails) {
+                // 將課程詳細資訊直接設定到 selectedCourse 中
+                setSelectedCourse(courseDetails); // 將 courseDetails 直接傳入
+                console.log(courseDetails);
             } else {
                 console.error('無法取得課程詳細資訊');
             }
-            console.log(selectedCourse);
         } catch (error) {
             console.error('取得課程詳細資訊時發生錯誤：', error.message);
         }
