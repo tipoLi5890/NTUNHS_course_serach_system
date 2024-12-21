@@ -5,7 +5,7 @@
 header('Access-Control-Allow-Origin: http://localhost:5173'); // 指定允許的來源
 header('Content-Type: application/json'); // 指定回應格式為 JSON
 header('Access-Control-Allow-Methods: POST, OPTIONS'); // 設定允許的 HTTP 方法
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // 設定允許的請求標頭
+header('Access-Control-Allow-Headers: Content-Type, Authorization'); // 設定允許的請求標頭
 header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
 
 // 檢查是否為 OPTIONS 預檢請求
