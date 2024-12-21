@@ -105,7 +105,7 @@ function getSavedRequiredCourses($link)
                                 CAST(SUBSTRING_INDEX(課程.上課節次, ',', 1) AS INT) AS startPeriod, -- 起始節次
                                 CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
                                 CAST(課程.上課星期 AS INT) AS weekDay,
-                                0 AS category, 
+                                '0' AS category, 
                                 '1' AS isPlaced, 
                                 課程.學期 AS semester, 
                                 CAST(課程.學分數 AS INT) AS credits
