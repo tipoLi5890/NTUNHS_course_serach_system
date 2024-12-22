@@ -43,199 +43,135 @@ $action = $input['action'];
 $isFuzzySearch = isset($input['isFuzzySearch']) ? (bool)$input['isFuzzySearch'] : false;
 $searchTerm = trim($input['searchTerm']);
 
-// 檢查 Session Token
-if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
-    if ($_COOKIE['sessionToken'] === $_SESSION['sessionToken']) {
-        // 驗證成功，可以進一步處理請求
 
-        if (isset($_SESSION['userID'])) {
-            $userId = $_SESSION['userID'];  // 取得用戶ID
-            // 步驟 1: 取得當前的西元年月日
-            $gregorianYear = date('Y'); // 西元年，例如 2024
-            $month = date('n');          // 月份，1-12
-            $day = date('j');            // 日，1-31
+try {
+    // 假設您有一個變數來決定是否插入 'mark' 這個欄位
+    $includeMark = isset($_SESSION['userID']); // 或者根據您的業務邏輯設置為 false
 
-            // 步驟 2: 轉換為民國年
-            $minguoYear = $gregorianYear - 1911;
+    // 開始構建 SELECT 子句
+    $selectFields = "
+        k.*,
+        CASE 
+            WHEN k.上課星期 = '1' THEN '星期一'
+            WHEN k.上課星期 = '2' THEN '星期二'
+            WHEN k.上課星期 = '3' THEN '星期三'
+            WHEN k.上課星期 = '4' THEN '星期四'
+            WHEN k.上課星期 = '5' THEN '星期五'
+            WHEN k.上課星期 = '6' THEN '星期六'
+            WHEN k.上課星期 = '7' THEN '星期日'
+            ELSE '未知'
+        END AS 上課星期中文,
+        d.系所名稱
+    ";
 
-            // 初始化學年度和學期變數
-            $academicYear = '';
-            $semester = '';
+    // 根據條件決定是否插入 'mark' 欄位
+    if ($includeMark) {
+        $selectFields .= ",
+        CASE 
+            WHEN EXISTS (
+                SELECT 1 
+                FROM 用戶收藏 u 
+                WHERE u.用戶ID = :userID AND u.課程ID = k.編號
+            ) THEN 1
+            ELSE 0
+        END AS mark";
+    }
 
-            // 步驟 3: 判斷目前所在的學期
-            if ($month >= 8) {
-                // 如果現在是8月到12月，屬於當前年份的上學期
-                $academicYear = $minguoYear;
-                $semester = '1';
-            } elseif ($month >= 2 && $month <= 7) {
-                // 如果現在是2月到7月，屬於前一年的下學期
-                $academicYear = $minguoYear - 1;
-                $semester = '2';
-            } else { // $month == 1
-                // 如果現在是1月，屬於前一年的上學期
-                $academicYear = $minguoYear - 1;
-                $semester = '1';
-            }
-
-            // 步驟 4: 設置 $academicYear 變數，尾部加上學期數字
-            $academicYear .= $semester;
-
-            try {
-                // 準備 SQL 查詢
-                if ($isFuzzySearch) {
-                    // 模糊查詢 SQL
-                    $sql = "
-                        SELECT k.*,
-                            CASE 
-                                WHEN k.上課星期 = '1' THEN '星期一'
-                                WHEN k.上課星期 = '2' THEN '星期二'
-                                WHEN k.上課星期 = '3' THEN '星期三'
-                                WHEN k.上課星期 = '4' THEN '星期四'
-                                WHEN k.上課星期 = '5' THEN '星期五'
-                                WHEN k.上課星期 = '6' THEN '星期六'
-                                WHEN k.上課星期 = '7' THEN '星期日'
-                                ELSE '未知'
-                            END AS 上課星期中文,
-                            d.系所名稱,
-                            CASE 
-                                WHEN EXISTS (
-                                    SELECT 1 
-                                    FROM 用戶收藏 u 
-                                    WHERE u.用戶ID = :userID AND u.課程ID = k.編號
-                                ) THEN 1
-                                ELSE 0
-                            END AS mark
-                        FROM `課程` k
-                        LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
-                        WHERE 
-                            k.`學期` = :academicYear AND (
-                            `k`.`科目中文名稱` LIKE :keyword 
-                            OR `k`.`科目英文名稱` LIKE :keyword 
-                            OR `k`.`授課教師姓名` LIKE :keyword 
-                            OR `k`.`主開課教師姓名` LIKE :keyword 
-                            OR `k`.`課程中文摘要` LIKE :keyword 
-                            OR `k`.`課程英文摘要` LIKE :keyword
-                            OR `k`.`學期` LIKE :keyword
-                            OR `k`.`年級` LIKE :keyword
-                            OR `k`.`系所代碼` LIKE :keyword
-                            OR `k`.`課別名稱` LIKE :keyword
-                            OR `k`.`上課地點` LIKE :keyword
-                            OR `k`.`課程編號` LIKE :keyword
-                            OR `k`.`上課星期` LIKE :keyword
-                            OR `k`.`上課節次` LIKE :keyword
-                            OR `k`.`授課教師代碼_舊碼` LIKE :keyword
-                            OR `k`.`主開課教師代碼_舊碼` LIKE :keyword)
-                    ";
-                    $stmt = $link->prepare($sql);
-                    $likeKeyword = '%' . $searchTerm . '%';
-                    // 由於 :keyword 在 SQL 中多次出現，需要為每個出現位置使用唯一的參數
-                    // 或者改用命名參數並重複綁定。以下為簡化處理，假設 PDO 支援多次綁定
-                    $stmt->bindValue(':keyword', $likeKeyword, PDO::PARAM_STR);
-                } else {
-                    // 精準查詢 SQL
-                    $sql = "
-                        SELECT k.*,
-                            CASE 
-                                WHEN k.上課星期 = '1' THEN '星期一'
-                                WHEN k.上課星期 = '2' THEN '星期二'
-                                WHEN k.上課星期 = '3' THEN '星期三'
-                                WHEN k.上課星期 = '4' THEN '星期四'
-                                WHEN k.上課星期 = '5' THEN '星期五'
-                                WHEN k.上課星期 = '6' THEN '星期六'
-                                WHEN k.上課星期 = '7' THEN '星期日'
-                                ELSE '未知'
-                            END AS 上課星期中文,
-                            d.系所名稱,
-                            CASE 
-                                WHEN EXISTS (
-                                    SELECT 1 
-                                    FROM 用戶收藏 u 
-                                    WHERE u.用戶ID = :userID AND u.課程ID = k.編號
-                                ) THEN 1
-                                ELSE 0
-                            END AS mark
-                        FROM `課程` k
-                        LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
-                        WHERE 
-                            k.`學期` = :academicYear AND(
-                            `k`.`科目中文名稱` = :keyword 
-                            OR `k`.`科目英文名稱` = :keyword 
-                            OR `k`.`授課教師姓名` = :keyword 
-                            OR `k`.`主開課教師姓名` = :keyword 
-                            OR `k`.`課程中文摘要` = :keyword 
-                            OR `k`.`課程英文摘要` = :keyword
-                            OR `k`.`學期` = :keyword
-                            OR `k`.`年級` = :keyword
-                            OR `k`.`系所代碼` = :keyword
-                            OR `k`.`課別名稱` = :keyword
-                            OR `k`.`上課地點` = :keyword
-                            OR `k`.`課程編號` = :keyword
-                            OR `k`.`上課星期` = :keyword
-                            OR `k`.`上課節次` = :keyword
-                            OR `k`.`授課教師代碼_舊碼` = :keyword
-                            OR `k`.`主開課教師代碼_舊碼` = :keyword)
-                    ";
-                    $stmt = $link->prepare($sql);
-                    $stmt->bindValue(':keyword', $searchTerm, PDO::PARAM_STR);
-                }
-
-                // 綁定 userID 參數
-                $stmt->bindParam(':userID', $userId, PDO::PARAM_STR);
-                $stmt->bindValue(':academicYear', $academicYear, PDO::PARAM_STR);
-
-                // 執行查詢
-                $stmt->execute();
-
-                // 檢查是否有課程資料
-                if ($stmt->rowCount() > 0) {
-                    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    http_response_code(200);
-                    // 回傳課程資料
-                    echo json_encode([
-                        "message" => "查詢成功",
-                        "success" => true,
-                        "courses" => $courses
-                    ]);
-                } else {
-                    // 如果沒有課程資料
-                    echo json_encode([
-                        "message" => "沒有找到相關課程",
-                        "success" => false
-                    ]);
-                }
-            } catch (Exception $e) {
-                // 查詢出現錯誤
-                http_response_code(500);
-                echo json_encode([
-                    "message" => "伺服器錯誤，無法查詢課程",
-                    "success" => false
-                ]);
-            }
-        } else {
-            // 如果用戶ID不存在
-            http_response_code(403);
-            echo json_encode([
-                "message" => "未找到用戶ID，請重新登入",
-                "success" => false
-            ]);
-        }
-        
+    // 準備 SQL 查詢
+    if ($isFuzzySearch) {
+        // 模糊查詢 SQL
+        $sql = "
+            SELECT $selectFields
+            FROM `課程` k
+            LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
+            WHERE 
+                k.`學期` = :academicYear AND (
+                `k`.`科目中文名稱` LIKE :keyword 
+                OR `k`.`科目英文名稱` LIKE :keyword 
+                OR `k`.`授課教師姓名` LIKE :keyword 
+                OR `k`.`主開課教師姓名` LIKE :keyword 
+                OR `k`.`課程中文摘要` LIKE :keyword 
+                OR `k`.`課程英文摘要` LIKE :keyword
+                OR `k`.`學期` LIKE :keyword
+                OR `k`.`年級` LIKE :keyword
+                OR `k`.`系所代碼` LIKE :keyword
+                OR `k`.`課別名稱` LIKE :keyword
+                OR `k`.`上課地點` LIKE :keyword
+                OR `k`.`課程編號` LIKE :keyword
+                OR `k`.`上課星期` LIKE :keyword
+                OR `k`.`上課節次` LIKE :keyword
+                OR `k`.`授課教師代碼_舊碼` LIKE :keyword
+                OR `k`.`主開課教師代碼_舊碼` LIKE :keyword)
+        ";
+        $stmt = $link->prepare($sql);
+        $likeKeyword = '%' . $searchTerm . '%';
+        // 由於 :keyword 在 SQL 中多次出現，需要為每個出現位置使用唯一的參數
+        // 或者改用命名參數並重複綁定。以下為簡化處理，假設 PDO 支援多次綁定
+        $stmt->bindValue(':keyword', $likeKeyword, PDO::PARAM_STR);
     } else {
-        // 驗證失敗，返回未授權狀態
-        http_response_code(402);
+        // 精準查詢 SQL
+        $sql = "
+            SELECT $selectFields
+            FROM `課程` k
+            LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
+            WHERE 
+                k.`學期` = :academicYear AND(
+                `k`.`科目中文名稱` = :keyword 
+                OR `k`.`科目英文名稱` = :keyword 
+                OR `k`.`授課教師姓名` = :keyword 
+                OR `k`.`主開課教師姓名` = :keyword 
+                OR `k`.`課程中文摘要` = :keyword 
+                OR `k`.`課程英文摘要` = :keyword
+                OR `k`.`學期` = :keyword
+                OR `k`.`年級` = :keyword
+                OR `k`.`系所代碼` = :keyword
+                OR `k`.`課別名稱` = :keyword
+                OR `k`.`上課地點` = :keyword
+                OR `k`.`課程編號` = :keyword
+                OR `k`.`上課星期` = :keyword
+                OR `k`.`上課節次` = :keyword
+                OR `k`.`授課教師代碼_舊碼` = :keyword
+                OR `k`.`主開課教師代碼_舊碼` = :keyword)
+        ";
+        $stmt = $link->prepare($sql);
+        $stmt->bindValue(':keyword', $searchTerm, PDO::PARAM_STR);
+    }
+
+    include("utils.php"); // 載入工具函數
+    
+    // 計算學年度和學期
+    $academicYear = getAcademicYearAndSemester();
+    
+    // 綁定 userID 參數
+    $stmt->bindParam(':userID', $userId, PDO::PARAM_STR);
+    $stmt->bindValue(':academicYear', $academicYear, PDO::PARAM_STR);
+
+    // 執行查詢
+    $stmt->execute();
+
+    // 檢查是否有課程資料
+    if ($stmt->rowCount() > 0) {
+        $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        http_response_code(200);
+        // 回傳課程資料
         echo json_encode([
-            "message" => "無效的 Session Token，請重新登入",
+            "message" => "查詢成功",
+            "success" => true,
+            "courses" => $courses
+        ]);
+    } else {
+        // 如果沒有課程資料
+        echo json_encode([
+            "message" => "沒有找到相關課程",
             "success" => false
         ]);
-        exit;
     }
-} else {
-    // 沒有 Session Token，可能未登入或 Session 過期
-    http_response_code(401);
+} catch (Exception $e) {
+    // 查詢出現錯誤
+    http_response_code(500);
     echo json_encode([
-        "message" => "Session 過期或未登入",
-        "success" => false,
+        "message" => "伺服器錯誤，無法查詢課程",
+        "success" => false
     ]);
-    exit;
 }
 ?>

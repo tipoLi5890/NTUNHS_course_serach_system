@@ -126,268 +126,249 @@ $capacity = $input['capacity']; // 課程容量
 session_start(); // 初始化 Session
 include("configure.php");
 
-if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
-    if ($_COOKIE['sessionToken'] === $_SESSION['sessionToken']) {
-        // 驗證成功，可以進一步處理請求
+$includeMark = isset($_SESSION['userID']); // 或者根據您的業務邏輯設置為 false
 
-        if(isset($_SESSION['userID'])){
-            $userID = $_SESSION['userID'];  // 取得用戶ID
+// 開始構建 SELECT 子句
+$selectFields = "
+    k.*,
+    CASE 
+        WHEN k.上課星期 = '1' THEN '星期一'
+        WHEN k.上課星期 = '2' THEN '星期二'
+        WHEN k.上課星期 = '3' THEN '星期三'
+        WHEN k.上課星期 = '4' THEN '星期四'
+        WHEN k.上課星期 = '5' THEN '星期五'
+        WHEN k.上課星期 = '6' THEN '星期六'
+        WHEN k.上課星期 = '7' THEN '星期日'
+        ELSE '未知'
+    END AS 上課星期中文,
+    d.系所名稱
+";
 
-            // 初始化 SQL 條件陣列和參數陣列
-            $sqlConditions = [];
-            $sqlParams = [];          
+// 根據條件決定是否插入 'mark' 欄位
+if ($includeMark) {
+    $userID = $_SESSION['userID'];  // 取得用戶ID
+    $selectFields .= ",
+    CASE 
+        WHEN EXISTS (
+            SELECT 1 
+            FROM 用戶收藏 u 
+            WHERE u.用戶ID = :userID AND u.課程ID = k.編號
+        ) THEN 1
+        ELSE 0
+    END AS mark";
+}
+// 初始化 SQL 條件陣列和參數陣列
+$sqlConditions = [];
+$sqlParams = [];          
 
-            // 添加 userID 參數
-            $sqlParams[':userID'] = $userID;
+// 添加 userID 參數
+if($includeMark){
+    $sqlParams[':userID'] = $userID;
+}
 
-            // 學期條件
-            if (!empty($term)) {
-                $sqlConditions[] = "k.`學期` = :term";
-                $sqlParams[':term'] = $term;
-            }
+// 學期條件
+if (!empty($term)) {
+    $sqlConditions[] = "k.`學期` = :term";
+    $sqlParams[':term'] = $term;
+}
 
-            // 系統條件（使用 LIKE 組合 OR）
-            if (!empty($system) && is_array($system)) {
-                $systemConditions = [];
-                foreach ($system as $index => $sys) {
-                    $param = ":system{$index}";
-                    $systemConditions[] = "d.`系所名稱` LIKE {$param}";
-                    $sqlParams[$param] = "%{$sys}%";
-                }
-                if (!empty($systemConditions)) {
-                    $sqlConditions[] = "(" . implode(' OR ', $systemConditions) . ")";
-                }
-            }
+// 系統條件（使用 LIKE 組合 OR）
+if (!empty($system) && is_array($system)) {
+    $systemConditions = [];
+    foreach ($system as $index => $sys) {
+        $param = ":system{$index}";
+        $systemConditions[] = "d.`系所名稱` LIKE {$param}";
+        $sqlParams[$param] = "%{$sys}%";
+    }
+    if (!empty($systemConditions)) {
+        $sqlConditions[] = "(" . implode(' OR ', $systemConditions) . ")";
+    }
+}
 
-            // 教師名稱條件（使用 LIKE）
-            if (!empty($teacher)) {
-                $sqlConditions[] = "k.`授課教師姓名` LIKE :teacher";
-                $sqlParams[':teacher'] = "%{$teacher}%";
-            }
+// 教師名稱條件（使用 LIKE）
+if (!empty($teacher)) {
+    $sqlConditions[] = "k.`授課教師姓名` LIKE :teacher";
+    $sqlParams[':teacher'] = "%{$teacher}%";
+}
 
-            // 上課地點條件（使用 LIKE）
-            if (!empty($room)) {
-                $sqlConditions[] = "k.`上課地點` LIKE :room";
-                $sqlParams[':room'] = "%{$room}%";
-            }
+// 上課地點條件（使用 LIKE）
+if (!empty($room)) {
+    $sqlConditions[] = "k.`上課地點` LIKE :room";
+    $sqlParams[':room'] = "%{$room}%";
+}
 
-            // 時段條件（使用 IN）
-            if (!empty($period) && is_array($period)) {
-                // 過濾非數字
-                $filteredPeriods = array_filter($period, function($p) {
-                    return is_numeric($p);
-                });
-                if (!empty($filteredPeriods)) {
-                    $placeholders = [];
-                    foreach ($filteredPeriods as $index => $p) {
-                        $param = ":period{$index}";
-                        $placeholders[] = $param;
-                        $sqlParams[$param] = $p;
-                    }
-                    $sqlConditions[] = "k.`上課節次` IN (" . implode(', ', $placeholders) . ")";
-                }
-            }
-
-            // 年級條件（使用 IN）
-            if (!empty($grade) && is_array($grade)) {
-                // 過濾非數字
-                $filteredGrades = array_filter($grade, function($g) {
-                    return is_numeric($g);
-                });
-                if (!empty($filteredGrades)) {
-                    $placeholders = [];
-                    foreach ($filteredGrades as $index => $g) {
-                        $param = ":grade{$index}";
-                        $placeholders[] = $param;
-                        $sqlParams[$param] = $g;
-                    }
-                    $sqlConditions[] = "k.`年級` IN (" . implode(', ', $placeholders) . ")";
-                }
-            }
-
-            // 系所條件（使用 LIKE 組合 OR）
-            if (!empty($department) && is_array($department)) {
-                $departmentConditions = [];
-                foreach ($department as $index => $dept) {
-                    $param = ":department{$index}";
-                    $departmentConditions[] = "d.`系所名稱` LIKE {$param}";
-                    $sqlParams[$param] = "%{$dept}%";
-                }
-                if (!empty($departmentConditions)) {
-                    $sqlConditions[] = "(" . implode(' OR ', $departmentConditions) . ")";
-                }
-            }
-
-            // 星期條件（使用 IN）
-            if (!empty($day) && is_array($day)) {
-                // 過濾非數字
-                $filteredDays = array_filter($day, function($d) {
-                    return is_numeric($d);
-                });
-                if (!empty($filteredDays)) {
-                    $placeholders = [];
-                    foreach ($filteredDays as $index => $d) {
-                        $param = ":day{$index}";
-                        $placeholders[] = $param;
-                        $sqlParams[$param] = $d;
-                    }
-                    $sqlConditions[] = "k.`上課星期` IN (" . implode(', ', $placeholders) . ")";
-                }
-            }
-
-            // 課程類型條件（使用 LIKE 組合 OR）
-            if (!empty($courseType) && is_array($courseType)) {
-                $courseTypeConditions = [];
-                foreach ($courseType as $index => $ct) {
-                    $param = ":courseType{$index}";
-                    $courseTypeConditions[] = "k.`課別名稱` LIKE {$param}";
-                    $sqlParams[$param] = "%{$ct}%";
-                }
-                if (!empty($courseTypeConditions)) {
-                    $sqlConditions[] = "(" . implode(' OR ', $courseTypeConditions) . ")";
-                }
-            }
-
-            // 課程名稱條件（使用 LIKE）
-            if (!empty($course)) {
-                $sqlConditions[] = "(k.`科目中文名稱` LIKE :course OR k.`科目英文名稱` LIKE :course)";
-                $sqlParams[':course'] = "%{$course}%";
-            }
-
-            // 班級條件（使用 =）
-            if (!empty($class)) {
-                $sqlConditions[] = "k.`上課班組` = :class";
-                $sqlParams[':class'] = $class;
-            }
-
-            // 內容分類條件（使用 LIKE 組合 OR）
-            if (!empty($category)) {
-                $categoryConditions = [];
-                $categories = explode(',', $category); // 假設多個分類以逗號分隔
-                foreach ($categories as $index => $cat) {
-                    $param = ":category{$index}";
-                    $categoryConditions[] = "k.`課表備註` LIKE {$param}";
-                    $sqlParams[$param] = "%{$cat}%";
-                }
-                if (!empty($categoryConditions)) {
-                    $sqlConditions[] = "(" . implode(' OR ', $categoryConditions) . ")";
-                }
-            }
-
-            // 人數條件（使用 =）
-            if (!empty($capacity)) {
-                if (is_numeric($capacity)) {
-                    $sqlConditions[] = "k.`上課人數` = :capacity";
-                    $sqlParams[':capacity'] = $capacity;
-                }
-            }
-
-            // 構建完整的 SQL 查詢
-            $sql = "
-                SELECT k.*,
-                    CASE 
-                        WHEN k.`上課星期` = '1' THEN '星期一'
-                        WHEN k.`上課星期` = '2' THEN '星期二'
-                        WHEN k.`上課星期` = '3' THEN '星期三'
-                        WHEN k.`上課星期` = '4' THEN '星期四'
-                        WHEN k.`上課星期` = '5' THEN '星期五'
-                        WHEN k.`上課星期` = '6' THEN '星期六'
-                        WHEN k.`上課星期` = '7' THEN '星期日'
-                        ELSE '未知'
-                    END AS `上課星期中文`,
-                    d.`系所名稱`,
-                    CASE 
-                        WHEN EXISTS (
-                            SELECT 1 
-                            FROM `用戶收藏` u 
-                            WHERE u.`用戶ID` = :userID AND u.`課程ID` = k.`編號`
-                        ) THEN 1
-                        ELSE 0
-                    END AS `mark`
-                FROM `課程` k
-                LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
-            ";
-
-            // 添加 WHERE 子句
-            if (!empty($sqlConditions)) {
-                $sql .= " WHERE " . implode(' AND ', $sqlConditions);
-            }
-
-
-
-            try {
-                // 複合查詢
-                $stmt = $link->prepare($sql);
-
-                // 綁定所有參數
-                foreach ($sqlParams as $param => $value) {
-                    // 根據參數的值類型來決定綁定的 PDO 類型
-                    if (is_int($value)) {
-                        $type = PDO::PARAM_INT;
-                    } elseif (is_bool($value)) {
-                        $type = PDO::PARAM_BOOL;
-                    } elseif (is_null($value)) {
-                        $type = PDO::PARAM_NULL;
-                    } else {
-                        $type = PDO::PARAM_STR;
-                    }
-                    $stmt->bindValue($param, $value, $type);
-                }
-                
-                // 執行查詢
-                $stmt->execute();
-
-                // 檢查是否有課程資料
-                if ($stmt->rowCount() > 0) {
-                    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    http_response_code(200);
-                    // 回傳課程資料
-                    echo "\n\n";
-                    echo json_encode([
-                        "message" => "查詢成功",
-                        "success" => true,
-                        "courses" => $courses
-                    ]);
-                } else {
-                    // 如果沒有課程資料
-                    echo json_encode([
-                        "message" => "沒有找到相關課程",
-                        "success" => false
-                    ]);
-                }
-            } catch (Exception $e) {
-                // 查詢出現錯誤
-                http_response_code(500);
-                echo json_encode([
-                    "message" => "伺服器錯誤，無法查詢課程",
-                    "success" => false
-                ]);
-            }
-        }else {
-            // 如果用戶ID不存在
-            http_response_code(403);
-            echo json_encode([
-                "message" => "未找到用戶ID，請重新登入",
-                "success" => false
-            ]);
+// 時段條件（使用 IN）
+if (!empty($period) && is_array($period)) {
+    // 過濾非數字
+    $filteredPeriods = array_filter($period, function($p) {
+        return is_numeric($p);
+    });
+    if (!empty($filteredPeriods)) {
+        $placeholders = [];
+        foreach ($filteredPeriods as $index => $p) {
+            $param = ":period{$index}";
+            $placeholders[] = $param;
+            $sqlParams[$param] = $p;
         }
-        
-    } else {
-        // 驗證失敗，返回未授權狀態
-        http_response_code(402);
+        $sqlConditions[] = "k.`上課節次` IN (" . implode(', ', $placeholders) . ")";
+    }
+}
+
+// 年級條件（使用 IN）
+if (!empty($grade) && is_array($grade)) {
+    // 過濾非數字
+    $filteredGrades = array_filter($grade, function($g) {
+        return is_numeric($g);
+    });
+    if (!empty($filteredGrades)) {
+        $placeholders = [];
+        foreach ($filteredGrades as $index => $g) {
+            $param = ":grade{$index}";
+            $placeholders[] = $param;
+            $sqlParams[$param] = $g;
+        }
+        $sqlConditions[] = "k.`年級` IN (" . implode(', ', $placeholders) . ")";
+    }
+}
+
+// 系所條件（使用 LIKE 組合 OR）
+if (!empty($department) && is_array($department)) {
+    $departmentConditions = [];
+    foreach ($department as $index => $dept) {
+        $param = ":department{$index}";
+        $departmentConditions[] = "d.`系所名稱` LIKE {$param}";
+        $sqlParams[$param] = "%{$dept}%";
+    }
+    if (!empty($departmentConditions)) {
+        $sqlConditions[] = "(" . implode(' OR ', $departmentConditions) . ")";
+    }
+}
+
+// 星期條件（使用 IN）
+if (!empty($day) && is_array($day)) {
+    // 過濾非數字
+    $filteredDays = array_filter($day, function($d) {
+        return is_numeric($d);
+    });
+    if (!empty($filteredDays)) {
+        $placeholders = [];
+        foreach ($filteredDays as $index => $d) {
+            $param = ":day{$index}";
+            $placeholders[] = $param;
+            $sqlParams[$param] = $d;
+        }
+        $sqlConditions[] = "k.`上課星期` IN (" . implode(', ', $placeholders) . ")";
+    }
+}
+
+// 課程類型條件（使用 LIKE 組合 OR）
+if (!empty($courseType) && is_array($courseType)) {
+    $courseTypeConditions = [];
+    foreach ($courseType as $index => $ct) {
+        $param = ":courseType{$index}";
+        $courseTypeConditions[] = "k.`課別名稱` LIKE {$param}";
+        $sqlParams[$param] = "%{$ct}%";
+    }
+    if (!empty($courseTypeConditions)) {
+        $sqlConditions[] = "(" . implode(' OR ', $courseTypeConditions) . ")";
+    }
+}
+
+// 課程名稱條件（使用 LIKE）
+if (!empty($course)) {
+    $sqlConditions[] = "(k.`科目中文名稱` LIKE :course OR k.`科目英文名稱` LIKE :course)";
+    $sqlParams[':course'] = "%{$course}%";
+}
+
+// 班級條件（使用 =）
+if (!empty($class)) {
+    $sqlConditions[] = "k.`上課班組` = :class";
+    $sqlParams[':class'] = $class;
+}
+
+// 內容分類條件（使用 LIKE 組合 OR）
+if (!empty($category)) {
+    $categoryConditions = [];
+    $categories = explode(',', $category); // 假設多個分類以逗號分隔
+    foreach ($categories as $index => $cat) {
+        $param = ":category{$index}";
+        $categoryConditions[] = "k.`課表備註` LIKE {$param}";
+        $sqlParams[$param] = "%{$cat}%";
+    }
+    if (!empty($categoryConditions)) {
+        $sqlConditions[] = "(" . implode(' OR ', $categoryConditions) . ")";
+    }
+}
+
+// 人數條件（使用 =）
+if (!empty($capacity)) {
+    if (is_numeric($capacity)) {
+        $sqlConditions[] = "k.`上課人數` = :capacity";
+        $sqlParams[':capacity'] = $capacity;
+    }
+}
+
+// 構建完整的 SQL 查詢
+$sql = "
+    SELECT $selectFields
+    FROM `課程` k
+    LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
+";
+
+// 添加 WHERE 子句
+if (!empty($sqlConditions)) {
+    $sql .= " WHERE " . implode(' AND ', $sqlConditions);
+}
+
+
+
+try {
+    // 複合查詢
+    $stmt = $link->prepare($sql);
+
+    // 綁定所有參數
+    foreach ($sqlParams as $param => $value) {
+        // 根據參數的值類型來決定綁定的 PDO 類型
+        if (is_int($value)) {
+            $type = PDO::PARAM_INT;
+        } elseif (is_bool($value)) {
+            $type = PDO::PARAM_BOOL;
+        } elseif (is_null($value)) {
+            $type = PDO::PARAM_NULL;
+        } else {
+            $type = PDO::PARAM_STR;
+        }
+        $stmt->bindValue($param, $value, $type);
+    }
+    
+    // 執行查詢
+    $stmt->execute();
+
+    // 檢查是否有課程資料
+    if ($stmt->rowCount() > 0) {
+        $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        http_response_code(200);
+        // 回傳課程資料
+        echo "\n\n";
         echo json_encode([
-            "message" => "無效的 Session Token，請重新登入",
+            "message" => "查詢成功",
+            "success" => true,
+            "courses" => $courses
+        ]);
+    } else {
+        // 如果沒有課程資料
+        echo json_encode([
+            "message" => "沒有找到相關課程",
             "success" => false
         ]);
-        exit;
     }
-}else {
-    // 沒有 Session Token，可能未登入或 Session 過期
-    http_response_code(401);
+} catch (Exception $e) {
+    // 查詢出現錯誤
+    http_response_code(500);
     echo json_encode([
-        "message" => "Session 過期或未登入",
-        "success" => false,
+        "message" => "伺服器錯誤，無法查詢課程",
+        "success" => false
     ]);
-    exit;
 }
+
 ?>
