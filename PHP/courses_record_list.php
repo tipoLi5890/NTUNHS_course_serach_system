@@ -125,7 +125,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // 檢查必要的參數
-if (!isset($input['action']) || !isset($input['id'])) {
+if (!isset($input['action']) || !isset($input['courseCode'])) {
     http_response_code(400);
     echo json_encode([
         "message" => "缺少必要的參數",
@@ -145,7 +145,7 @@ if($input['action'] !== 'get-course-record'){
 
 // 提取參數
 $action = $input['action'];
-$CourseID = $input['id'];
+$CourseID = $input['courseCode'];
 
 session_start(); // 初始化 Session
 include("configure.php");
@@ -161,7 +161,17 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
 
                 // 查詢該課程的評價
                 $scheduleStmt = $link->prepare("
-                    SELECT r.評價ID, r.課程ID, r.評價文本, r.評價時間 FROM `課程評價` as r WHERE `課程ID` = :CourseID AND `評價文本` != '' AND `評論狀態` = 'Y'
+                    SELECT 
+                        r.評價ID, 
+                        r.課程ID, 
+                        r.評價文本, 
+                        r.評價時間 
+                    FROM 課程評價 AS r
+                    JOIN 課程 AS c
+                    ON r.課程ID = c.編號
+                    WHERE c.科目代碼_新碼 = :CourseID
+                    AND r.評價文本 != '' 
+                    AND r.評論狀態 = 'Y' 
                 ");
                 
                 // 綁定參數

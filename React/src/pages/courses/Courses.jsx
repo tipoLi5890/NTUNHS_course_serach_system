@@ -129,7 +129,8 @@ const Courses = () => {
 
         // 提取課程內的評論資料
         try {
-            const courseReviews = await getRecords(id);
+            const courseCode = courseDetails['科目代碼_新碼']; // 使用科目代碼_新碼
+            const courseReviews = await getRecords(courseCode);
             setCourseReviews(courseReviews);
             console.log(courseReviews);
         } catch (error) {

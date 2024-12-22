@@ -60,16 +60,16 @@ export const commentData = async (id, commentInput) => {
 
 /**
  * 取得某課程的評論內容
- * @param {string} id - 課程ID
+ * @param {string} courseCode- 科目代碼_新碼
  * @returns {Promise<Object[]>} 返回記錄數據
  */
-export const getRecords = async (id) => {
+export const getRecords = async (courseCode) => {
     try {
         const response = await axios.post(
             `/api/courses_record_list.php`,
             {
                 action: 'get-course-record',
-                id: id,
+                courseCode: courseCode,
             }, { withCredentials: true });
         console.log(response.data?.courses);
         return response.data.courses; // 假設後端回傳格式包含 `courses` 欄位

@@ -27,7 +27,6 @@ const Recommendation = () => {
     const [results] = useState({ courses: [] }); // 儲存完整測驗資料
     const [selectedCourse, setSelectedCourse] = useState(null);
     const { lastSearchResult, updateLastSearchResult } = useSearch(); // 解構出 updateLastSearchResult
-    const { analyzeType } = location.state || {};
     const { isAuthenticated, userInfo } = useAuth(); // 從 AuthProvider 獲取登入狀態與使用者資訊
     const [userType, setUserType] = useState(null);
     const [courses, setCourses] = useState([]); // 確保 courses 為陣列，即使查詢結果為空
@@ -82,7 +81,7 @@ const Recommendation = () => {
                 const type = await GetUserType();
                 setUserType(type); // 若無稱號，設定為 null
                 console.log("使用者稱號:", type);
-    
+
                 // 根據 userType 載入課程
                 if (type) {
                     const recommendedCourses = await getRecommendedCourses(type);
@@ -94,12 +93,12 @@ const Recommendation = () => {
                 console.error("載入使用者稱號或課程失敗:", error);
             }
         };
-    
+
         loadUserTypeAndCourses();
     }, []);
 
     // 根據 analyzeType 查找對應文字，若無對應則回傳空陣列
-    const typeLabels = [userType, ...(analyzeTypeMapping[userType] || [])];
+    const typeLabels = [userType, ...(analyzeTypeMapping[userType] || ['尚無稱號'])];
 
     // 幻燈片圖片
     const slides = [pic1, pic2, pic3, pic4, pic5];
@@ -239,9 +238,8 @@ const Recommendation = () => {
                 question: index + 1, // 問題編號 (從 1 開始)
                 answer: selectedAnswers[index], // 選項的編號
             }));
-            saveUserType(analyzeType);
-            // 傳遞使用者名稱和測驗結果
-            navigate("/testAnalyze", { state: { userID: userInfo?.userID, results: completedResults } });
+            saveUserType(completedResults.map((result) => result.answer).join(""));
+            closeAnalyzePopup(); // 顯示分析彈出視窗
         }
     };
 
@@ -253,6 +251,7 @@ const Recommendation = () => {
         setShowAnalyzePopup(false);
         setCurrentQuestion(0);
         setSelectedAnswers({});
+        window.location.reload(); // 重新載入頁面
     };
 
 
@@ -360,21 +359,26 @@ const Recommendation = () => {
                 <div id="section2">
                     <h4>以下課程可能讓您感到興奮</h4>
                     <div className='result'>
-                        <div className="course-list">
-                            {groupedCourses.all.map((course) => {
-                                const savedCourse = courseSaveData.find((item) => item.id === course['編號']);
-                                return (
-                                    <CourseCard
-                                        key={course['編號']}
-                                        course={course}
-                                        isAuthenticated={isAuthenticated}
-                                        savedCourse={savedCourse || { mark: "0" }} // 確保有預設值
-                                        handleToggleSave={handleToggleSave}
-                                        handleCardClick={handleCardClick}
-                                    />
-                                );
-                            })}
-                        </div>
+                        {groupedCourses.all.length === 0 ? (
+                            // 如果課程列表為空，顯示提示訊息
+                            <p>目前尚未進行測驗，無法為您提供推薦課程。</p>
+                        ) : (
+                            <div className="course-list">
+                                {groupedCourses.all.map((course) => {
+                                    const savedCourse = courseSaveData.find((item) => item.id === course['編號']);
+                                    return (
+                                        <CourseCard
+                                            key={course['編號']}
+                                            course={course}
+                                            isAuthenticated={isAuthenticated}
+                                            savedCourse={savedCourse || { mark: "0" }} // 確保有預設值
+                                            handleToggleSave={handleToggleSave}
+                                            handleCardClick={handleCardClick}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -434,11 +438,6 @@ const Recommendation = () => {
 
             {/* 頁尾 */}
             <Footer />
-
-            {/* 傳送測驗資料到 TestAnalyze */}
-            {results.length > 0 && (
-                <TestAnalyze username={savedUsername} results={results} />
-            )}
         </div>
     );
 };
