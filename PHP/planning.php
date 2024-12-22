@@ -189,15 +189,15 @@ function getSavedElectiveCourses($link)
             CAST(SUBSTRING_INDEX(課程.上課節次, ',', -1) AS INT) AS endPeriod, -- 結束節次
             CAST(課程.上課星期 AS INT) AS weekDay,
             1 AS category,  
-            課程規劃.放置狀態 AS isPlaced,
+            用戶收藏.放置狀態 AS isPlaced,
             課程.學期 AS semester, 
             CAST(課程.學分數 AS INT) AS credits 
         FROM  
-            課程規劃 
+            用戶收藏 
         JOIN  
-            課程 ON 課程規劃.課程ID = 課程.編號 
+            課程 ON 用戶收藏.課程ID = 課程.編號 
         WHERE  
-            課程規劃.用戶ID = :userID;
+            用戶收藏.用戶ID = :userID;
 
     ";
 
@@ -258,7 +258,7 @@ function updateCourseVisibility($link)
     // 定義 SQL 查詢，檢查資料是否存在
     $checkQuery = "
         SELECT 1
-        FROM 課程規劃
+        FROM 用戶收藏
         WHERE 用戶ID = :userID AND 課程ID = :id
     ";
 
@@ -278,7 +278,7 @@ function updateCourseVisibility($link)
 
         // 定義 SQL 查詢，更新顯示狀態
         $updateQuery = "
-            UPDATE 課程規劃
+            UPDATE 用戶收藏
             SET 放置狀態 = :isPlaced
             WHERE 用戶ID = :userID AND 課程ID = :id
         ";
