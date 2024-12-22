@@ -33,10 +33,20 @@
   font-size: 0.8rem;
   background: #fff;
 }
+@media(min-width: 1024px) {
+  .planning-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start; 
+  }
 
+  .planning-schedule {
+    flex: 1.5; 
+  }
+}
 /* 課表 */
 .schedule_container {
-  width: 70%;
+  width: 90%;
   margin: auto;
   padding: 5px 20px;
   font-size: 0.6rem;
@@ -44,7 +54,6 @@
 }
 @media(max-width: 540px) {
   .schedule_container {
-    width: 90%;
     margin: 5% auto;
     padding: 5px 0;
     line-height: 1.2;
@@ -104,14 +113,37 @@
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-.storageCourses {
-  width: 70%;
+.download-btn {
   margin: 20px auto;
+  width: auto;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background-color: var(--tertiary-color);
+  border: none;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+}
+.download-btn:hover{
+  background-color: var(--button-hover-color);
+  color: black;
+}
+
+.storageCourses {
+  flex: 1; 
+  width: 70%;
+  margin: 20px 20px 20px 0px;
 }
 @media(max-width: 540px) {
   .storageCourses {
     width: 90%;
     line-height: 1.2;
+    
+  }
+}
+@media(max-width: 1024px){
+  .storageCourses {
+    margin: 20px auto;
   }
 }
 
@@ -168,3 +200,4 @@
 .storageCourses_star:hover {
   color: #777;
 }
+
