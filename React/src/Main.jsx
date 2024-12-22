@@ -9,6 +9,7 @@ import Planning from './pages/planning/Planning';
 import Recommendation from './pages/recommendation/Recommendation';
 import Record from './pages/record/Record';
 import NotFound from './pages/notFound/NotFound';
+import Admin from './pages/admin/Admin';
 import TestPage from './test';
 import TestAnalyze from './pages/recommendation/testAnalyze'; // 測試頁面
 import './styles/styles.css'; // 全域的 CSS 樣式
@@ -60,6 +61,11 @@ root.render(
                             <ProtectedRoute>
                                 <Record />
                             </ProtectedRoute>
+                        } />
+
+                        {/* 使用 ProtectedRoute 保護 */}
+                        <Route path="/Admin" element={
+                                <Admin />
                         } />
 
                         <Route path="/test" element={<TestPage />} />
