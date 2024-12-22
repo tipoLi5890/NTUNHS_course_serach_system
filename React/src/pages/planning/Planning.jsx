@@ -222,7 +222,8 @@ const Planning = () => {
 
             <div className="main">
                 <h2>我的課程規劃</h2>
-
+                <div className="planning-content">
+                <div className='planning-schedule'>
                 {/* 學期選單 */}
                 <div className="semester-select">
                     <label htmlFor="semester">選擇學期：</label>
@@ -303,7 +304,7 @@ const Planning = () => {
                         下載課表
                     </button>
                 </div>
-
+                </div>
                 <hr />
 
                 <div className='storageCourses'>
@@ -404,7 +405,7 @@ const Planning = () => {
                         </tbody>
                     </table>
                 </div>
-
+                </div>
                 {/* 彈出視窗 */}
                 {selectedCourse && (
                     <CoursesDetail
