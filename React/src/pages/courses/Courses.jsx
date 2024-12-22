@@ -119,7 +119,7 @@ const Courses = () => {
         : {};
 
     // 點擊課程卡片顯示詳細資訊
-    const handleCardClick = async(id) => {
+    const handleCardClick = async (id) => {
         const courseDetails = courses.find(course => course['編號'] === id);
         if (!courseDetails) {
             alert('無法取得課程詳細資料');
@@ -163,29 +163,36 @@ const Courses = () => {
                             </select>
                         </div>
 
-                        {/* 分類顯示 */}
-                        <div className="classification-container">
-                            {Object.entries(groupedCourses).map(([key, courses]) => (
-                                <div key={key} className="classification">
-                                    <h4>{key}</h4>
-                                    <div className="course-list">
-                                        {courses.map((course) => {
-                                            const savedCourse = courseSaveData.find((item) => item.id === course['編號']);
-                                            return (
-                                                <CourseCard
-                                                    key={course['編號']}
-                                                    course={course}
-                                                    isAuthenticated={isAuthenticated}
-                                                    savedCourse={savedCourse || { mark: "0" }} // 確保有預設值
-                                                    handleToggleSave={handleToggleSave}
-                                                    handleCardClick={handleCardClick}
-                                                />
-                                            );
-                                        })}
+                        {/* 當查詢結果為空時，顯示提示 */}
+                        {courses.length === 0 ? (
+                            <div className="no-results">
+                                <p>查無符合搜尋條件的課程。</p>
+                            </div>
+                        ) : (
+                            /* 分類顯示 */
+                            <div className="classification-container">
+                                {Object.entries(groupedCourses).map(([key, courses]) => (
+                                    <div key={key} className="classification">
+                                        <h4>{key}</h4>
+                                        <div className="course-list">
+                                            {courses.map((course) => {
+                                                const savedCourse = courseSaveData.find((item) => item.id === course['編號']);
+                                                return (
+                                                    <CourseCard
+                                                        key={course['編號']}
+                                                        course={course}
+                                                        isAuthenticated={isAuthenticated}
+                                                        savedCourse={savedCourse || { mark: "0" }} // 確保有預設值
+                                                        handleToggleSave={handleToggleSave}
+                                                        handleCardClick={handleCardClick}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* 右側側邊欄 */}

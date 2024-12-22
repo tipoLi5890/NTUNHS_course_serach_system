@@ -185,7 +185,8 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                     // 如果沒有課程資料
                     echo json_encode([
                         "message" => "沒有找到相關課程",
-                        "success" => false
+                        "success" => true,
+                        "courses" => [] // 確保 courses 是空陣列
                     ]);
                 }
             } catch (Exception $e) {

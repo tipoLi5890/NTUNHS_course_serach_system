@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import '../courses/courses.css'
+import '../courses/courses.css';
 import './record.css';
 import courseImage from "../../assets/courses/course.png";
 import { getHistoryCourses, getUserRecords, commentData } from '../../services/Record_api.jsx';

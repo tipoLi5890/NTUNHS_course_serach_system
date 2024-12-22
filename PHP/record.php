@@ -2,7 +2,7 @@
 // 設定 CORS 和 JSON 回應格式
 header('Access-Control-Allow-Origin: http://localhost:5173'); // 根據需要調整
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // 允許的 HTTP 方法
+header('Access-Control-Allow-Methods: POST, OPTIONS'); // 允許的 HTTP 方法
 header('Access-Control-Allow-Headers: Content-Type, Authorization'); // 允許的標頭
 header('Access-Control-Allow-Credentials: true'); // 啟用 Cookie 傳遞
 
@@ -77,7 +77,11 @@ switch ($action) {
         break;
     default:
         http_response_code(400);
-        echo json_encode(["error" => "未知的請求"]);
+        echo json_encode([
+            "message" => "未知的請求",
+            "success" => false
+        ]);
+        exit;
 }
 
 // 取得使用者的歷史課程
@@ -234,94 +238,6 @@ function getUserRecords($link)
         ]);
     }
 }
-
-
-// 取得某課程的評論內容
-function getCourseRecords($link)
-{
-    $userID = $_SESSION['userID']; // 取得用戶ID
-    $inputData = json_decode(file_get_contents('php://input'), true); // 獲取前端傳送的JSON數據
-
-    // 記錄請求資料到日誌，便於調試
-    error_log('接收到的請求：' . print_r($inputData, true));
-
-    $id = $inputData['id'] ?? null; // 從 JSON 數據中獲取課程 ID
-
-    // 驗證必要參數
-    if (empty($userID) || empty($id)) {
-        http_response_code(400);
-        echo json_encode(["error" => "缺少必要參數", "success" => false]);
-        return;
-    }
-
-    // 定義 SQL 查詢特定課程的評論
-    $query = "
-        SELECT 
-            課程評價.課程ID AS id,
-            CONCAT(系所對照表.系所名稱, ' ', 
-                CASE 課程.年級
-                    WHEN 1 THEN '一年級'
-                    WHEN 2 THEN '二年級'
-                    WHEN 3 THEN '三年級'
-                    WHEN 4 THEN '四年級'
-                    ELSE '年級未知'
-                END
-            ) AS creater,
-            課程評價.評價文本 AS comment,
-            課程評價.評價時間 AS reviewDate
-        FROM 課程評價
-        JOIN 課程 ON 課程評價.課程ID = 課程.編號
-        JOIN 系所對照表 ON 課程.系所代碼 = 系所對照表.系所代碼
-        WHERE 課程評價.課程ID = :id
-    ";
-
-    try {
-        // 預處理查詢
-        $stmt = $link->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
-
-        // 執行查詢
-        if ($stmt->execute()) {
-            // 抓取查詢結果
-            $courseRecord = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (!empty($courseRecord)) {
-                // 返回成功響應
-                echo json_encode([
-                    "message" => "課程評論查詢成功",
-                    "success" => true,
-                    "courseRecord" => $courseRecord
-                ], JSON_UNESCAPED_UNICODE);
-            } else {
-                // 如果沒有該課程的評論
-                echo json_encode([
-                    "message" => "未找到該課程的評論",
-                    "success" => false
-                ]);
-            }
-        } else {
-            throw new Exception("SQL 執行失敗");
-        }
-    } catch (PDOException $e) {
-        // 捕捉資料庫錯誤
-        error_log('資料庫錯誤：' . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            "message" => "資料庫錯誤，無法查詢課程評論",
-            "success" => false
-        ]);
-    } catch (Exception $e) {
-        // 捕捉其他錯誤
-        error_log('錯誤訊息：' . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            "message" => "伺服器錯誤，無法查詢課程評論",
-            "success" => false
-        ]);
-    }
-}
-
-
 
 // 學生提交評論
 function submitComment($link)

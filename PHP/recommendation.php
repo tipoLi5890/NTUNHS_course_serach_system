@@ -61,10 +61,6 @@ switch ($action) {
         handleSaveUserType($input);
         break;
     
-    case 'get-elective-courses':
-        handleGetElectiveCourses($input);
-        break;
-    
     case 'get-recommended-courses':
         handleGetRecommendedCourses($input);
         break;
@@ -120,16 +116,17 @@ function handleGetUserType() {
         $scheduleStmt->bindParam(':userID', $userID, PDO::PARAM_STR);
         $scheduleStmt->execute();
 
-        if ($stmt->rowCount() > 0) {
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($scheduleStmt->rowCount() > 0) {
+            $user = $scheduleStmt->fetch(PDO::FETCH_ASSOC);
             $recommendationType = (int)$user['推薦類型'];
 
             if ($recommendationType === 0) {
                 // 推薦類型為 0，表示用戶沒有測試紀錄
-                http_response_code(400);
+                http_response_code(200);
                 echo json_encode([
                     "message" => "用戶沒有測試紀錄",
-                    "success" => false
+                    "success" => true,
+                    "type" => null // 回傳 null 給前端
                 ]);
                 exit;
             }
@@ -138,9 +135,10 @@ function handleGetUserType() {
             echo json_encode([
                 "message" => "查詢成功",
                 "success" => true,
-                "type" => $user['title']
+                "type" => $user['推薦類型']
             ]);
         } else {
+            http_response_code(404);
             echo json_encode([
                 "message" => "未找到用戶",
                 "success" => false
@@ -253,7 +251,7 @@ function handleSaveUserType($input) {
 }
 
 /**
- * 處理 get-elective-courses 請求
+ * 處理 get-recommended-courses 請求
  * 
  * 前端請求：
  * - 方法：POST
@@ -267,7 +265,7 @@ function handleSaveUserType($input) {
  *   {
  *     "message": "查詢成功",
  *     "success": true,
- *     "electiveCourses": [ 
+ *     "recommendation": [ 
  *         {
  *             // 課程相關資料
  *             "編號": "...",
@@ -303,7 +301,7 @@ function handleSaveUserType($input) {
  *     "success": false
  *   }
  */
-function handleGetElectiveCourses($input) {
+function handleGetRecommendedCourses($input) {
     $userID = $_SESSION['userID'];
 
     // 驗證是否提供了 'type' 參數
@@ -470,6 +468,8 @@ function handleGetElectiveCourses($input) {
                 WHEN k.`上課星期` = '7' THEN '星期日'
                 ELSE '未知'
             END AS `上課星期中文`,
+            p.`評價文本`, 
+            p.`評價時間`, 
             d.`系所名稱`,
             CASE 
                 WHEN EXISTS (
@@ -480,6 +480,7 @@ function handleGetElectiveCourses($input) {
                 ELSE 0
             END AS `mark`
         FROM `課程` k
+        LEFT JOIN `課程評價` p ON k.`編號` = p.`課程ID`
         LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
         WHERE " . implode(' AND ', $sqlConditions) . "
     ";
@@ -508,7 +509,7 @@ function handleGetElectiveCourses($input) {
             echo json_encode([
                 "message" => "查詢成功",
                 "success" => true,
-                "electiveCourses" => $courses
+                "recommendation" => $courses
             ]);
         } else {
             echo json_encode([

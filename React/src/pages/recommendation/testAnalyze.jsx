@@ -4,10 +4,10 @@ const TestAnalyze = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { state } = location || {}; // 確保 location 不為空
-    const { results, username } = state || {}; // 確保 results 和 username 不為空
+    const { results, userID } = state || {}; // 確保 results 和 username 不為空
     
 
-    if (!results || !username) {
+    if (!results || !userID) {
         return <div>無資料傳遞，請重試。</div>;
     }
 
@@ -24,7 +24,7 @@ const TestAnalyze = () => {
     return (
         <div>
             <h1>測驗結果分析</h1>
-            <p>使用者名稱: {username}</p>
+            <p>使用者名稱: {userID}</p>
             <ul>
                 {results.map((result, index) => (
                     <li key={index}>
