@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+
+
 // 獲取前端傳入的 JSON 資料
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -480,7 +482,7 @@ function handleGetRecommendedCourses($input) {
                 ELSE 0
             END AS `mark`
         FROM `課程` k
-        LEFT JOIN `課程評價` p ON k.`編號` = p.`課程ID`
+        LEFT JOIN `歷史紀錄` p ON k.`編號` = p.`課程ID`
         LEFT JOIN `系所對照表` d ON k.`系所代碼` = d.`系所代碼`
         WHERE " . implode(' AND ', $sqlConditions) . "
     ";

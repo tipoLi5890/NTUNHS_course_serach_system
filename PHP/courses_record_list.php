@@ -2,7 +2,7 @@
 /**
  * 處理 get-course-record 請求
  * 
- * 此 PHP 程式用於處理前端發送的「取得課程評價記錄」請求。根據提供的課程 ID，從資料庫中查詢相關的課程評價資料並回傳給前端。
+ * 此 PHP 程式用於處理前端發送的「取得歷史紀錄記錄」請求。根據提供的課程 ID，從資料庫中查詢相關的歷史紀錄資料並回傳給前端。
  * 
  * 前端請求：
  * - 方法： POST
@@ -166,7 +166,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                         r.課程ID, 
                         r.評價文本, 
                         r.評價時間 
-                    FROM 課程評價 AS r
+                    FROM 歷史紀錄 AS r
                     JOIN 課程 AS c
                     ON r.課程ID = c.編號
                     WHERE c.科目代碼_新碼 = :CourseID

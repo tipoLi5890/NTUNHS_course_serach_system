@@ -131,7 +131,7 @@ function getHistoryCourses($link)
                     WHEN 4 THEN '四年級'
                     ELSE '年級未知'
                 END) AS belongs
-        FROM 歷史修課紀錄 h
+        FROM 歷史紀錄 h
         JOIN 課程 c ON h.課程ID = c.編號
         JOIN 系所對照表 d ON c.系所代碼 = d.系所代碼
         WHERE h.用戶ID = :userID
@@ -212,7 +212,7 @@ function getUserRecords($link)
                 WHEN 'L' THEN 1
                 ELSE 0
             END AS `lock`  -- 使用反引號引用保留字
-        FROM 課程評價 r
+        FROM 歷史紀錄 r
         JOIN 課程 c ON r.課程ID = c.編號
         WHERE r.用戶ID = :userID
     ";
@@ -269,7 +269,7 @@ function submitComment($link)
     }
 
     // 更新評論的 SQL 查詢，將評論狀態設為 'Y'
-    $query = "UPDATE 課程評價 SET 評價文本 = :comment, 評論狀態 = 'Y' WHERE 課程ID = :id AND 用戶ID = :userID";
+    $query = "UPDATE 歷史紀錄 SET 評價文本 = :comment, 評論狀態 = 'Y' WHERE 課程ID = :id AND 用戶ID = :userID";
 
     try {
         $stmt = $link->prepare($query);
@@ -294,7 +294,7 @@ function submitComment($link)
                         WHEN 'L' THEN 1
                         ELSE 0
                     END AS `lock`  -- 使用反引號引用保留字
-                FROM 課程評價 r
+                FROM 歷史紀錄 r
                 JOIN 課程 c ON r.課程ID = c.編號
                 WHERE r.課程ID = :id AND r.用戶ID = :userID
             ";

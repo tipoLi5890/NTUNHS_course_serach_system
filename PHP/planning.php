@@ -362,7 +362,7 @@ function savedCourseDetail($link)
             p.評價時間, 
             d.系所名稱
         FROM 課程 k
-        LEFT JOIN 課程評價 p 
+        LEFT JOIN 歷史紀錄 p 
             ON k.編號 = p.課程ID
         LEFT JOIN 系所對照表 d 
             ON k.系所代碼 = d.系所代碼
