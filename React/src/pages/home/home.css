@@ -134,8 +134,7 @@
 }
 
 /* 隱藏預設的核取方塊 */
-.custom-checkbox input[type="checkbox"],
-.custom-checkbox input[type="radio"] {
+.custom-checkbox input[type="checkbox"] {
     display: none;
 }
 
@@ -171,8 +170,7 @@
 }
 
 /* 當核取方塊被勾選時改變背景顏色 */
-.custom-checkbox input[type="checkbox"]:checked + div,
-.custom-checkbox input[type="radio"]:checked + div {
+.custom-checkbox input[type="checkbox"]:checked + div {
     background-color: var(--primary-color);
 }
 
