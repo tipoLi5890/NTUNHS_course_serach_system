@@ -69,21 +69,21 @@ switch ($action) {
         handleGetAllCourses();
         break;
 
-    // case 'uploadSingle':
-    //     handleUploadSingleCourse();
-    //     break;
+    case 'uploadSingle': // OK
+        handleUploadSingleCourse();
+        break;
 
-    // case 'uploadBatch':
-    //     handleUploadBatchCourses();
-    //     break;
+    case 'uploadBatch':
+        handleUploadBatchCourses();
+        break;
 
     // case 'updateCourse':
     //     handleUpdateCourse($payload);
     //     break;
 
-    // case 'deleteCourse':
-    //     handleDeleteCourse($payload);
-    //     break;
+    case 'deleteCourse':
+        handleDeleteCourse($payload);
+        break;
 
     default:
         http_response_code(400);
@@ -175,11 +175,31 @@ function handleUploadSingleCourse() {
         }
     }
 
-    // 接收欄位 (部分示範)
-    $courseCode = $_POST['課程編號'];
-    $semester   = $_POST['學期'];
-    $mainTeacher = $_POST['主開課教師姓名'];
-    // ... 其他欄位，請依實際需求取值
+    // 接收欄位
+    $courseCode       = $_POST['課程編號'];
+    $semester         = $_POST['學期'];
+    $mainTeacher      = $_POST['主開課教師姓名'];
+    $subjectCode      = $_POST['科目代碼_新碼'];
+    $departmentCode   = $_POST['系所代碼'];
+    $coreFourCode     = $_POST['核心四碼'];
+    $subjectGroup     = $_POST['科目組別'];
+    $grade            = $_POST['年級'];
+    $classGroup       = $_POST['上課班組'];
+    $subjectNameCN    = $_POST['科目中文名稱'];
+    $subjectNameEN    = $_POST['科目英文名稱'];
+    $teacherName      = $_POST['授課教師姓名'];
+    $classSize        = $_POST['上課人數'];
+    $credit           = $_POST['學分數'];
+    $classWeeks       = $_POST['上課週次'];
+    $classHoursPerWeek= $_POST['上課時數_週'];
+    $courseCodeType   = $_POST['課別代碼'];
+    $courseName       = $_POST['課別名稱'];
+    $classLocation    = $_POST['上課地點'];
+    $classDay         = $_POST['上課星期'];
+    $classPeriod      = $_POST['上課節次'];
+    $courseRemark     = $_POST['課表備註'];
+    $courseSummaryCN  = $_POST['課程中文摘要'];
+    $courseSummaryEN  = $_POST['課程英文摘要'];
 
     // PDF 檔案處理 (若有)
     $pdfPath = null;
@@ -204,18 +224,83 @@ function handleUploadSingleCourse() {
                 課程編號,
                 學期,
                 主開課教師姓名,
-                PDF路徑
+                科目代碼_新碼,
+                系所代碼,
+                核心四碼,
+                科目組別,
+                年級,
+                上課班組,
+                科目中文名稱,
+                科目英文名稱,
+                授課教師姓名,
+                上課人數,
+                學分數,
+                上課週次,
+                上課時數_週,
+                課別代碼,
+                課別名稱,
+                上課地點,
+                上課星期,
+                上課節次,
+                課表備註,
+                課程中文摘要,
+                課程英文摘要,
+                教學計劃PDF路徑
             ) VALUES (
                 :courseCode,
                 :semester,
                 :mainTeacher,
+                :subjectCode,
+                :departmentCode,
+                :coreFourCode,
+                :subjectGroup,
+                :grade,
+                :classGroup,
+                :subjectNameCN,
+                :subjectNameEN,
+                :teacherName,
+                :classSize,
+                :credit,
+                :classWeeks,
+                :classHoursPerWeek,
+                :courseCodeType,
+                :courseName,
+                :classLocation,
+                :classDay,
+                :classPeriod,
+                :courseRemark,
+                :courseSummaryCN,
+                :courseSummaryEN,
                 :pdfPath
             )
         ");
-        $stmt->bindValue(':courseCode', $courseCode, PDO::PARAM_STR);
-        $stmt->bindValue(':semester',   $semester,   PDO::PARAM_STR);
-        $stmt->bindValue(':mainTeacher',$mainTeacher,PDO::PARAM_STR);
-        $stmt->bindValue(':pdfPath',    $pdfPath,    PDO::PARAM_STR);
+        
+        $stmt->bindValue(':courseCode',       $courseCode,       PDO::PARAM_STR);
+        $stmt->bindValue(':semester',         $semester,         PDO::PARAM_STR);
+        $stmt->bindValue(':mainTeacher',      $mainTeacher,      PDO::PARAM_STR);
+        $stmt->bindValue(':subjectCode',      $subjectCode,      PDO::PARAM_STR);
+        $stmt->bindValue(':departmentCode',   $departmentCode,   PDO::PARAM_STR);
+        $stmt->bindValue(':coreFourCode',     $coreFourCode,     PDO::PARAM_STR);
+        $stmt->bindValue(':subjectGroup',     $subjectGroup,     PDO::PARAM_STR);
+        $stmt->bindValue(':grade',            $grade,            PDO::PARAM_STR);
+        $stmt->bindValue(':classGroup',       $classGroup,       PDO::PARAM_STR);
+        $stmt->bindValue(':subjectNameCN',    $subjectNameCN,    PDO::PARAM_STR);
+        $stmt->bindValue(':subjectNameEN',    $subjectNameEN,    PDO::PARAM_STR);
+        $stmt->bindValue(':teacherName',      $teacherName,      PDO::PARAM_STR);
+        $stmt->bindValue(':classSize',        $classSize,        PDO::PARAM_INT);
+        $stmt->bindValue(':credit',           $credit,           PDO::PARAM_INT);
+        $stmt->bindValue(':classWeeks',       $classWeeks,       PDO::PARAM_STR);
+        $stmt->bindValue(':classHoursPerWeek',$classHoursPerWeek,PDO::PARAM_STR);
+        $stmt->bindValue(':courseCodeType',   $courseCodeType,   PDO::PARAM_STR);
+        $stmt->bindValue(':courseName',       $courseName,       PDO::PARAM_STR);
+        $stmt->bindValue(':classLocation',    $classLocation,    PDO::PARAM_STR);
+        $stmt->bindValue(':classDay',         $classDay,         PDO::PARAM_STR);
+        $stmt->bindValue(':classPeriod',      $classPeriod,      PDO::PARAM_STR);
+        $stmt->bindValue(':courseRemark',     $courseRemark,     PDO::PARAM_STR);
+        $stmt->bindValue(':courseSummaryCN',  $courseSummaryCN,  PDO::PARAM_STR);
+        $stmt->bindValue(':courseSummaryEN',  $courseSummaryEN,  PDO::PARAM_STR);
+        $stmt->bindValue(':pdfPath',          $pdfPath,          PDO::PARAM_STR);
+
         $stmt->execute();
 
         echo json_encode([
@@ -234,92 +319,109 @@ function handleUploadSingleCourse() {
 // -------------------------------------------------------------
 // (8) 函式區：批次上傳 CSV (可含多筆檔案，但此處示範單一檔 csvFile)
 // -------------------------------------------------------------
+// -------------------------------------------------------------
+// (8) 函式區：批次上傳 CSV (可含多筆檔案，但此處示範單一檔 csvFile)
+// -------------------------------------------------------------
+// -------------------------------------------------------------
+// (8) 函式區：批次上傳 CSV (可含多筆檔案，但此處示範單一檔 csvFile)
+// -------------------------------------------------------------
 function handleUploadBatchCourses() {
     global $link;
 
-    // 檔案必須使用 multipart/form-data
-    if (!isset($_FILES['csvFile'])) {
-        http_response_code(400);
-        echo json_encode([
-            "message" => "未收到 csvFile 檔案",
-            "success" => false
-        ]);
-        return;
-    }
+    // 檢查是否有上傳檔案
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvFile'])) { // 確認為 POST 請求並且有上傳檔案
+        $file = $_FILES['csvFile']['tmp_name']; // 獲取上傳檔案的臨時路徑
 
-    // CSV 檔案路徑
-    $file = $_FILES['csvFile']['tmp_name'];
-    if (!file_exists($file)) {
-        http_response_code(400);
-        echo json_encode([
-            "message" => "無法讀取 CSV 檔案",
-            "success" => false
-        ]);
-        return;
-    }
+        // 開啟 CSV 檔案
+        if (($handle = fopen($file, "r")) !== FALSE) { // 嘗試打開檔案並檢查是否成功
+            // 跳過表頭（如果有）
+            $header = fgetcsv($handle); // 讀取 CSV 的第一行作為表頭
 
-    // 讀取 CSV
-    if (($handle = fopen($file, "r")) !== FALSE) {
-        // 讀表頭 (如果有)
-        $header = fgetcsv($handle);
+            // 初始化匯入成功標誌
+            $import_success = true; // 預設匯入成功
 
-        // flag 紀錄插入成功與否
-        $importSuccess = true;
+            // 逐行讀取 CSV 資料並插入到資料庫
+            while (($data = fgetcsv($handle)) !== FALSE) { // 每次讀取一行資料
+                // 確保每行數據有足夠的欄位
+                if (count($data) < 31) { // 如果資料欄位不足 31，視為格式錯誤
+                    $import_success = false; // 標誌為失敗
+                    echo json_encode(['message' => 'CSV 檔案格式錯誤，資料欄位不足。']); // 回傳錯誤訊息
+                    break; // 結束匯入處理
+                }
 
-        while (($data = fgetcsv($handle)) !== FALSE) {
-            // 假設 CSV 有 10~30 欄，請依實際欄位調整
-            if (count($data) < 5) {
-                $importSuccess = false;
-                echo json_encode([
-                    "message" => "CSV 檔案格式錯誤，欄位不足",
-                    "success" => false
-                ]);
-                break;
+                // 使用 PDO 的 quote 方法來過濾數據
+                $課程編號 = $link->quote($data[0]);
+                $學期 = $link->quote($data[1]);
+                $主開課教師姓名 = $link->quote($data[2]);
+                $科目代碼_新碼 = $link->quote($data[3]);
+                $系所代碼 = $link->quote($data[4]);
+                $核心四碼 = $link->quote($data[5]);
+                $科目組別 = $link->quote($data[6]);
+                $年級 = (int)$data[7];
+                $上課班組 = (int)$data[8];
+                $科目中文名稱 = $link->quote($data[9]);
+                $科目英文名稱 = $link->quote($data[10]);
+                $授課教師姓名 = $link->quote($data[11]);
+                $上課人數 = (int)$data[12];
+                $男學生上課人數 = (int)$data[13];
+                $女學生上課人數 = (int)$data[14];
+                $學分數 = (float)$data[15];
+                $上課週次 = $link->quote($data[16]);
+                $上課時數_週 = (float)$data[17];
+                $課別代碼 = $link->quote($data[18]);
+                $課別名稱 = $link->quote($data[19]);
+                $上課地點 = $link->quote($data[20]);
+                $上課星期 = $link->quote($data[21]);
+                $上課節次 = $link->quote($data[22]);
+                $課表備註 = $link->quote($data[23]);
+                $課程中文摘要 = $link->quote($data[24]);
+                $課程英文摘要 = $link->quote($data[25]);
+                $主開課教師代碼_舊碼 = $link->quote($data[26]);
+                $科目代碼_舊碼 = $link->quote($data[27]);
+                $課表代碼_舊碼 = $link->quote($data[28]);
+                $課表名稱_舊碼 = $link->quote($data[29]);
+                $授課教師代碼_舊碼 = $link->quote($data[30]);
+
+                // 構建插入 SQL 語句，不包含編號
+                $sql = "INSERT INTO 課程 (課程編號, 學期, 主開課教師姓名, 科目代碼_新碼, 系所代碼, 核心四碼, 科目組別, 年級, 上課班組, 科目中文名稱, 
+                        科目英文名稱, 授課教師姓名, 上課人數, 男學生上課人數, 女學生上課人數, 學分數, 上課週次, 上課時數_週, 課別代碼, 課別名稱, 
+                        上課地點, 上課星期, 上課節次, 課表備註, 課程中文摘要, 課程英文摘要, 主開課教師代碼_舊碼, 科目代碼_舊碼, 
+                        課表代碼_舊碼, 課表名稱_舊碼, 授課教師代碼_舊碼) 
+                        VALUES ($課程編號, $學期, $主開課教師姓名, $科目代碼_新碼, $系所代碼, $核心四碼, $科目組別, $年級, $上課班組, $科目中文名稱, 
+                        $科目英文名稱, $授課教師姓名, $上課人數, $男學生上課人數, $女學生上課人數, $學分數, $上課週次, $上課時數_週, $課別代碼, 
+                        $課別名稱, $上課地點, $上課星期, $上課節次, $課表備註, $課程中文摘要, $課程英文摘要, $主開課教師代碼_舊碼, 
+                        $科目代碼_舊碼, $課表代碼_舊碼, $課表名稱_舊碼, $授課教師代碼_舊碼)"; // 插入語句，包含所有欄位值
+
+                // 執行 SQL 語句
+                if ($link->exec($sql) === false) { // 使用 PDO 的 exec 執行語句
+                    $import_success = false; // 標誌為失敗
+                    echo json_encode(['message' => '資料插入失敗，錯誤訊息：' . implode(' ', $link->errorInfo())]); // 回傳錯誤訊息
+                    break; // 結束匯入處理
+                }
             }
 
-            // 取出必要欄位 (示範)
-            $courseCode  = $data[0];
-            $semester    = $data[1];
-            $teacherName = $data[2];
-            // ... 其他欄位 ...
+            fclose($handle); // 關閉 CSV 檔案
 
-            // 做 INSERT
-            try {
-                $sql = "
-                    INSERT INTO 課程 (課程編號, 學期, 主開課教師姓名) 
-                    VALUES (:courseCode, :semester, :teacherName)
-                ";
-                $stmt = $link->prepare($sql);
-                $stmt->bindValue(':courseCode',  $courseCode,  PDO::PARAM_STR);
-                $stmt->bindValue(':semester',    $semester,    PDO::PARAM_STR);
-                $stmt->bindValue(':teacherName', $teacherName, PDO::PARAM_STR);
-                $stmt->execute();
-            } catch (Exception $e) {
-                $importSuccess = false;
-                echo json_encode([
-                    "message" => "批次匯入失敗: " . $e->getMessage(),
-                    "success" => false
-                ]);
-                break;
+            // 根據結果顯示訊息
+            if ($import_success) { // 如果所有資料匯入成功
+                echo json_encode(['message' => 'CSV 匯入成功！']); // 回傳成功訊息
+            } else {
+                http_response_code(500); // 設置狀態碼為 500
+                echo json_encode(['message' => '部分資料匯入失敗，請檢查錯誤日誌。']); // 回傳部分失敗訊息
             }
-        }
-
-        fclose($handle);
-
-        if ($importSuccess) {
-            echo json_encode([
-                "message" => "CSV 匯入成功",
-                "success" => true
-            ]);
+        } else {
+            http_response_code(400); // 設置狀態碼為 400
+            echo json_encode(['message' => '無法讀取 CSV 檔案。']); // 回傳檔案讀取失敗訊息
         }
     } else {
-        http_response_code(400);
-        echo json_encode([
-            "message" => "無法打開 CSV 檔案",
-            "success" => false
-        ]);
+        http_response_code(405); // 設置狀態碼為 405 表示方法不被允許
+        echo json_encode(['message' => '不支援的請求方法。']); // 回傳錯誤訊息
     }
 }
+
+
+
+
 
 // -------------------------------------------------------------
 // (9) 函式區：修改單一課程 (JSON)
