@@ -197,7 +197,8 @@ function getSavedElectiveCourses($link)
         JOIN  
             課程 ON 用戶收藏.課程ID = 課程.編號 
         WHERE  
-            用戶收藏.用戶ID = :userID;
+            (課程.課別名稱 NOT LIKE '%專業必修%') -- 篩選 category = 1
+            AND 用戶收藏.用戶ID = :userID
 
     ";
 
