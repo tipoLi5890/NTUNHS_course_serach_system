@@ -406,16 +406,16 @@ const Planning = () => {
                     </table>
                 </div>
                 </div>
-                {/* 彈出視窗 */}
-                {selectedCourse && (
-                    <CoursesDetail
-                        selectedCourse={selectedCourse}
-                        closeContent={closeCourseDetail}
-                        courseReviews={courseReviews}
-                    />
-                )}
+               
             </div>
-
+            {/* 彈出視窗 */}
+            {selectedCourse && (
+                <CoursesDetail
+                    selectedCourse={selectedCourse}
+                    closeContent={closeCourseDetail}
+                    courseReviews={courseReviews}
+                />
+            )}
             {/* 頁尾 */}
             <Footer />
         </div>
