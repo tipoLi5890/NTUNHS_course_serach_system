@@ -12,7 +12,7 @@ const AuthContext = createContext(null);
  * @param {React.ReactNode} props.children - 包裹在 AuthProvider 內的子組件
  */
 export const AuthProvider = ({ children }) => {
-  
+
   const [isAuthenticated, setIsAuthenticated] = useState(false); // 管理使用者是否已認證
   const [userInfo, setUserInfo] = useState(null); // 儲存使用者資訊
   const [isLoading, setIsLoading] = useState(true); // 加載狀態
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       // 呼叫 checkAuthAPI，該函式發送 GET 請求到後端以檢查認證狀態
-      const data = await checkAuthAPI(); 
+      const data = await checkAuthAPI();
       // 假設 checkAuthAPI 回傳的資料格式為 { isLoggedIn: boolean, username: string, ... }
 
       if (data?.isLoggedIn) { // 檢查回傳的 isLoggedIn 是否為真
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) { // 捕捉任何錯誤
       console.error('checkAuthStatus error:', error); // 在控制台輸出錯誤訊息
-      setIsAuthenticated(false); // 更新認證狀態為未認證
+      setIsAuthenticated(false); // 更新為未認證
       setUserInfo(null); // 清除使用者資訊
     } finally {
       setIsLoading(false); // 確保無論成功或失敗都結束加載
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       if (response.success) { // 檢查登入是否成功
         setIsAuthenticated(true); // 更新認證狀態為已認證
         setUserInfo({ username: response.username }); // 更新使用者資訊，僅包含 username
-        return true; // 返回成功狀態
+        return response; // 返回成功狀態
       } else {
         setIsAuthenticated(false); // 更新認證狀態為未認證
         setUserInfo(null); // 清除使用者資訊

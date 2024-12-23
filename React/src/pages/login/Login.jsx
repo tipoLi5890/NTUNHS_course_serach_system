@@ -28,9 +28,13 @@ const Login = () => {
      */
     const handleLogin = async () => {
         // 呼叫 loginUser 方法，傳入使用者輸入的帳號和密碼
-        const success = await loginUser(username, password);
-        
-        if (success) {
+        const data = await loginUser(username, password);
+        console.log(data);
+        if (data.success && data.role) {
+            // 登入成功，顯示歡迎訊息
+            alert(`歡迎, ${username}!`);
+            navigate('/admin');
+        } else if (data.success) {
             // 登入成功，顯示歡迎訊息
             alert(`歡迎, ${username}!`);
             navigate('/');

@@ -58,12 +58,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     true                        // HttpOnly 設置
                 );
     
-                // 回傳成功結果
-                echo json_encode(array(
-                    "message" => "登入成功",
-                    "success" => true
-                ));
-                exit;
+                if(isset($user['角色']) && $user['角色'] === 'admin' ){
+                    // 回傳成功結果
+                    echo json_encode(array(
+                        "message" => "登入成功",
+                        "success" => true,
+                        "role" => "admin"
+                    ));
+                    exit;
+                }else{
+                    // 回傳成功結果
+                    echo json_encode(array(
+                        "message" => "登入成功",
+                        "success" => true
+                    ));
+                    exit;
+                }
             }else{
                 // 若帳號或密碼不匹配
                 http_response_code(401);
