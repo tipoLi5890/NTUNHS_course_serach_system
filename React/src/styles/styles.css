@@ -69,6 +69,14 @@ h2 {
         font-size: 1rem;
     }
 }
+h6 {
+    font-size: 0.8rem;
+}
+@media(max-width: 540px) {
+    h6 {
+        font-size: 0.6rem;
+    }
+}
 
 /* 定義 component 屬性 */
 
