@@ -86,8 +86,8 @@ const CoursesDeatial = ({
                             <strong>班級:</strong> {selectedCourse['課表名稱_舊碼'] || '未知'}
                         </p>
                         <p>
-                            <strong>授課教師:</strong> {selectedCourse['授課教師姓名'] || '未知'} (
-                            {selectedCourse.teacherM})
+                            <strong>授課教師:</strong> {selectedCourse['主開課教師姓名'] || '未知'} (
+                            {selectedCourse['授課教師姓名']})
                         </p>
                         <p>
                             <strong>學分數:</strong> {selectedCourse['學分數'] || '未知'}
@@ -124,26 +124,24 @@ const CoursesDeatial = ({
                         <p>
                             <strong>評論:</strong>
                         </p>
-                        {selectedCourse?.['評價文本']?.length > 0 ? (
-                            <div className="reviews">
-                                {selectedCourse['評價文本'].map((review, index) => (
+                        <div className="reviews">
+                            {courseReviews
+                                .map((review, index) => (
                                     <div className="review" key={index}>
                                         <div className="review-header">
                                             <span className="review-creator">
                                                 <FaceIcon />
-                                                {review.creater || '匿名用戶'}
+                                                {'匿名用戶'}
                                             </span>
                                             <span className="review-date">
                                                 {review['評價時間'] || '未知日期'}
                                             </span>
                                         </div>
-                                        <p>{review.comment || '無評論內容'}</p>
+                                        <p>{review['評價文本'] || '無評論內容'}</p>
                                     </div>
                                 ))}
-                            </div>
-                        ) : (
-                            <p>目前無評論</p>
-                        )}
+                            {courseReviews.length === 0 && <p>目前無評論</p>}
+                        </div>
                     </div>
                 )}
             </div>

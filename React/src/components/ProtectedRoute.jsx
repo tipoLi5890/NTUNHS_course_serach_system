@@ -4,7 +4,12 @@ import React from 'react';
 
 // 保護路由功能(登入檢查)
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   if (!isAuthenticated) {
     return <Navigate to="/Login" replace />;
   }

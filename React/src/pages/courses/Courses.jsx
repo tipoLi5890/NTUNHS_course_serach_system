@@ -126,13 +126,15 @@ const Courses = () => {
             return;
         }
         setSelectedCourse(courseDetails || null);
-
+        console.log(courseDetails);
         // 提取課程內的評論資料
         try {
-            const courseCode = courseDetails['科目代碼_新碼']; // 使用科目代碼_新碼
-            const courseReviews = await getRecords(courseCode);
-            setCourseReviews(courseReviews);
-            console.log(courseReviews);
+            const courseCode = courseDetails['科目代碼_新碼'];
+            const reviews = await getRecords(courseCode);
+
+            // 直接設定評論資料
+            setCourseReviews(reviews);
+            console.log(reviews);
         } catch (error) {
             console.error("取得課程評論失敗:", error);
         }

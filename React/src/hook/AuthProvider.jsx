@@ -12,11 +12,10 @@ const AuthContext = createContext(null);
  * @param {React.ReactNode} props.children - 包裹在 AuthProvider 內的子組件
  */
 export const AuthProvider = ({ children }) => {
-  // 定義狀態變數，管理使用者是否已認證
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
-  // 定義狀態變數，儲存使用者資訊，如 username、role 等
-  const [userInfo, setUserInfo] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // 管理使用者是否已認證
+  const [userInfo, setUserInfo] = useState(null); // 儲存使用者資訊
+  const [isLoading, setIsLoading] = useState(true); // 加載狀態
 
   /**
    * 檢查使用者的認證狀態
@@ -39,6 +38,8 @@ export const AuthProvider = ({ children }) => {
       console.error('checkAuthStatus error:', error); // 在控制台輸出錯誤訊息
       setIsAuthenticated(false); // 更新認證狀態為未認證
       setUserInfo(null); // 清除使用者資訊
+    } finally {
+      setIsLoading(false); // 確保無論成功或失敗都結束加載
     }
   };
 
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 
   // 使用 AuthContext.Provider 將認證狀態和操作方法傳遞給子組件
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userInfo, loginUser, logoutUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, userInfo, loginUser, logoutUser }}>
       {children} {/* 渲染子組件 */}
     </AuthContext.Provider>
   );
