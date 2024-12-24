@@ -64,7 +64,7 @@
     max-width: 60%;
     border-radius: 10rem;
     border:0pt;
-    font-size:0.8rem;
+    font-size:1rem;
     padding: 0px 1rem;
     margin: 0 50px;
     outline: none;
@@ -72,8 +72,8 @@
 
 /* 模糊搜尋 */
 #search-mode {
-    margin-top: 0.3rem;
-    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
     position:absolute;
     right: 50px;
     width: auto;
