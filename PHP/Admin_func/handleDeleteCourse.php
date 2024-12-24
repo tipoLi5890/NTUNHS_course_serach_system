@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------
-// (10) 函式區：刪除單一課程 (JSON)
+// (4) 函式區：刪除單一課程
 // -------------------------------------------------------------
 function handleDeleteCourse($payload) {
     global $link;
@@ -22,7 +22,7 @@ function handleDeleteCourse($payload) {
 
         if ($stmt->rowCount() > 0) {
             echo json_encode([
-                "message" => "刪除成功",
+                "message" => "課程刪除成功",
                 "success" => true
             ]);
         } else {
@@ -34,7 +34,7 @@ function handleDeleteCourse($payload) {
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
-            "message" => "刪除失敗: " . $e->getMessage(),
+            "message" => "課程刪除失敗: " . $e->getMessage(),
             "success" => false
         ]);
     }
