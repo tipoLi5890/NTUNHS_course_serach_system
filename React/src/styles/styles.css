@@ -27,12 +27,12 @@ html {
 }
 @media(min-width: 1440px) {
     html {
-        font-size: 22px;
+        font-size: 20px;
     }
 }
 @media(min-width: 1920px) {
     html {
-        font-size: 28px;
+        font-size: 26px;
     }
 }
 
