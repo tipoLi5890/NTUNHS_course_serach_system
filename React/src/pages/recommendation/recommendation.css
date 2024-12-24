@@ -111,6 +111,7 @@
 
 /* 江湖稱號 */
 #personal h6 {
+    font-size: 0.85rem;
     padding: 0;
     margin: 3% auto;
 }
@@ -128,7 +129,7 @@
 .typeLable {
     background-color: #5a7d5d;
     color: #fff;
-    font-size: 0.6rem;
+    font-size: 0.85rem;
     font-weight: bold;
     padding: 5px 15px;
     border-radius: 1.2rem;
@@ -156,7 +157,7 @@
 #personal_analyze {
     background-color: #000000;
     color: white;
-    font-size: 0.6rem;
+    font-size: 0.85rem;
     font-weight: bold;
     padding: 10px 20px;
     border: none;
@@ -169,7 +170,7 @@
     border: #fff 3px solid;
 }
 
-  /* 彈窗背景 */
+/* 彈窗背景 */
 .popup {
     position: fixed;
     top: 0;
