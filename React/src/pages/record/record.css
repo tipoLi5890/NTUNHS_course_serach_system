@@ -71,11 +71,16 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 1rem;
     background-color: var(--primary-color);
 }
 .record-action:hover{
     background-color: #808080;
+}
+@media(max-width: 540px) {
+    .record-action {
+        font-size: 0.8rem;
+    }
 }
 
 /* 課程操作之未評論提示 */
@@ -125,11 +130,18 @@
 .submit-comment,
 .close-comment {
     padding: 6px 12px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+@media(max-width: 540px){
+    .clear-comment,
+    .submit-comment,
+    .close-comment {
+        font-size: 0.8rem;
+    }
 }
 
 .clear-comment {
@@ -155,3 +167,6 @@
 .close-comment:hover {
     background-color: #b8daff;
 }
+
+
+
