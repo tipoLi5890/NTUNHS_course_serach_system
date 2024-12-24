@@ -9,23 +9,18 @@ import {
   getAllCourses,
   uploadSingleCourse,
   uploadBatchCourses,
-  updateCourse,
   deleteCourse
 } from "../../services/admin_api";
 
 const Admin = () => {
-  // 1. 狀態管理
-  const [showSingleUpload, setShowSingleUpload] = useState(true);
-
-  // CSV 上傳 (支援多檔案)
-  const [csvFiles, setCsvFiles] = useState([]);
+  const [showSingleUpload, setShowSingleUpload] = useState(true); // 狀態管理  
+  const [csvFiles, setCsvFiles] = useState([]); // CSV 上傳 (支援多檔案)
   const handleCsvFileChange = (e) => {
-    setCsvFiles(e.target.files); 
+    setCsvFiles(e.target.files);
     // e.target.files 是 FileList，可含多個檔案
   };
 
-  // 單一課程 PDF 檔案選擇處理
-  const [singleFile, setSingleFile] = useState(null);
+  const [singleFile, setSingleFile] = useState(null); // 單一課程 PDF 檔案選擇處理
   const handleSingleFileChange = (e) => {
     setSingleFile(e.target.files[0]);
   };
@@ -58,18 +53,12 @@ const Admin = () => {
     課程英文摘要: ""
   });
 
-  // 所有課程列表
-  const [allCourses, setAllCourses] = useState([]);
+  const [allCourses, setAllCourses] = useState([]); // 所有課程列表
+  const [isEditing, setIsEditing] = useState(false); // 顯示 / 隱藏「修改課程」的彈出式視窗
 
-  // 顯示 / 隱藏「修改課程」的彈出式視窗
-  const [showEditModal, setShowEditModal] = useState(false);
-
-  // 選中的要修改的課程(原本資料)
-  const [editCourseData, setEditCourseData] = useState(null);
-
-  // 2. useEffect：進入頁面時先查詢所有課程
+  // 1. 載入頁面時取得所有課程 OK
   useEffect(() => {
-    fetchCourses(); 
+    fetchCourses();
   }, []);
 
   const fetchCourses = async () => {
@@ -83,7 +72,47 @@ const Admin = () => {
     }
   };
 
-  // 3. 新增單筆課程
+  // 處理「新增/修改單筆課程」輸入變更 
+  const handleCourseInputChange = (e) => {
+    const { name, value } = e.target;
+    setCourseData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // 清空新增列表 (取消新增/修改)
+  const resetCourseData = () => {
+    setCourseData({
+      課程編號: "",
+      學期: "",
+      主開課教師姓名: "",
+      科目代碼_新碼: "",
+      系所代碼: "",
+      核心四碼: "",
+      科目組別: "",
+      年級: "",
+      上課班組: "",
+      科目中文名稱: "",
+      科目英文名稱: "",
+      授課教師姓名: "",
+      上課人數: "",
+      學分數: "",
+      上課週次: "",
+      上課時數_週: "",
+      課別代碼: "",
+      課別名稱: "",
+      上課地點: "",
+      上課星期: "",
+      上課節次: "",
+      課表備註: "",
+      課程中文摘要: "",
+      課程英文摘要: ""
+    });
+    setIsEditing(false);
+  };
+
+  // 2. 新增單筆課程 OK
   const handleSingleSubmit = async () => {
     // 簡單檢查 required
     for (let key in courseData) {
@@ -97,37 +126,9 @@ const Admin = () => {
       const response = await uploadSingleCourse(courseData, singleFile);
       if (response.success) {
         alert(response.message || '單筆課程上傳成功');
-        // 清空表單
-        setCourseData({
-          課程編號: "",
-          學期: "",
-          主開課教師姓名: "",
-          科目代碼_新碼: "",
-          系所代碼: "",
-          核心四碼: "",
-          科目組別: "",
-          年級: "",
-          上課班組: "",
-          科目中文名稱: "",
-          科目英文名稱: "",
-          授課教師姓名: "",
-          上課人數: "",
-          學分數: "",
-          上課週次: "",
-          上課時數_週: "",
-          課別代碼: "",
-          課別名稱: "",
-          上課地點: "",
-          上課星期: "",
-          上課節次: "",
-          課表備註: "",
-          課程中文摘要: "",
-          課程英文摘要: ""
-        });
-        setSingleFile(null);
-
-        // 重新抓取課程列表
-        fetchCourses();
+        alert("新增成功");
+        resetCourseData(); // 清空表單
+        fetchCourses(); // 重新抓取課程列表
       } else {
         alert(response.message || '單筆課程上傳失敗');
       }
@@ -137,7 +138,7 @@ const Admin = () => {
     }
   };
 
-  // 4. 上傳 CSV (支援多檔案)
+  // 3. 上傳 CSV (支援多檔案) OK
   const handleCsvUpload = async () => {
     if (!csvFiles || csvFiles.length === 0) {
       alert('請至少選擇一個 CSV 檔案');
@@ -156,7 +157,7 @@ const Admin = () => {
     }
   };
 
-  // 5. 刪除單一課程
+  // 4. 刪除單一課程 OK
   const handleDeleteCourse = async (id) => {
     if (!window.confirm('確定要刪除這筆課程嗎？')) return;
     try {
@@ -173,48 +174,27 @@ const Admin = () => {
     }
   };
 
-  // 6. 顯示「修改課程」表單
+  // 點擊"修改"按鈕
   const handleEditCourse = (course) => {
-    setEditCourseData({ ...course }); 
-    // 複製一份資料供編輯
-    setShowEditModal(true);
+    setCourseData(course);
+    setIsEditing(true);
   };
 
-  // 7. 修改課程
+  // 5. 修改課程
   const handleUpdateCourse = async () => {
-    if (!editCourseData) return;
     try {
-      const response = await updateCourse(editCourseData);
+      const response = await uploadSingleCourse(courseData, singleFile);
       if (response.success) {
-        alert(response.message || '修改成功');
-        setShowEditModal(false);
-        setEditCourseData(null);
-        fetchCourses();
+        alert(response.message || '課程更新成功');
+        resetCourseData(); // 重置表單
+        fetchCourses(); // 重新載入課程列表
       } else {
-        alert(response.message || '修改失敗');
+        alert(response.message || '課程更新失敗');
       }
     } catch (error) {
       console.error(error);
-      alert('修改課程失敗');
+      alert('更新內容上傳失敗');
     }
-  };
-
-  // 8. 處理修改課程輸入
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditCourseData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // 9. 處理「新增單筆課程」輸入
-  const handleCourseInputChange = (e) => {
-    const { name, value } = e.target;
-    setCourseData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
   };
 
   return (
@@ -244,7 +224,7 @@ const Admin = () => {
         {/* 新增課程區塊 (含 PDF) */}
         {showSingleUpload && (
           <section className="add-course">
-            <h3 className="a_h3">新增單一課程</h3>
+            <h3 className="a_h3">{isEditing ? "修改課程" : "新增單一課程"}</h3>
             <div className="form">
               <input
                 type="text"
@@ -439,9 +419,10 @@ const Admin = () => {
               <label>選擇教學計劃PDF</label>
               <input type="file" accept=".pdf" onChange={handleSingleFileChange} />
 
-              <button className="submit-btn" onClick={handleSingleSubmit}>
-                送出新增
+              <button className="submit-btn" onClick={isEditing ? handleUpdateCourse : handleSingleSubmit}>
+                {isEditing ? "確定修改" : "新增課程"}
               </button>
+              <button className="submit-btn" onClick={resetCourseData}>取消</button>
             </div>
           </section>
         )}
@@ -478,10 +459,13 @@ const Admin = () => {
             </thead>
             <tbody>
               {allCourses.map((course) => (
-                <tr key={course['編號']}>
+                <tr key={course.編號}>
                   <td>
                     {/* 課程欄位：使用 CourseCard */}
-                    <CourseCard course={course} />
+                    <CourseCard
+                      key={course.編號}
+                      course={course}
+                    />
                   </td>
                   <td>
                     <button onClick={() => handleEditCourse(course)}>
@@ -489,7 +473,7 @@ const Admin = () => {
                     </button>
                   </td>
                   <td>
-                    <button onClick={() => handleDeleteCourse(course['編號'])}>
+                    <button onClick={() => handleDeleteCourse(course.編號)}>
                       刪除
                     </button>
                   </td>
@@ -498,41 +482,6 @@ const Admin = () => {
             </tbody>
           </table>
         </section>
-
-        {/* 修改課程的彈出表單 (Modal) */}
-        {showEditModal && editCourseData && (
-          <div className="modal">
-            <div className="modal-content">
-              <h3>修改課程</h3>
-              {/* 示例：只放幾個欄位，你可酌情全部放 */}
-              <label>課程編號</label>
-              <input
-                type="text"
-                name="課程編號"
-                value={editCourseData.課程編號}
-                onChange={handleEditInputChange}
-              />
-              <label>學期</label>
-              <input
-                type="text"
-                name="學期"
-                value={editCourseData.學期}
-                onChange={handleEditInputChange}
-              />
-              <label>科目中文名稱</label>
-              <input
-                type="text"
-                name="科目中文名稱"
-                value={editCourseData.科目中文名稱}
-                onChange={handleEditInputChange}
-              />
-              {/* ... 其他欄位照樣繼續 ... */}
-
-              <button onClick={handleUpdateCourse}>送出修改</button>
-              <button onClick={() => setShowEditModal(false)}>取消</button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* 頁尾 */}

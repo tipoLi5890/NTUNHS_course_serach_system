@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // 定義 API 基底 URL
 const API_URLS = {
-    keywordSearch: '/api/courses_search_keyword.php', // 關鍵字搜尋
+    keywordSearch: '/api/courses_search_keyword.php', // 關鍵字搜尋 (課程)
+    studentSearch: '/api/admin.php', // 關鍵字搜尋 (學生)
     queryByRequired: '/api/courses_search_required.php', //當期預排
     queryByElective: '/api/courses_search_elective.php', //科系選修
     complexSearch: '/api/courses_search_complex.php', //複合查詢
@@ -51,7 +52,7 @@ export const fetchResults = async (url, data) => {
 
 
 /** 封裝具體查詢函式
- * 一般搜尋課程
+ * 一般關鍵字搜尋課程
  * @param {object} searchTerm - 搜尋參數物件
  * @param {string} searchTerm.searchTerm  - 搜尋關鍵字
  * @param {boolean} isFuzzySearch - 是否進行模糊搜尋
@@ -65,6 +66,22 @@ export const searchCourses = (searchTerm) => {
         isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
     });
 };// 用於處理一般表單提交
+
+/** 封裝具體查詢函式
+ * 一般關鍵字搜尋學生
+ * @param {object} searchTerm - 搜尋參數物件
+ * @param {string} searchTerm.searchTerm  - 搜尋關鍵字
+ * @param {boolean} isFuzzySearch - 是否進行模糊搜尋
+ * @returns {Promise<object>} - 查詢結果
+ */
+export const searchStudent = (searchTerm) => {
+    // 發送 API 請求
+    return fetchResults(API_URLS.studentSearch, {
+        action: 'search-student',
+        searchTerm: searchTerm.searchTerm,
+        isFuzzySearch: Boolean(searchTerm.isFuzzySearch),
+    });
+};
 
 
 /**

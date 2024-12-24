@@ -1,9 +1,9 @@
-// src/services/admin_api.js
 import axios from 'axios';
 
-const API_BASE_URL = '/api/admin.php'; 
+const API_BASE_URL = '/api/admin.php';
 
-// 1. 查詢所有課程
+/** 課程管理 **/
+// 1. 取得所有課程 (ok)
 export const getAllCourses = async () => {
   try {
     const response = await axios.post(
@@ -11,6 +11,7 @@ export const getAllCourses = async () => {
       { action: 'getAll' },
       { withCredentials: true }
     );
+    console.log(response.data);
     return response.data; // 會包含 message, success, courses 等
   } catch (error) {
     console.error('Error fetching all courses:', error);
@@ -18,7 +19,7 @@ export const getAllCourses = async () => {
   }
 };
 
-// 2. 新增單筆課程 (含PDF)
+// 2. 新增/修改單筆課程 (含PDF) (ok)
 export const uploadSingleCourse = async (courseData, pdfFile) => {
   try {
     const formData = new FormData();
@@ -39,7 +40,7 @@ export const uploadSingleCourse = async (courseData, pdfFile) => {
         'Content-Type': 'multipart/form-data'
       }
     });
-
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error uploading single course:', error);
@@ -47,8 +48,7 @@ export const uploadSingleCourse = async (courseData, pdfFile) => {
   }
 };
 
-// 3. 上傳課程 CSV (支援多檔案) 
-//    ★ 重點：要依序上傳多個檔案
+// 3. 上傳課程 CSV (支援多檔案) (★ 重點：要依序上傳多個檔案) (ok)
 export const uploadBatchCourses = async (csvFiles) => {
   try {
     // csvFiles 是一個 FileList 或 array
@@ -68,7 +68,7 @@ export const uploadBatchCourses = async (csvFiles) => {
           'Content-Type': 'multipart/form-data'
         }
       });
-
+      console.log(response.data);
       results.push(response.data);
     }
 
@@ -79,27 +79,8 @@ export const uploadBatchCourses = async (csvFiles) => {
   }
 };
 
-// 4. 修改單一課程
-export const updateCourse = async (updatedData) => {
-  try {
-    // updatedData 中應該包含 編號 (主鍵) 及所有欄位的值(修改後)
-    // 改用 JSON 方式比較直觀
-    const response = await axios.post(
-      API_BASE_URL,
-      {
-        action: 'updateCourse',
-        data: updatedData
-      },
-      { withCredentials: true }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error updating course:', error);
-    throw new Error('修改課程失敗');
-  }
-};
 
-// 5. 刪除單一課程
+// 4. 刪除單一課程 (ok)
 export const deleteCourse = async (id) => {
   // id 即為 "編號"
   try {
@@ -111,6 +92,75 @@ export const deleteCourse = async (id) => {
       },
       { withCredentials: true }
     );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting course:', error);
+    throw new Error('刪除課程失敗');
+  }
+};
+
+//課程與學生關鍵字查詢功能使用Home_api中的內容 (暫定ok)
+ 
+/** 學生管理 **/
+// 5. 取得所有學生 (暫定ok)
+export const GetAllStudents = async () => {
+  try {
+    const response = await axios.post(
+      API_BASE_URL,
+      { action: 'get-all-student' },
+      { withCredentials: true }
+    );
+    console.log(response.data);
+    return response.data; // 會包含 message, success, courses 等
+  } catch (error) {
+    console.error('Error fetching all courses:', error);
+    throw new Error('查詢所有課程失敗');
+  }
+};
+
+// 6. 新增/修改單筆學生資訊 (含PDF) (暫定ok？)
+export const UpdateStudent = async (courseData, pdfFile) => {
+  try {
+    const formData = new FormData();
+    formData.append('action', 'update-student'); // 後端根據此action做判斷
+
+    // 將課程資訊放入 formData
+    Object.entries(courseData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    if (pdfFile) {
+      formData.append('teachingPlan', pdfFile);
+    }
+
+    const response = await axios.post(API_BASE_URL, formData, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading single course:', error);
+    throw new Error('單筆學生資訊上傳失敗');
+  }
+};
+
+// 7. 刪除單一學生 (暫定ok)
+export const deleteStudent = async (id) => {
+  // id 即為 "編號"
+  try {
+    const response = await axios.post(
+      API_BASE_URL,
+      {
+        action: 'delete-student',
+        id: id
+      },
+      { withCredentials: true }
+    );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error deleting course:', error);

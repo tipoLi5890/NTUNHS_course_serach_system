@@ -65,13 +65,12 @@ if (!$action) {
 // (5) 根據 action 路由
 // -------------------------------------------------------------
 switch ($action) {
-    {/*----------------課程管理----------------*/}
     case 'getAll': // 1. 查詢所有課程  OK
         include("./Admin_func/handleGetAllCourses.php");
         handleGetAllCourses();
         break;
 
-    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  OK
+    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  (ok)
         include("./Admin_func/handleUploadSingleCourse.php");
         handleUploadSingleCourse();
         break;
@@ -87,15 +86,14 @@ switch ($action) {
         handleDeleteCourse($payload);
         break;
 
-    {/*----------------學生管理----------------*/}
     case 'get-all-student': // 5. 取得所有學生 (暫定ok)
         include("./Admin_func/GetAllStudents.php");
         GetAllStudents($payload);
         break;
 
-    case 'update-student': // 6. 新增/修改單一學生 (暫定ok)
+    case 'update-student': // 6. 新增/修改單筆學生資訊 (暫定ok)
         include("./Admin_func/UpdateStudent.php");
-        UpdateStudent($payload);
+        UpdateStudent(); //$payload？
         break;
 
     case 'delete-student': // 7. 刪除單一學生 (暫定ok)

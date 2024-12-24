@@ -10,7 +10,7 @@ import { useSearch } from '../../hook/SearchProvider.jsx';
 
 const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [isFuzzySearch, setIsFuzzySearch] = useState(false); // 模糊搜尋的狀態
+    const [isFuzzySearch, setIsFuzzySearch] = useState(true); // 模糊搜尋的狀態
     const [isLoading, setIsLoading] = useState(false);
     const { lastSearchResult, updateLastSearchResult } = useSearch(); // 歷史查詢結果
     const navigate = useNavigate();
