@@ -21,7 +21,7 @@
 
 /* 熱門排行榜選項 */
 .hot {
-  margin: 0 1rem 0.5rem 1rem;
+  margin: 0 1rem 0.8rem 1rem;
   border-radius: 0.2rem;
 }
 #hot1 {
@@ -42,7 +42,7 @@
 
 /* 排行榜連結 */
 .besider a {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 2;
   color: #ffffff;
   text-decoration: none;
@@ -163,14 +163,14 @@
   
 /* 課程細節 */
 .course-details {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #555;
   width: 100%;
   text-align: left;
 }
   
 .course-belongs {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #555;
   width: 100%;
   text-align: left;
@@ -265,8 +265,8 @@ body.modal-open {
 }
 
 .tabs button svg {
-  width: 1.25rem; /* 設定圖示寬度 */
-  height: 1.25rem; /* 設定圖示高度 */
+  width: 1.25rem; 
+  height: 1.25rem; 
 }
 
 .tabs button.active {
@@ -283,8 +283,8 @@ body.modal-open {
 .close-showContent {
   right: 2rem;
   display: flex;
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
+  justify-content: center;
+  align-items: center;
   width: 1.2rem;
   height: 1.2rem;
   right: 0;
@@ -303,11 +303,11 @@ body.modal-open {
 }
 
 .content-header {
-  display: flex; /* 水平排列 */
-  justify-content: space-between; /* 左右對齊 */
-  align-items: center; /* 垂直居中 */
-  margin-bottom: 1rem; /* 與下方內容的間距 */
-  position: relative; /* 相對定位，方便控制內部元素 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
 }
 
 /* 評論 */
@@ -316,37 +316,37 @@ body.modal-open {
 }
 
 .review {
-  border-radius: 8px; /* 圓角 */
-  padding: 10px; /* 內距 */
-  margin-bottom: 10px; /* 與下一則的距離 */
-  background-color: #f9f9f9; /* 淡灰背景 */
+  border-radius: 8px; 
+  padding: 10px;
+  margin-bottom: 10px; 
+  background-color: #f9f9f9;
 }
 
 .review-header {
-  display: flex; /* 水平排列 */
-  justify-content: space-between; /* 左右分佈 */
-  font-size: 14px; /* 字體大小 */
-  font-weight: bold; /* 字體加粗 */
-  margin-bottom: 8px; /* 與評論正文的間距 */
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px; 
 }
 
 .review-header {
-  display: flex; /* 將子元素排列成一行 */
-  justify-content: space-between; /* 左右元素對齊 */
-  align-items: center; /* 垂直置中 */
-  margin-bottom: 0.5rem; /* 與下方評論內容分開 */
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
 .review-creator {
   font-size: 1rem;
-  display: flex; /* 讓圖示和文字在同一行 */
-  align-items: center; /* 圖示與文字垂直置中 */
-  gap: 0.2rem; /* 圖示與文字之間的間距 */
+  display: flex; 
+  align-items: center;
+  gap: 0.2rem;
 }
 
 .review-date {
-  font-size: 0.8rem; /* 日期字體大小 */
-  color: #888; /* 日期的輕微次要顏色 */
+  font-size: 0.8rem;
+  color: #888;
   font-weight: 300;
 }
 
