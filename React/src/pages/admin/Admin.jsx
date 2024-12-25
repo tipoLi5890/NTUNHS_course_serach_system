@@ -676,7 +676,7 @@ const Admin = () => {
                         <td>{student.密碼}</td>
                         <td>{student.姓名}</td>
                         <td>
-                          <button onClick={() => handleDeleteStudent(student.用戶ID)}>刪除</button>
+                          <button classname="oneStudent-delete" onClick={() => handleDeleteStudent(student.用戶ID)}>刪除</button>
                         </td>
                       </tr>
                     ))}

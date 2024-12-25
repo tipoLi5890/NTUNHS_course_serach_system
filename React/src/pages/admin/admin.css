@@ -189,10 +189,10 @@
 .oneCourse-set {
   background-color: #c4bb5b;
 }
-.oneCourse-delete {
+.oneCourse-delete,.oneStudent-delete {
   background-color: #c45b5b;
 }
-.oneCourse-set:hover, .oneCourse-delete:hover {
+.oneCourse-set:hover, .oneCourse-delete:hover,.oneStudent-delete:hover {
   background-color: #757575
 }
 
@@ -230,3 +230,5 @@
 .add-student button:hover {
   background-color: var(--button-hover-color);
 }
+
+
