@@ -277,7 +277,7 @@ const Admin = () => {
     }
   };
 
-  // 7. 處理新增學生帳號
+  // 7. 處理新增學生帳號 OK
   const handleAddStudent = async() => {
     if (!newStudent.account || !newStudent.password || !newStudent.name) {
       alert("請完整填寫所有欄位！");
@@ -301,13 +301,12 @@ const Admin = () => {
 
   // 8. 處理刪除學生帳號 OK
   const handleDeleteStudent = async(userid) => {
-    setStudents((prev) => prev.filter((student) => student.用戶ID !== userid));
     if (!window.confirm('確定要刪除這筆課程嗎？')) return;
     try {
       const response = await deleteStudent(userid);
       if (response.success) {
         alert(response.message || '刪除成功');
-        fetchCourses(); // 刷新列表
+        fetchStudents(); // 刷新列表
       } else {
         alert(response.message || '刪除失敗');
       }

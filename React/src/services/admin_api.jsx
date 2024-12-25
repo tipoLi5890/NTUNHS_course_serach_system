@@ -119,7 +119,7 @@ export const GetAllStudents = async () => {
   }
 };
 
-// 6. 新增/修改單筆學生資訊 (含PDF) (暫定ok？)
+// 6. 新增/修改單筆學生資訊 (含PDF) (ok)
 export const UpdateStudent = async (student) => {
   try {
     const formData = new FormData();

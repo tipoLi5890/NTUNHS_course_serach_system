@@ -40,7 +40,7 @@
 function DeleteStudent($payload) {
     global $link;
 
-    if (!isset($payload['id'])) {
+    if (!isset($payload['userid'])) {
         http_response_code(400);
         echo json_encode([
             "message" => "缺少用戶 id 參數",
@@ -49,10 +49,10 @@ function DeleteStudent($payload) {
         return;
     }
 
-    $id = $payload['id'];
+    $id = $payload['userid'];
     try {
-        $stmt = $link->prepare("DELETE FROM 用戶 WHERE 用戶ID = :id");
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt = $link->prepare("DELETE FROM 用戶 WHERE 用戶ID = :userid");
+        $stmt->bindValue(':userid', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
