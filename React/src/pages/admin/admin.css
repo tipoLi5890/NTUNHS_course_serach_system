@@ -1,4 +1,3 @@
-
 .a_h2 {
   text-align: center;
 }
@@ -189,7 +188,7 @@
 .oneCourse-set {
   background-color: #c4bb5b;
 }
-.oneCourse-delete,.oneStudent-delete {
+.oneCourse-delete,.oneStudent-delete, .a_course-table button {
   background-color: #c45b5b;
 }
 .oneCourse-set:hover, .oneCourse-delete:hover,.oneStudent-delete:hover {
