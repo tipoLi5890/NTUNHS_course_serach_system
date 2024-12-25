@@ -2,7 +2,7 @@
 // -------------------------------------------------------------
 // (1) 設定 CORS 和 JSON 回應格式
 // -------------------------------------------------------------
-header('Access-Control-Allow-Origin: http://localhost:5173'); // 根據需要調整
+include('hostOrigin.php');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST, OPTIONS'); // 統一使用 POST 方法
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
@@ -70,7 +70,7 @@ switch ($action) {
         handleGetAllCourses();
         break;
 
-    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  OK
+    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  (ok)
         include("./Admin_func/handleUploadSingleCourse.php");
         handleUploadSingleCourse();
         break;
@@ -83,24 +83,24 @@ switch ($action) {
 
     case 'deleteCourse': // 4. 刪除單一課程 OK
         include("./Admin_func/handleDeleteCourse.php");
-        handleDeleteCourse($payload);
+        handleDeleteCourse();
         break;
 
-    case 'get-all-student': // 5. 取得所有學生 OK
+    case 'get-all-student': // 5. 取得所有學生 (暫定ok)
         include("./Admin_func/GetAllStudents.php");
         GetAllStudents();
         break;
 
-    case 'update-student': // 6. 新增/修改單筆學生資訊 OK
+    case 'update-student': // 6. 新增/修改單筆學生資訊 (暫定ok)
         include("./Admin_func/UpdateStudent.php");
         UpdateStudent(); //$payload？
         break;
 
-    case 'delete-student': // 7. 刪除單一學生 OK
+    case 'delete-student': // 7. 刪除單一學生 (暫定ok)
         include("./Admin_func/DeleteStudent.php");
-        DeleteStudent($payload);
+        DeleteStudent();
         break;
-    
+
     default:
         http_response_code(400);
         echo json_encode([

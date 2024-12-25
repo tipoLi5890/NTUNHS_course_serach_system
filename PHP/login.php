@@ -1,6 +1,6 @@
 <?php
 // 設定 CORS 和 JSON 回應格式
-header('Access-Control-Allow-Origin: http://localhost:5173');
+include('hostOrigin.php');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');

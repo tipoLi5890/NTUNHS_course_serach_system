@@ -1,5 +1,5 @@
 <?php
-header('Access-Control-Allow-Origin: http://localhost:5173');
+include('hostOrigin.php');
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Methods: GET');
 header('Access-Control-Allow-Credentials: true');
