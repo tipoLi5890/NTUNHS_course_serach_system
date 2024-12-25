@@ -171,7 +171,7 @@ if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
                     ON r.課程ID = c.編號
                     WHERE c.科目代碼_新碼 = :CourseID
                     AND r.評價文本 != '' 
-                    AND r.評論狀態 = 'Y' 
+                    AND (r.評論狀態 = 'Y' OR r.評論狀態 = 'L')
                 ");
                 
                 // 綁定參數
