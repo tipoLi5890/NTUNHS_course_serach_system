@@ -197,6 +197,19 @@ const Admin = () => {
     }
   };
 
+  // State 管理搜尋文字和過濾後的課程
+  const [searchText, setSearchText] = useState("");
+  const [filteredCourses, setFilteredCourses] = useState(allCourses);
+
+  // 搜尋功能邏輯
+  const handleSearchSubmit = (e) => {
+    e.preventDefault(); // 防止頁面刷新
+    const filtered = allCourses.filter((course) =>
+      course.名稱.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredCourses(filtered);
+  };
+
   return (
     <div className="returnPlace">
       {/* 頁首 */}
@@ -211,7 +224,7 @@ const Admin = () => {
             className={`toggle-btn ${showSingleUpload ? "active" : ""}`}
             onClick={() => setShowSingleUpload(true)}
           >
-            上傳單筆課程
+            單筆課程操作
           </button>
           <button
             className={`toggle-btn ${!showSingleUpload ? "active" : ""}`}
@@ -424,6 +437,56 @@ const Admin = () => {
               </button>
               <button className="submit-btn" onClick={resetCourseData}>取消</button>
             </div>
+            {/* 顯示所有課程 (table) */}
+            <div className="course-list">
+              <h3 className="a_h3">從既有課程操作</h3>
+
+              {/* 搜尋框 */}
+              <form className="search-form" onSubmit={handleSearchSubmit}>
+                <input
+                  type="text"
+                  placeholder="搜尋課程名稱..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="search-input"
+                />
+                <button type="submit" className="search-button">搜尋</button>
+              </form>
+
+              {/* 表格 */}
+              <table border="1" cellPadding="8" cellSpacing="0">
+                <thead>
+                  <tr>
+                    <th>課程</th>
+                    <th>修改</th>
+                    <th>刪除</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allCourses.map((course) => (
+                    <tr key={course.編號}>
+                      <td>
+                        {/* 課程欄位：使用 CourseCard */}
+                        <CourseCard
+                          key={course.編號}
+                          course={course}
+                        />
+                      </td>
+                      <td>
+                        <button className="oneCourse-set" onClick={() => handleEditCourse(course)}>
+                          修改
+                        </button>
+                      </td>
+                      <td>
+                        <button className="oneCourse-delete" onClick={() => handleDeleteCourse(course.編號)}>
+                          刪除
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
         )}
 
@@ -446,42 +509,7 @@ const Admin = () => {
           </section>
         )}
 
-        {/* 顯示所有課程 (table) */}
-        <section className="course-list">
-          <h3 className="a_h3">所有課程列表</h3>
-          <table border="1" cellPadding="8" cellSpacing="0">
-            <thead>
-              <tr>
-                <th>課程</th>
-                <th>修改</th>
-                <th>刪除</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allCourses.map((course) => (
-                <tr key={course.編號}>
-                  <td>
-                    {/* 課程欄位：使用 CourseCard */}
-                    <CourseCard
-                      key={course.編號}
-                      course={course}
-                    />
-                  </td>
-                  <td>
-                    <button onClick={() => handleEditCourse(course)}>
-                      修改
-                    </button>
-                  </td>
-                  <td>
-                    <button onClick={() => handleDeleteCourse(course.編號)}>
-                      刪除
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        
       </div>
 
       {/* 頁尾 */}

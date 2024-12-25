@@ -1,53 +1,53 @@
 
-  .a_h2 {
-    text-align: center;
-  }
-  /* 標題設計 */
-  .a_h2, .a_h3 {
-    color: var(--tertiary-color);
-    margin-bottom: 10px;
-  }
-  
-  /* 區塊設計 */
+.a_h2 {
+  text-align: center;
+}
+/* 標題設計 */
+.a_h2, .a_h3 {
+  color: var(--tertiary-color);
+  margin-bottom: 10px;
+}
+
+/* 區塊設計 */
+.add-course, .batch-upload {
+  margin: 20px auto;
+  padding: 20px;
+  width: 70%;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+@media(max-width: 540px) {
   .add-course, .batch-upload {
-    margin: 20px auto;
-    padding: 20px;
-    width: 70%;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      padding: 20px;
+      border: none;
+      box-shadow: none;
   }
-  @media(max-width: 540px) {
-    .add-course, .batch-upload {
-        width: 90%;
-        padding: 20px;
-        border: none;
-        box-shadow: none;
-    }
 }
   
-  /* 表單設計 */
-  .form {
-    display: flex;
-    flex-wrap: wrap; /* 允許換行 */
-    gap: 10px; /* 欄位間距 */
-  }
+/* 表單設計 */
+.form {
+  display: flex;
+  flex-wrap: wrap; /* 允許換行 */
+  gap: 10px; /* 欄位間距 */
+}
   
+.form input[type="text"],
+.form input[type="number"],
+.form input[type="file"],
+.form textarea {
+  flex: 1 1 calc(33.33% - 20px); /* 每列三個欄位，考慮間距 */
+  min-width: 200px; /* 設定最小寬度，避免過窄 */
+  box-sizing: border-box; /* 包括 padding 和 border */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+@media(max-width: 540px) {
   .form input[type="text"],
-  .form input[type="number"],
-  .form input[type="file"],
-  .form textarea {
-    flex: 1 1 calc(33.33% - 20px); /* 每列三個欄位，考慮間距 */
-    min-width: 200px; /* 設定最小寬度，避免過窄 */
-    box-sizing: border-box; /* 包括 padding 和 border */
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  @media(max-width: 540px) {
-    .form input[type="text"],
   .form input[type="number"],
   .form input[type="file"],
   .form textarea {
@@ -55,73 +55,153 @@
     }
 }
   
-  /* textarea 和 file 欄位特殊處理 */
-  .form textarea,
-  .form input[type="file"] {
-    flex: 1 1 100%; /* 讓其佔滿整列 */
-  }
+/* textarea 和 file 欄位特殊處理 */
+.form textarea,
+.form input[type="file"] {
+  flex: 1 1 100%; /* 讓其佔滿整列 */
+}
+
+.form textarea {
+  height: 80px;
+  resize: none;
+}
   
-  .form textarea {
-    height: 80px;
-    resize: none;
-  }
-  
-  /* 按鈕設計 */
-  .submit-btn, .upload-btn {
-    left:50%;
-    transform: translateX(-50%);
-    position: relative;
-    height: 1.85rem;
-    font-size: 1rem;
-    width: auto;
-    padding: 0 1rem;
-    background-color: var(--secondary-color);
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    cursor: pointer;
-    text-align: center;
-  }
-  .submit-btn:hover, .upload-btn:hover {
-    background-color: var(--button-hover-color);
-  }
+/* 按鈕設計 */
+.submit-btn, .upload-btn {
+  left:50%;
+  transform: translateX(-50%);
+  position: relative;
+  height: 1.85rem;
+  font-size: 1rem;
+  width: auto;
+  padding: 0 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+.submit-btn:hover, .upload-btn:hover {
+  background-color: var(--button-hover-color);
+}
   
   /* 按鈕容器樣式 */
 .a_button-container {
   display: flex;
-  justify-content: center; /* 置中對齊 */
-  margin-bottom: 20px; /* 與其他區塊的間距 */
-  gap: 15px; /* 按鈕之間的間距 */
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 15px;
 }
 
 /* 按鈕基礎樣式 */
 .toggle-btn {
-  padding: 12px 24px; /* 按鈕內邊距 */
-  border: 2px solid #ccc; /* 邊框樣式 */
-  border-radius: 8px; /* 圓角效果 */
-  background-color: #f5f5f5; /* 按鈕背景顏色 */
-  color: #333; /* 按鈕文字顏色 */
-  font-size: 1rem; /* 按鈕文字大小 */
-  font-weight: bold; /* 字體加粗 */
-  cursor: pointer; /* 鼠標樣式 */
-  transition: all 0.3s ease; /* 動畫過渡效果 */
+  padding: 12px 24px; 
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold; 
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 /* 按鈕懸停效果 */
 .toggle-btn:hover {
-  background-color: #e0e0e0; /* 懸停時的背景顏色 */
-  border-color: #999; /* 懸停時的邊框顏色 */
+  background-color: #e0e0e0;
+  border-color: #999;
 }
 
 /* 按鈕被選中狀態 */
 .toggle-btn.active {
-  background-color: #2e7d32; /* 選中時的背景顏色 */
-  color: white; /* 選中時的文字顏色 */
-  border-color: #2e7d32; /* 選中時的邊框顏色 */
+  background-color: #2e7d32;
+  color: white;
+  border-color: #2e7d32;
 }
 
 /* 按鈕聚焦效果 */
 .toggle-btn:focus {
-  outline: none; /* 移除預設聚焦邊框 */
-  box-shadow: 0 0 5px rgba(46, 125, 50, 0.8); /* 聚焦時的陰影效果 */
+  outline: none;
+  box-shadow: 0 0 5px rgba(46, 125, 50, 0.8);
+}
+
+/* 課程列表 */
+.course-list {
+  display: flex;
+  flex-direction: column; 
+  gap: 0.5rem; 
+  margin: 0;
+  padding: 0;
+}
+
+/* 單一課程搜尋欄 */
+.search-form {
+  display: flex;
+  gap: 10px;
+  width: 100%; 
+  max-width: 400px; 
+}
+
+/* 搜尋欄 */
+.search-input {
+  flex: 1;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #000000;
+  border-radius: 1.85rem;
+}
+
+/* 送出按鈕 */
+.search-button {
+  font-size: 1rem;
+  width: auto;
+  padding: 0 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+.search-button:hover {
+  background-color: var(--button-hover-color);
+}
+
+/* 課程列表 */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+thead th {
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+tbody td {
+  text-align: center;
+  padding: 10px;
+}
+
+td button {
+  height: 1.85rem;
+  font-size: 1rem;
+  width: auto;
+  padding: 0 1rem;
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  text-align: center
+}
+.oneCourse-set {
+  background-color: #c4bb5b;
+}
+.oneCourse-delete {
+  background-color: #c45b5b;
+}
+.oneCourse-set:hover, .oneCourse-delete:hover {
+  background-color: #757575
 }
