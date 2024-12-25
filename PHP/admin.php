@@ -70,7 +70,7 @@ switch ($action) {
         handleGetAllCourses();
         break;
 
-    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  (ok)
+    case 'uploadSingle': // 2. 新增/修改單筆課程 (含 PDF)  OK
         include("./Admin_func/handleUploadSingleCourse.php");
         handleUploadSingleCourse();
         break;
@@ -83,24 +83,24 @@ switch ($action) {
 
     case 'deleteCourse': // 4. 刪除單一課程 OK
         include("./Admin_func/handleDeleteCourse.php");
-        handleDeleteCourse();
+        handleDeleteCourse($payload);
         break;
 
-    case 'get-all-student': // 5. 取得所有學生 (暫定ok)
+    case 'get-all-student': // 5. 取得所有學生 OK
         include("./Admin_func/GetAllStudents.php");
         GetAllStudents();
         break;
 
-    case 'update-student': // 6. 新增/修改單筆學生資訊 (暫定ok)
+    case 'update-student': // 6. 新增/修改單筆學生資訊 OK
         include("./Admin_func/UpdateStudent.php");
         UpdateStudent(); //$payload？
         break;
 
-    case 'delete-student': // 7. 刪除單一學生 (暫定ok)
+    case 'delete-student': // 7. 刪除單一學生 OK
         include("./Admin_func/DeleteStudent.php");
-        DeleteStudent();
+        DeleteStudent($payload);
         break;
-
+    
     default:
         http_response_code(400);
         echo json_encode([
