@@ -114,7 +114,7 @@ try {
         echo json_encode([
             "message" => "查詢成功",
             "success" => true,
-            "users" => $users
+            "student" => $users
         ]);
     } else {
         echo json_encode([

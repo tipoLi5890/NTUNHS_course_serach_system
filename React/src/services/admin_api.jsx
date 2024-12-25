@@ -100,10 +100,10 @@ export const deleteCourse = async (id) => {
   }
 };
 
-//課程與學生關鍵字查詢功能使用Home_api中的內容 (暫定ok)
+//課程與學生關鍵字查詢功能使用Home_api中的內容 (ok)
  
 /** 學生管理 **/
-// 5. 取得所有學生 (暫定ok)
+// 5. 取得所有學生 (ok)
 export const GetAllStudents = async () => {
   try {
     const response = await axios.post(
@@ -120,19 +120,15 @@ export const GetAllStudents = async () => {
 };
 
 // 6. 新增/修改單筆學生資訊 (含PDF) (暫定ok？)
-export const UpdateStudent = async (courseData, pdfFile) => {
+export const UpdateStudent = async (student) => {
   try {
     const formData = new FormData();
     formData.append('action', 'update-student'); // 後端根據此action做判斷
 
-    // 將課程資訊放入 formData
-    Object.entries(courseData).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    if (pdfFile) {
-      formData.append('teachingPlan', pdfFile);
-    }
+    // 將學生資訊放入 formData
+    formData.append('姓名', student.name);
+    formData.append('帳號', student.account);
+    formData.append('密碼', student.password);
 
     const response = await axios.post(API_BASE_URL, formData, {
       withCredentials: true,
@@ -143,20 +139,20 @@ export const UpdateStudent = async (courseData, pdfFile) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error('Error uploading single course:', error);
+    console.error('Error uploading single student:', error);
     throw new Error('單筆學生資訊上傳失敗');
   }
 };
 
-// 7. 刪除單一學生 (暫定ok)
-export const deleteStudent = async (id) => {
+// 7. 刪除單一學生 (ok)
+export const deleteStudent = async (userid) => {
   // id 即為 "編號"
   try {
     const response = await axios.post(
       API_BASE_URL,
       {
         action: 'delete-student',
-        id: id
+        userid: userid
       },
       { withCredentials: true }
     );

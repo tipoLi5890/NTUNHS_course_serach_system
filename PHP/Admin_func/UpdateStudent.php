@@ -44,7 +44,7 @@ function UpdateStudent() {
 
     // 必填欄位 (根據實際欄位增加/刪減)
     $requiredFields = [
-        '用戶ID', '姓名', '帳號', '密碼', '角色', '狀態'
+        '姓名', '帳號', '密碼'
     ];
 
     // 逐一檢查必填
@@ -60,12 +60,12 @@ function UpdateStudent() {
     }
 
     // 接收欄位
-    $userCode = $_POST['用戶ID'];
+    $userCode   = $_POST['帳號'];
     $name     = $_POST['姓名'];
     $acc      = $_POST['帳號'];
     $pwd      = $_POST['密碼'];
-    $actor    = $_POST['角色'];
-    $status   = $_POST['狀態'];
+    $actor    = "student";
+    $status   = "active";
 
     try {
         // 檢查資料庫中是否已經存在該學生

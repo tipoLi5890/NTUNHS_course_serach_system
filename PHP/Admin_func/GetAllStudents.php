@@ -48,7 +48,7 @@ function GetAllStudents() {
     global $link;
 
     // 修改後的 SQL 查詢語法，過濾出角色為 "student" 的用戶
-    $sql = "SELECT 用戶ID, 姓名, 帳號, 角色, 狀態 FROM 用戶 WHERE 角色 = 'student'";
+    $sql = "SELECT * FROM 用戶 WHERE 角色 = 'student'";
 
     try {
         // 執行查詢

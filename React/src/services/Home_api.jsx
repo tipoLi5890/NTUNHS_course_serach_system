@@ -3,7 +3,7 @@ import axios from 'axios';
 // 定義 API 基底 URL
 const API_URLS = {
     keywordSearch: '/api/courses_search_keyword.php', // 關鍵字搜尋 (課程)
-    studentSearch: '/api/admin.php', // 關鍵字搜尋 (學生)
+    studentSearch: '/api/student_search.php', // 關鍵字搜尋 (學生)
     queryByRequired: '/api/courses_search_required.php', //當期預排
     queryByElective: '/api/courses_search_elective.php', //科系選修
     complexSearch: '/api/courses_search_complex.php', //複合查詢
