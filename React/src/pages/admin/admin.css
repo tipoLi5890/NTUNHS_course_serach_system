@@ -9,7 +9,7 @@
 }
 
 /* 區塊設計 */
-.add-course, .batch-upload {
+.add-course, .batch-upload, .student-management {
   margin: 20px auto;
   padding: 20px;
   width: 70%;
@@ -19,7 +19,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 @media(max-width: 540px) {
-  .add-course, .batch-upload {
+  .add-course, .batch-upload, .student-management {
       width: 90%;
       padding: 20px;
       border: none;
@@ -86,8 +86,8 @@
   background-color: var(--button-hover-color);
 }
   
-  /* 按鈕容器樣式 */
-.a_button-container {
+/* 按鈕容器樣式 */
+.tab-buttons {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
@@ -95,7 +95,7 @@
 }
 
 /* 按鈕基礎樣式 */
-.toggle-btn {
+.tab-button {
   padding: 12px 24px; 
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -106,24 +106,14 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
-/* 按鈕懸停效果 */
-.toggle-btn:hover {
+.tab-button:hover {
   background-color: #e0e0e0;
   border-color: #999;
 }
-
-/* 按鈕被選中狀態 */
-.toggle-btn.active {
-  background-color: #2e7d32;
+.tab-button:focus {
+  background-color: #2e7d32; /* 綠色 */
   color: white;
   border-color: #2e7d32;
-}
-
-/* 按鈕聚焦效果 */
-.toggle-btn:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(46, 125, 50, 0.8);
 }
 
 /* 課程列表 */
@@ -204,4 +194,39 @@ td button {
 }
 .oneCourse-set:hover, .oneCourse-delete:hover {
   background-color: #757575
+}
+
+/* 新增學生欄位 */
+.add-student input {
+  width: clac(33% - 20px);
+  min-width: 200px;
+  margin-right: 10px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.add-student input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* 新增學生按鈕 */
+.add-student button {
+  height: 1.85rem;
+  font-size: 1rem;
+  width: auto;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  text-align: center;
+}
+.add-student button:hover {
+  background-color: var(--button-hover-color);
 }

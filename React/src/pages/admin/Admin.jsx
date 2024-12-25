@@ -13,7 +13,9 @@ import {
 } from "../../services/admin_api";
 
 const Admin = () => {
-  const [showSingleUpload, setShowSingleUpload] = useState(true); // 狀態管理  
+  // 狀態管理：單筆課程、批量上傳、問題學生處理
+  const [selectedTab, setSelectedTab] = useState("singleUpload"); 
+
   const [csvFiles, setCsvFiles] = useState([]); // CSV 上傳 (支援多檔案)
   const handleCsvFileChange = (e) => {
     setCsvFiles(e.target.files);
@@ -210,6 +212,25 @@ const Admin = () => {
     setFilteredCourses(filtered);
   };
 
+  //學生帳號處理
+  const [students, setStudents] = useState([]); // 存放學生資料
+  const [newStudent, setNewStudent] = useState({ account: "", password: "", name: "" }); // 新增學生資料
+
+  // 處理新增學生帳號
+  const handleAddStudent = () => {
+    if (!newStudent.account || !newStudent.password || !newStudent.name) {
+      alert("請完整填寫所有欄位！");
+      return;
+    }
+    setStudents((prev) => [...prev, newStudent]);
+    setNewStudent({ account: "", password: "", name: "" }); // 清空表單
+  };
+
+  // 處理刪除學生帳號
+  const handleDeleteStudent = (account) => {
+    setStudents((prev) => prev.filter((student) => student.account !== account));
+  };
+
   return (
     <div className="returnPlace">
       {/* 頁首 */}
@@ -219,23 +240,15 @@ const Admin = () => {
         <h2 className="a_h2">系統管理者</h2>
 
         {/* 顯示控制按鈕 */}
-        <div className="a_button-container">
-          <button
-            className={`toggle-btn ${showSingleUpload ? "active" : ""}`}
-            onClick={() => setShowSingleUpload(true)}
-          >
-            單筆課程操作
-          </button>
-          <button
-            className={`toggle-btn ${!showSingleUpload ? "active" : ""}`}
-            onClick={() => setShowSingleUpload(false)}
-          >
-            CSV批量上傳
-          </button>
+        {/* 選擇功能區塊按鈕 */}
+        <div className="tab-buttons">
+          <button  className="tab-button" onClick={() => setSelectedTab("singleUpload")}>單筆課程操作</button>
+          <button className="tab-button" onClick={() => setSelectedTab("batchUpload")}>CSV批量上傳</button>
+          <button className="tab-button" onClick={() => setSelectedTab("studentManagement")}>問題學生處理</button>
         </div>
 
         {/* 新增課程區塊 (含 PDF) */}
-        {showSingleUpload && (
+        {selectedTab === "singleUpload" && (
           <section className="add-course">
             <h3 className="a_h3">{isEditing ? "修改課程" : "新增單一課程"}</h3>
             <div className="form">
@@ -491,7 +504,7 @@ const Admin = () => {
         )}
 
         {/* 批次上傳區塊 */}
-        {!showSingleUpload && (
+        {selectedTab === "batchUpload" && (
           <section className="batch-upload">
             <h3 className="a_h3">批次上傳課程資料</h3>
             <div className="form">
@@ -509,7 +522,64 @@ const Admin = () => {
           </section>
         )}
 
-        
+        {/* 問題學生處理區塊 */}
+        {selectedTab === "studentManagement" && (
+          <section className="student-management">
+            <h3 className="a_h3">問題學生處理</h3>
+
+            {/* 新增學生帳號 */}
+            <div className="add-student">
+              <h4>新增學生帳號</h4>
+              <input
+                type="text"
+                placeholder="帳號"
+                value={newStudent.account}
+                onChange={(e) => setNewStudent({ ...newStudent, account: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="密碼"
+                value={newStudent.password}
+                onChange={(e) => setNewStudent({ ...newStudent, password: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="姓名"
+                value={newStudent.name}
+                onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+              />
+              <br/>
+              <button onClick={handleAddStudent}>新增學生</button>
+            </div>
+
+            {/* 更動學生帳號 */}
+            <div className="update-student">
+              <h4>學生帳號管理</h4>
+              <table border="1" cellPadding="8" cellSpacing="0">
+                <thead>
+                  <tr>
+                    <th>帳號</th>
+                    <th>密碼</th>
+                    <th>姓名</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {students.map((student) => (
+                    <tr key={student.account}>
+                      <td>{student.account}</td>
+                      <td>{student.password}</td>
+                      <td>{student.name}</td>
+                      <td>
+                        <button onClick={() => handleDeleteStudent(student.account)}>刪除</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </div>
 
       {/* 頁尾 */}
