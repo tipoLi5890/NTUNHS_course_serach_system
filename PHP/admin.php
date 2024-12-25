@@ -83,12 +83,12 @@ switch ($action) {
 
     case 'deleteCourse': // 4. 刪除單一課程 OK
         include("./Admin_func/handleDeleteCourse.php");
-        handleDeleteCourse($payload);
+        handleDeleteCourse();
         break;
 
     case 'get-all-student': // 5. 取得所有學生 (暫定ok)
         include("./Admin_func/GetAllStudents.php");
-        GetAllStudents($payload);
+        GetAllStudents();
         break;
 
     case 'update-student': // 6. 新增/修改單筆學生資訊 (暫定ok)
@@ -98,14 +98,9 @@ switch ($action) {
 
     case 'delete-student': // 7. 刪除單一學生 (暫定ok)
         include("./Admin_func/DeleteStudent.php");
-        DeleteStudent($payload);
+        DeleteStudent();
         break;
 
-    case 'search-student': // 8. 查詢單一學生 (暫定ok)
-        include("./Admin_func/SearchStudent.php");
-        SearchStudent($payload);
-        break;
-    
     default:
         http_response_code(400);
         echo json_encode([
