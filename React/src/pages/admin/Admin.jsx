@@ -251,7 +251,7 @@ const Admin = () => {
         {selectedTab === "singleUpload" && (
           <section className="add-course">
             <h3 className="a_h3">{isEditing ? "修改課程" : "新增單一課程"}</h3>
-            <div className="form">
+            <div className="a_form">
               <input
                 type="text"
                 name="課程編號"
@@ -451,11 +451,11 @@ const Admin = () => {
               <button className="submit-btn" onClick={resetCourseData}>取消</button>
             </div>
             {/* 顯示所有課程 (table) */}
-            <div className="course-list">
+            <div className="a_course-list">
               <h3 className="a_h3">從既有課程操作</h3>
 
               {/* 搜尋框 */}
-              <form className="search-form" onSubmit={handleSearchSubmit}>
+              <form className="a_search-form" onSubmit={handleSearchSubmit}>
                 <input
                   type="text"
                   placeholder="搜尋課程名稱..."
@@ -467,7 +467,7 @@ const Admin = () => {
               </form>
 
               {/* 表格 */}
-              <table border="1" cellPadding="8" cellSpacing="0">
+              <table className="a_course-table" border="1" cellPadding="8" cellSpacing="0">
                 <thead>
                   <tr>
                     <th>課程</th>
@@ -507,7 +507,7 @@ const Admin = () => {
         {selectedTab === "batchUpload" && (
           <section className="batch-upload">
             <h3 className="a_h3">批次上傳課程資料</h3>
-            <div className="form">
+            <div className="a_form">
               <label>選擇課程CSV (可多檔)</label>
               <input
                 type="file"
@@ -555,7 +555,7 @@ const Admin = () => {
             {/* 更動學生帳號 */}
             <div className="update-student">
               <h4>學生帳號管理</h4>
-              <table border="1" cellPadding="8" cellSpacing="0">
+              <table className="a_course-table" border="1" cellPadding="8" cellSpacing="0">
                 <thead>
                   <tr>
                     <th>帳號</th>

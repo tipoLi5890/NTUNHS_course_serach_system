@@ -28,16 +28,16 @@
 }
   
 /* 表單設計 */
-.form {
+.a_form {
   display: flex;
   flex-wrap: wrap; /* 允許換行 */
   gap: 10px; /* 欄位間距 */
 }
   
-.form input[type="text"],
-.form input[type="number"],
-.form input[type="file"],
-.form textarea {
+.a_form input[type="text"],
+.a_form input[type="number"],
+.a_form input[type="file"],
+.a_form textarea {
   flex: 1 1 calc(33.33% - 20px); /* 每列三個欄位，考慮間距 */
   min-width: 200px; /* 設定最小寬度，避免過窄 */
   box-sizing: border-box; /* 包括 padding 和 border */
@@ -47,21 +47,21 @@
   font-size: 14px;
 }
 @media(max-width: 540px) {
-  .form input[type="text"],
-  .form input[type="number"],
-  .form input[type="file"],
-  .form textarea {
+  .a_form input[type="text"],
+  .a_form input[type="number"],
+  .a_form input[type="file"],
+  .a_form textarea {
     flex: 1 1 100%; 
     }
 }
   
 /* textarea 和 file 欄位特殊處理 */
-.form textarea,
-.form input[type="file"] {
+.a_form textarea,
+.a_form input[type="file"] {
   flex: 1 1 100%; /* 讓其佔滿整列 */
 }
 
-.form textarea {
+.a_form textarea {
   height: 80px;
   resize: none;
 }
@@ -117,7 +117,7 @@
 }
 
 /* 課程列表 */
-.course-list {
+.a_course-list {
   display: flex;
   flex-direction: column; 
   gap: 0.5rem; 
@@ -126,7 +126,7 @@
 }
 
 /* 單一課程搜尋欄 */
-.search-form {
+.a_search-form {
   display: flex;
   gap: 10px;
   width: 100%; 
@@ -134,7 +134,7 @@
 }
 
 /* 搜尋欄 */
-.search-input {
+.a_search-form .search-input {
   flex: 1;
   padding: 8px;
   font-size: 1rem;
@@ -143,7 +143,7 @@
 }
 
 /* 送出按鈕 */
-.search-button {
+.a_search-form .search-button {
   font-size: 1rem;
   width: auto;
   padding: 0 1rem;
@@ -154,28 +154,28 @@
   cursor: pointer;
   text-align: center;
 }
-.search-button:hover {
+.a_search-form .search-button:hover {
   background-color: var(--button-hover-color);
 }
 
 /* 課程列表 */
-table {
+.a_course-table{
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
 }
 
-thead th {
+.a_course-table thead th {
   background-color: #f4f4f4;
   text-align: center;
 }
 
-tbody td {
+.a_course-table tbody td {
   text-align: center;
   padding: 10px;
 }
 
-td button {
+.a_course-table button {
   height: 1.85rem;
   font-size: 1rem;
   width: auto;
