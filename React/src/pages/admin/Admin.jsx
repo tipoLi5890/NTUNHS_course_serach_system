@@ -103,11 +103,11 @@ const Admin = () => {
 
   // useEffect 中根據 selectedTab 呼叫不同函式
   useEffect(() => {
-    if (selectedTab === "studentManagement") {
-      fetchStudents();
-    } else {
-      fetchCourses();
-    }
+    // if (selectedTab === "studentManagement") {
+    //   fetchStudents();
+    // } else {
+    //   fetchCourses();
+    // }
   }, [selectedTab]);
 
   // 處理「新增/修改單筆課程」輸入變更 
@@ -242,17 +242,12 @@ const Admin = () => {
   const handleSearchSubmit = async (e) => {
     e.preventDefault(); // 防止表單刷新
 
-    if (!searchTerm.trim()) {
-      // 當搜尋欄位為空時顯示所有課程
-      if (selectedTab === "studentManagement") {
-        setFilteredStudents(students);
-      } else {
-        setFilteredCourses(allCourses);
-      }
-
-      alert("請輸入搜尋關鍵字");
-      return;
+    if (selectedTab === "studentManagement") {
+      setFilteredStudents(students);
+    } else {
+      setFilteredCourses(allCourses);
     }
+
 
     try {
       // 調用 API 進行搜尋
