@@ -163,11 +163,11 @@ try {
         FROM 歷史紀錄 AS r
         JOIN 課程 AS c
         ON r.課程ID = c.編號
-        WHERE c.科目代碼_新碼 = :CourseID
+        WHERE c.科目代碼_新碼 LIKE :CourseID
         AND r.評價文本 != '' 
         AND (r.評論狀態 = 'Y' OR r.評論狀態 = 'L')
     ");
-    
+    $CourseID = $CourseID.'%';
     // 綁定參數
     $scheduleStmt->bindParam(':CourseID', $CourseID, PDO::PARAM_STR);
 

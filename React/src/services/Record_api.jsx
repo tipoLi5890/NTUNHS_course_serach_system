@@ -69,7 +69,7 @@ export const getRecords = async (courseCode) => {
             `/api/courses_record_list.php`,
             {
                 action: 'get-course-record',
-                courseCode: courseCode,
+                courseCode: courseCode.slice(0, -2),
             }, { withCredentials: true });
         console.log(response.data?.courses);
         return response.data.courses; // 假設後端回傳格式包含 `courses` 欄位
