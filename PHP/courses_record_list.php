@@ -151,87 +151,57 @@ session_start(); // 初始化 Session
 include("configure.php");
 
 
-if (isset($_COOKIE['sessionToken']) && isset($_SESSION['sessionToken'])) {
-    if ($_COOKIE['sessionToken'] === $_SESSION['sessionToken']) {
-        // 驗證成功，可以進一步處理請求
+try {
 
-        if(isset($_SESSION['userID'])){
-            $userID = $_SESSION['userID'];  // 取得用戶ID
-            try {
+    // 查詢該課程的評價
+    $scheduleStmt = $link->prepare("
+        SELECT 
+            r.評價ID, 
+            r.課程ID, 
+            r.評價文本, 
+            r.評價時間 
+        FROM 歷史紀錄 AS r
+        JOIN 課程 AS c
+        ON r.課程ID = c.編號
+        WHERE c.科目代碼_新碼 = :CourseID
+        AND r.評價文本 != '' 
+        AND (r.評論狀態 = 'Y' OR r.評論狀態 = 'L')
+    ");
+    
+    // 綁定參數
+    $scheduleStmt->bindParam(':CourseID', $CourseID, PDO::PARAM_STR);
 
-                // 查詢該課程的評價
-                $scheduleStmt = $link->prepare("
-                    SELECT 
-                        r.評價ID, 
-                        r.課程ID, 
-                        r.評價文本, 
-                        r.評價時間 
-                    FROM 歷史紀錄 AS r
-                    JOIN 課程 AS c
-                    ON r.課程ID = c.編號
-                    WHERE c.科目代碼_新碼 = :CourseID
-                    AND r.評價文本 != '' 
-                    AND (r.評論狀態 = 'Y' OR r.評論狀態 = 'L')
-                ");
-                
-                // 綁定參數
-                $scheduleStmt->bindParam(':CourseID', $CourseID, PDO::PARAM_STR);
+    // 執行查詢
+    $scheduleStmt->execute();
 
-                // 執行查詢
-                $scheduleStmt->execute();
-
-                // 檢查是否有課程資料
-                if ($scheduleStmt->rowCount() > 0) {
-                    $record_list = $scheduleStmt->fetchAll(PDO::FETCH_ASSOC);
-                    http_response_code(200);
-                    // 回傳課程資料
-                    echo "\n\n";
-                    echo json_encode([
-                        "message" => "查詢成功",
-                        "success" => true,
-                        "courses" => $record_list
-                    ]);
-                } else {
-                    // 如果沒有課程資料
-                    echo json_encode([
-                        "message" => "沒有找到相關課程",
-                        "success" => true,
-                        "courses" => [] // 確保 courses 是空陣列
-                    ]);
-                }
-            } catch (Exception $e) {
-                // 查詢出現錯誤
-                http_response_code(500);
-                echo json_encode([
-                    "message" => "伺服器錯誤，無法查詢課程",
-                    "success" => false
-                ]);
-            }
-        }else {
-            // 如果用戶ID不存在
-            http_response_code(403);
-            echo json_encode([
-                "message" => "未找到用戶ID，請重新登入",
-                "success" => false
-            ]);
-        }
-        
-    } else {
-        // 驗證失敗，返回未授權狀態
-        http_response_code(402);
+    // 檢查是否有課程資料
+    if ($scheduleStmt->rowCount() > 0) {
+        $record_list = $scheduleStmt->fetchAll(PDO::FETCH_ASSOC);
+        http_response_code(200);
+        // 回傳課程資料
+        echo "\n\n";
         echo json_encode([
-            "message" => "無效的 Session Token，請重新登入",
-            "success" => false
+            "message" => "查詢成功",
+            "success" => true,
+            "courses" => $record_list
         ]);
-        exit;
+    } else {
+        // 如果沒有課程資料
+        echo json_encode([
+            "message" => "沒有找到相關課程",
+            "success" => true,
+            "courses" => [] // 確保 courses 是空陣列
+        ]);
     }
-}else {
-    // 沒有 Session Token，可能未登入或 Session 過期
-    http_response_code(401);
+} catch (Exception $e) {
+    // 查詢出現錯誤
+    http_response_code(500);
     echo json_encode([
-        "message" => "Session 過期或未登入",
-        "success" => false,
+        "message" => "伺服器錯誤，無法查詢課程",
+        "success" => false
     ]);
-    exit;
 }
+        
+        
+
 ?>
