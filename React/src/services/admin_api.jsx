@@ -115,7 +115,7 @@ export const GetAllStudents = async () => {
     return response.data; // 會包含 message, success, courses 等
   } catch (error) {
     console.error('Error fetching all courses:', error);
-    throw new Error('查詢所有課程失敗');
+    throw new Error('查詢所有學生失敗');
   }
 };
 
@@ -160,6 +160,7 @@ export const deleteStudent = async (userid) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting course:', error);
-    throw new Error('刪除課程失敗');
+    throw new Error('刪除學生失敗');
   }
 };
+
